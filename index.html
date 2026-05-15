@@ -3,102 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Seele Hub - Cluster Dashboard</title>
+  <title>Seele - AI Workflow Tools</title>
+  <meta name="description" content="Download AI workflow tools for Windows">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f0f1a; color: #e0e0e0; min-height: 100vh; padding: 20px; }
-    .container { max-width: 1200px; margin: 0 auto; }
-    h1 { color: #8b5cf6; margin-bottom: 20px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-    .card { background: rgba(255,255,255,0.05); border: 1px solid rgba(139,92,246,0.3); border-radius: 12px; padding: 20px; }
-    .card h2 { color: #a78bfa; font-size: 1.1rem; margin-bottom: 12px; border-bottom: 1px solid #2d2d4a; padding-bottom: 8px; }
-    .stat { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #1a1a2e; }
-    .stat:last-child { border-bottom: none; }
-    .stat-label { color: #9ca3af; }
-    .stat-value { color: #34d399; font-weight: 600; }
-    .agent { padding: 10px; margin: 8px 0; background: #1a1a2e; border-radius: 8px; }
-    .agent-name { color: #e0e0e0; font-weight: 500; }
-    .agent-status { display: flex; align-items: center; gap: 8px; margin-top: 4px; font-size: 0.85rem; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; }
-    .dot.online { background: #34d399; }
-    .dot.offline { background: #6b7280; }
-    .loading { color: #9ca3af; text-align: center; padding: 40px; }
-    .error { color: #ef4444; padding: 20px; text-align: center; }
-    footer { text-align: center; margin-top: 40px; color: #6b7280; font-size: 0.85rem; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); color: #e0e0e0; min-height: 100vh; padding: 40px; }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { color: #8b5cf6; font-size: 2.5rem; margin-bottom: 10px; letter-spacing: -1px; }
+    .subtitle { color: #9ca3af; margin-bottom: 40px; font-size: 1.1rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
+    .product { background: rgba(255,255,255,0.05); border: 1px solid rgba(139,92,246,0.3); border-radius: 16px; padding: 24px; transition: transform 0.2s, box-shadow 0.2s; }
+    .product:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(139,92,246,0.25); }
+    .product h2 { color: #e0e0e0; font-size: 1.4rem; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+    .product h2 .tag { font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; background: rgba(139,92,246,0.3); color: #a78bfa; }
+    .product p { color: #9ca3af; margin-bottom: 16px; line-height: 1.6; }
+    .size { color: #6b7280; font-size: 0.85rem; margin-bottom: 12px; }
+    .download { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: opacity 0.2s; }
+    .download:hover { opacity: 0.9; }
+    .coming { background: rgba(255,193,7,0.2); color: #ffc107; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; }
+    .section-title { color: #6b7280; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; margin: 40px 0 20px; border-bottom: 1px solid #2d2d4a; padding-bottom: 10px; }
+    .note { background: rgba(255,193,7,0.1); border-left: 4px solid #ffc107; padding: 16px; margin-top: 40px; border-radius: 0 8px 8px 0; color: #9ca3af; font-size: 0.9rem; }
+    footer { margin-top: 60px; text-align: center; color: #6b7280; font-size: 0.85rem; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Seele Hub</h1>
-    <div id="app" class="loading">Loading cluster status...</div>
-    <footer>Seele Agency - AI Workflow Platform</footer>
+    <h1>Seele</h1>
+    <p class="subtitle">AI Workflow Tools - Download for Windows</p>
+    
+    <div class="section-title">🎯 Core Products</div>
+    <div class="grid">
+      <div class="product">
+        <h2>TabMind <span class="tag">Coming Soon</span></h2>
+        <p>AI-powered knowledge graph and conversation management. Desktop application with advanced analytics, semantic search, and cross-platform sync.</p>
+        <p class="size">Android APK available now</p>
+        <a class="download" href="#">Coming Soon</a>
+      </div>
+    </div>
+    
+    <div class="section-title">💰 Payment Tools</div>
+    <div class="grid">
+      <div class="product">
+        <h2>xkg-stripe <span class="tag">v1.0.0</span></h2>
+        <p>Payment processing and Stripe webhook handler for XKG payments. Includes checkout flow, webhook handling, and customer portal.</p>
+        <p class="size">Size: 17.2 MB</p>
+        <a class="download" href="https://github.com/griptoad26/xkg-stripe/releases/download/v1.0.0/app.exe">
+          Download for Windows
+        </a>
+      </div>
+      
+      <div class="product">
+        <h2>xkg-payments <span class="tag">v1.0</span></h2>
+        <p>Payment router and configuration management. FastAPI-based server with webhook support and routing rules.</p>
+        <p class="size">Size: 7.3 MB</p>
+        <a class="download" href="https://github.com/griptoad26/xkg-payments/releases/latest">
+          Download for Windows
+        </a>
+      </div>
+    </div>
+    
+    <div class="section-title">⚙️ Utility Tools</div>
+    <div class="grid">
+      <div class="product">
+        <h2>ThreadWeave <span class="tag">v1.0</span></h2>
+        <p>Full-stack message threading system. Backend, bridge, and frontend components for managing conversation flows.</p>
+        <p class="size">Size: 19.1 MB</p>
+        <a class="download" href="https://github.com/griptoad26/threadweave/releases/latest">
+          Download for Windows
+        </a>
+      </div>
+      
+      <div class="product">
+        <h2>Config Garage <span class="tag">v1.0</span></h2>
+        <p>Visual configuration editor for OpenClaw and system settings. GUI-based tool for managing configs.</p>
+        <p class="size">Size: 10.5 MB</p>
+        <a class="download" href="https://github.com/griptoad26/config-garage/releases/latest">
+          Download for Windows
+        </a>
+      </div>
+    </div>
+    
+    <div class="note">
+      <strong>⚠️ GitHub Releases Setup in Progress</strong><br>
+      Downloads will be available via GitHub Releases once the CI/CD pipeline is configured. Check back soon!
+    </div>
+    
+    <footer>
+      Built with WorkForge CI/CD pipeline • Seele Agency
+    </footer>
   </div>
-  
-  <script>
-    const API_BASE = 'https://100.112.11.35:8090';
-    
-    async function fetchStatus() {
-      try {
-        // Try direct API call
-        const resp = await fetch(API_BASE + '/api/status');
-        if (resp.ok) {
-          const data = await resp.json();
-          renderDashboard(data);
-        } else {
-          renderOffline();
-        }
-      } catch (e) {
-        renderOffline();
-      }
-    }
-    
-    function renderDashboard(data) {
-      document.getElementById('app').innerHTML = `
-        <div class="grid">
-          <div class="card">
-            <h2>System Status</h2>
-            <div class="stat"><span class="stat-label">Total Agents</span><span class="stat-value">${data.total_agents || 0}</span></div>
-            <div class="stat"><span class="stat-label">Active</span><span class="stat-value">${data.active_agents || 0}</span></div>
-            <div class="stat"><span class="stat-label">Tasks</span><span class="stat-value">${data.total_tasks || 0}</span></div>
-            <div class="stat"><span class="stat-label">Clusters</span><span class="stat-value">${data.clusters || 0}</span></div>
-          </div>
-          <div class="card">
-            <h2>Cluster Hub</h2>
-            <div class="stat"><span class="stat-label">Uptime</span><span class="stat-value">${data.uptime || 'N/A'}</span></div>
-            <div class="stat"><span class="stat-label">Memory</span><span class="stat-value">${data.memory || 'N/A'}</span></div>
-            <div class="stat"><span class="stat-label">Last Sync</span><span class="stat-value">${data.last_sync || 'N/A'}</span></div>
-          </div>
-          <div class="card">
-            <h2>Quick Access</h2>
-            <div style="padding: 10px 0;">
-              <a href="https://seele.agency" style="color:#8b5cf6;display:block;padding:8px 0;">Downloads →</a>
-              <a href="https://github.com/griptoad26" style="color:#8b5cf6;display:block;padding:8px 0;">GitHub →</a>
-            </div>
-          </div>
-        </div>
-      `;
-    }
-    
-    function renderOffline() {
-      document.getElementById('app').innerHTML = `
-        <div class="grid">
-          <div class="card">
-            <h2>Seele Hub</h2>
-            <p style="color:#9ca3af;padding:20px 0;">Cluster Hub dashboard</p>
-            <p style="color:#6b7280;font-size:0.9rem;">The live dashboard is accessible from the internal network. This static version shows general information.</p>
-          </div>
-          <div class="card">
-            <h2>Quick Access</h2>
-            <div style="padding: 10px 0;">
-              <a href="https://seele.agency" style="color:#8b5cf6;display:block;padding:8px 0;">Downloads →</a>
-              <a href="https://github.com/griptoad26" style="color:#8b5cf6;display:block;padding:8px 0;">GitHub →</a>
-            </div>
-          </div>
-        </div>
-      `;
-    }
-    
-    fetchStatus();
-  </script>
 </body>
 </html>
