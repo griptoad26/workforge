@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>OCMI Agent Pipeline Plans — 2026-06-02</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #0d1117;
+    color: #c9d1d9;
+    padding: 24px;
+    line-height: 1.5;
+  }
+  h1 {
+    color: #58a6ff;
+    margin-bottom: 8px;
+    font-size: 28px;
+  }
+  .subtitle {
+    color: #8b949e;
+    margin-bottom: 32px;
+    font-size: 14px;
+  }
+  .project {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+  .project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #30363d;
+    padding-bottom: 12px;
+  }
+  .project-title {
+    font-size: 20px;
+    color: #f0f6fc;
+    font-weight: 600;
+  }
+  .project-meta {
+    display: flex;
+    gap: 8px;
+  }
+  .badge {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+  }
+  .badge-active { background: #1f6feb33; color: #58a6ff; border: 1px solid #1f6feb; }
+  .badge-pending { background: #d2992233; color: #d29922; border: 1px solid #d29922; }
+  .badge-complete { background: #3fb95033; color: #3fb950; border: 1px solid #3fb950; }
+  .badge-blocked { background: #f8514933; color: #f85149; border: 1px solid #f85149; }
+  .pipeline {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 12px 0;
+  }
+  .stage {
+    flex: 1;
+    min-width: 180px;
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 12px;
+    position: relative;
+  }
+  .stage::after {
+    content: "→";
+    position: absolute;
+    right: -16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #58a6ff;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  .stage:last-child::after { content: ""; }
+  .stage-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #58a6ff;
+    margin-bottom: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .stage-agent {
+    font-size: 13px;
+    color: #d2a8ff;
+    margin-bottom: 8px;
+    font-family: ui-monospace, "Cascadia Code", monospace;
+  }
+  .stage-tasks {
+    list-style: none;
+  }
+  .stage-tasks li {
+    font-size: 12px;
+    color: #8b949e;
+    padding: 4px 0;
+    padding-left: 16px;
+    position: relative;
+  }
+  .stage-tasks li::before {
+    content: "•";
+    position: absolute;
+    left: 4px;
+    color: #58a6ff;
+  }
+  .stage-tasks li.done { color: #3fb950; text-decoration: line-through; }
+  .stage-tasks li.todo { color: #d29922; }
+  .stage-tasks li.blocked { color: #f85149; }
+  .summary {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-value {
+    font-size: 24px;
+    font-weight: 600;
+    color: #58a6ff;
+  }
+  .stat-label {
+    font-size: 12px;
+    color: #8b949e;
+    text-transform: uppercase;
+  }
+  .footer {
+    color: #6e7681;
+    font-size: 12px;
+    margin-top: 32px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+  <h1>🚀 OCMI Agent Pipeline Plans</h1>
+  <div class="subtitle">Generated 2026-06-02 22:22 PDT · Cluster Hub: 181 tasks tracked · 138 completed</div>
+
+  <div class="summary">
+    <div class="stat"><div class="stat-value">5</div><div class="stat-label">Major Projects</div></div>
+    <div class="stat"><div class="stat-value">29</div><div class="stat-label">Pending Tasks</div></div>
+    <div class="stat"><div class="stat-value">7</div><div class="stat-label">In Progress</div></div>
+    <div class="stat"><div class="stat-value">45</div><div class="stat-label">Agents Available</div></div>
+  </div>
+
+  <!-- PROJECT 1: XKG Mobile -->
+  <div class="project">
+    <div class="project-header">
+      <div class="project-title">📱 XKG Mobile (TabMind)</div>
+      <div class="project-meta">
+        <span class="badge badge-active">Active</span>
+        <span class="badge badge-pending">APK Build Pending</span>
+      </div>
+    </div>
+    <div class="pipeline">
+      <div class="stage">
+        <div class="stage-title">1. Design</div>
+        <div class="stage-agent">xkg-mobile-lead</div>
+        <ul class="stage-tasks">
+          <li class="done">LLM shell architecture spec</li>
+          <li class="done">Grok API integration design</li>
+          <li class="done">Auto-capture to XKG schema</li>
+        </ul>
+      </div>
+      <div class="stage">
+        <div class="stage-title">2. Build</div>
+        <div class="stage-agent">xkg-mobile-dev</div>
+        <ul class="stage-tasks">
+          <li class="done">Chat UI (src-ui/index.html, 559 lines)</li>
+          <li class="done">Grok API client (grok_api.rs, 158 lines)</li>
+          <li class="done">OS-keyring API key storage</li>
+          <li class="done">SQLite auto-save</li>
+        </ul>
+      </div>
+      <div class="stage">
+        <div class="stage-title">3. Test</div>
+        <div class="stage-agent">xkg-mobile-qa</div>
+        <ul class="stage-tasks">
+          <li class="done">Windows .exe build (6.8MB)</li>
+          <li class="done">Linux binary build (8.4MB)</li>
+          <li class="todo">APK build on verifier</li>
+          <li class="todo">Android device test</li>
+        </ul>
+      </div>
+      <div class="stage">
+        <div class="stage-title">4. Review</div>
+        <div class="stage-agent">xkg-mobile-reviewer</div>
+        <ul class="stage-tasks">
+          <li class="todo">Code review (Clawpatch)</li>
+          <li class="todo">Security audit</li>
+        </ul>
+      </div>
+      <div class="stage">
+        <div class="stage-title">5. Release</div>
+        <div class="stage-agent">xkg-release-agent</div>
+        <ul class="stage-tasks">
+          <li class="todo">Build APK</li>
+          <li class="todo">Upload to GitHub release</li>
+          <li class="todo">Update seele.agency downloads</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECT 2: Cluster Hub Dashboard -->
+  <div class="project">
+    <div class="project-header">
+      <div class="project-title">📊 Cluster Hub Dashboard</div>
+      <div class="project-meta">
+        <span class="badge badge-active">In Progress</span>
+        <span class="badge badge-pending">5 Tasks Open</span>
+      </div>
+    </div>
+    <div class="pipeline">
+      <div class="stage">
+        <div class="stage-title">1. Spec</div>
+        <div class="stage-agent">dashboard-architect</div>
+        <ul class="stage-tasks">
+          <li>DASH-001: SPEC Review</li>
+        </ul>
+      </div>
+      <div class="stage">
+        <div class="stage-title">2. Build UI</div>
+        <div class="stage-agent">frontend-developer</div>
+        <ul class="stage-tasks">
+          <li>DASH-002: Agent workspace pages</li>
+          <li>Create all remaining panels</li>
+        </ul>
+      </div>
+      <div class="stage">
+        <div class="stage-title">3. Integration</div>
+        <div class="stage-agent">integration-specialist</div>
+        <ul class="stage-tasks">
+          <li>DASH-003: Connect to real API</li>
+          <li>DASH-004: Discord webhook streaming</li>
+          <li>Sync Hub registry with files</li>
+        </ul>
+      </div>
+      <div class="stage">
+        <div class="stage-title">4. Verify</div>
+        <div class="stage-agent">qa-tester</div>
+        <ul class="stage-tasks">
+          <li>DASH-005: Qwen VL visual verify</li>
+          <li>DASH-006: Browser verification</li>
+        </ul>
+      </div>
+      <div class="stage">
+        <div class="stage-title">5. Deploy</div>
+        <div class="stage-agent">devops-agent</div>
+        <ul class="stage-tasks">
+          <li>DASH-007: Production deploy</li>
+          <li>URL validation</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECT 3: OCMI Integration -->
+  <div class="project">
+    <div class="project-header">
+      <div class="project-title">🔗 OCMI Integration Suite</div>
+      <div class="project-meta">
+        <span class="badge badge-blocked">High Priority</span>
+        <span class="badge badge-pending">6 Tasks Open</span>
+      </div>
+    </div>
+    <div class="pipeline">
+      <div class="stage">
+        <div class="stage-title">1. Tools</div>
+        <div class="stage-agent">mcp-builder</div>
+        <ul class="stage-tasks">
+          <li>Wire agents to OpenClaw tools</li>
+        </ul>
+      </div>
+      <div class="stage">
+        <div class="stage-title">2. Sync</div>
+        <div class="stage-agent">ocmi-coord-agent</div>
+        <ul class="stage-tasks">
+          <li>Sync Hub registry w/ files</li>
+          <li>Update Hub w/ local LLM</li>
+        </ul>
+      </div>
+      <div class="stage">
+        <div class="stage-title">3. Auth</div>
+        <div class="stage-agent">security-agent</div>
+        <ul class="stage-tasks">
+          <li class="blocked">X login via Playwright</li>
+          <li class="blocked">Fix X bot detection</li>
+          <li class="blocked">Investigate login issues</li>
+        </ul>
+      </div>
+      <div class="stage">
+        <div class="stage-title">4. Pipeline</div>
+        <div class="stage-agent">devops-agent</div>
+        <ul class="stage-tasks">
+          <li>Run TabMind + XKG pipeline</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECT 4: XKG Desktop -->
+  <div class="project">
+    <div class="project-header">
+      <div class="project-title">💻 XKG Desktop</div>
+      <div class="project-meta">
+        <span class="badge badge-complete">Stable</span>
+        <span class="badge badge-active">Extended</span>
+      </div>
+    </div>
+    <div class="pipeline">
+      <div class="stage">
+        <div class="stage-title">1. Core</div>
+        <div class="stage-agent">xkg-desktop</div>
+        <ul class="stage-tasks">
+          <li class="done">Tauri shell (10MB)</li>
+          <li class="done">WebKit rendering</li>
+          <li class="done">SQLite storage</li>
+        </ul>
+      </div>
+      <div class="stage">
+        <div class="stage-title">2. LLM Shell</div>
+        <div class="stage-agent">xkg-dev</div>
+        <ul class="stage-tasks">
+          <li class="done">Grok API client</li>
+          <li class="done">Chat UI sidebar</li>
+          <li class="done">OS-keyring secrets</li>
+        </ul>
+      </div>
+      <div class="stage">
+        <div class="stage-title">3. Distribution</div>
+        <div class="stage-agent">xkg-release-agent</div>
+        <ul class="stage-tasks">
+          <li class="done">GitHub release v1.0</li>
+          <li class="done">Download at seele.agency</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECT 5: Wealth Coaching -->
+  <div class="project">
+    <div class="project-header">
+      <div class="project-title">💰 Wealth Coaching (Module 1)</div>
+      <div class="project-meta">
+        <span class="badge badge-active">Personal</span>
+        <span class="badge badge-pending">5 Active Goals</span>
+      </div>
+    </div>
+    <div class="pipeline">
+      <div class="stage">
+        <div class="stage-title">1. Mindset</div>
+        <div class="stage-agent">main</div>
+        <ul class="stage-tasks">
+          <li>3 limiting money beliefs</li>
+          <li>New personal money story</li>
+        </ul>
+      </div>
+      <div class="stage">
+        <div class="stage-title">2. Environment</div>
+        <div class="stage-agent">main</div>
+        <ul class="stage-tasks">
+          <li>Audit environment signals</li>
+        </ul>
+      </div>
+      <div class="stage">
+        <div class="stage-title">3. Vision</div>
+        <div class="stage-agent">main</div>
+        <ul class="stage-tasks">
+          <li>Define financial freedom</li>
+        </ul>
+      </div>
+      <div class="stage">
+        <div class="stage-title">4. Skills</div>
+        <div class="stage-agent">main</div>
+        <ul class="stage-tasks">
+          <li>Top 3 income-producing skills</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Generated by ocmi-orchestrator · Cluster Hub: 127.0.0.1:8090 · 45 agents available
+  </div>
+</body>
+</html>
