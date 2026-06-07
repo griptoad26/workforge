@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCMI Master Dashboard</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎛️</text></svg>">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+            color: #eee;
+            padding: 10px;
+            font-size: 11px;
+        }
+        
+        /* Grid Layout */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            grid-template-rows: auto 1fr 1fr;
+            gap: 10px;
+            height: 100vh;
+        }
+        
+        /* Header */
+        .header {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+        }
+        
+        .header h1 {
+            font-size: 1.4rem;
+            background: linear-gradient(90deg, #00ff88, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .header .links a {
+            color: #00d4ff;
+            margin-left: 15px;
+            text-decoration: none;
+            font-size: 11px;
+        }
+        
+        .header .links a:hover { text-decoration: underline; }
+        
+        /* Stats */
+        .stats {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .stat {
+            text-align: center;
+            padding: 8px 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 6px;
+            min-width: 80px;
+        }
+        
+        .stat .value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00d4ff;
+        }
+        
+        .stat .label { color: #888; font-size: 10px; }
+        
+        /* Panels */
+        .panel {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .panel h2 {
+            font-size: 12px;
+            color: #00ff88;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .panel .content {
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        /* Nodes Panel */
+        .nodes-panel { grid-column: 1 / 3; grid-row: 2 / 3; }
+        
+        .node {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 8px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+            margin-bottom: 4px;
+            border-left: 3px solid #444;
+        }
+        
+        .node.online { border-left-color: #00ff88; }
+        .node.offline { border-left-color: #ff4444; }
+        
+        .node .name { font-weight: bold; }
+        .node .status { 
+            font-size: 10px; 
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+        
+        .node .status.online { background: rgba(0,255,136,0.2); color: #00ff88; }
+        .node .status.offline { background: rgba(255,68,68,0.2); color: #ff4444; }
+        
+        /* Tasks Panel */
+        .tasks-panel { grid-column: 3 / 5; grid-row: 2 / 4; }
+        
+        .task {
+            display: flex;
+            align-items: flex-start;
+            padding: 5px;
+            border-bottom: 1px solid #333;
+            font-size: 10px;
+        }
+        
+        .task .id {
+            color: #666;
+            min-width: 60px;
+            font-size: 9px;
+        }
+        
+        .task .title {
+            flex: 1;
+            color: #ccc;
+        }
+        
+        .task .tag {
+            font-size: 8px;
+            padding: 2px 5px;
+            border-radius: 3px;
+            margin-left: 5px;
+        }
+        
+        .task .tag.p1 { background: rgba(255,68,68,0.3); color: #ff6b6b; }
+        .task .tag.p2 { background: rgba(255,193,7,0.3); color: #ffc107; }
+        .task .tag.p3 { background: rgba(0,212,255,0.3); color: #00d4ff; }
+        
+        /* Config Panel */
+        .config-panel { grid-column: 5 / 7; grid-row: 2 / 3; }
+        
+        .config-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px;
+            border-bottom: 1px solid #333;
+            font-size: 10px;
+        }
+        
+        .config-item .key { color: #888; }
+        .config-item .value { color: #00ff88; }
+        .config-item .value.disabled { color: #ff4444; }
+        
+        /* Quick Links Panel */
+        .links-panel { grid-column: 1 / 3; grid-row: 3 / 4; }
+        
+        .quick-link {
+            display: block;
+            padding: 6px 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+            margin-bottom: 4px;
+            color: #00d4ff;
+            text-decoration: none;
+            font-size: 10px;
+        }
+        
+        .quick-link:hover { background: rgba(0,212,255,0.1); }
+        
+        .quick-link .icon { margin-right: 8px; }
+        
+        /* Files Panel */
+        .files-panel { grid-column: 5 / 7; grid-row: 3 / 4; }
+        
+        .file {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 8px;
+            font-size: 9px;
+            color: #888;
+            border-bottom: 1px solid #333;
+        }
+        
+        .file .name { color: #ccc; }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #222; }
+        ::-webkit-scrollbar-thumb { background: #444; border-radius: 2px; }
+        
+        /* Timestamp */
+        .timestamp {
+            position: fixed;
+            bottom: 5px;
+            right: 10px;
+            color: #444;
+            font-size: 9px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Header -->
+        <div class="header">
+            <div class="stats">
+                <div class="stat"><div class="value" id="stat-nodes">-</div><div class="label">NODES</div></div>
+                <div class="stat"><div class="value" id="stat-tasks">-</div><div class="label">TASKS</div></div>
+                <div class="stat"><div class="value" id="stat-files">-</div><div class="label">FILES</div></div>
+            </div>
+            <h1>🎛️ OCMI Master Dashboard</h1>
+            <div class="links">
+                <a href="command-center.html">Command</a>
+                <a href="links-dashboard.html">Links</a>
+                <a href="implementations-board.html">Impl</a>
+                <a href="deployment-guide.html">Install</a>
+                <a href="http://100.112.11.35:8095/dashboard.html" target="_blank">Pipeline</a>
+            </div>
+        </div>
+        
+        <!-- Nodes -->
+        <div class="panel nodes-panel">
+            <h2>🖥️ Nodes (8)</h2>
+            <div class="content" id="nodes-list"></div>
+        </div>
+        
+        <!-- Tasks -->
+        <div class="panel tasks-panel">
+            <h2>📋 Tasks (24)</h2>
+            <div class="content" id="tasks-list"></div>
+        </div>
+        
+        <!-- Config -->
+        <div class="panel config-panel">
+            <h2>⚙️ Config</h2>
+            <div class="content" id="config-list"></div>
+        </div>
+        
+        <!-- Quick Links -->
+        <div class="panel links-panel">
+            <h2>🔗 Quick Links</h2>
+            <a class="quick-link" href="command-center.html">🎯 Command Center</a>
+            <a class="quick-link" href="live-dashboard.html">📡 Live Agents</a>
+            <a class="quick-link" href="agent-pipeline-flow.html">🔄 Pipeline Flow</a>
+            <a class="quick-link" href="http://100.112.11.35:8095/dashboard.html" target="_blank">🚀 Build Pipeline</a>
+            <a class="quick-link" href="architecture.html">🖥️ Architecture</a>
+            <a class="quick-link" href="agency.html">🏢 Agency Model</a>
+            <a class="quick-link" href="deployment-plan.html">📋 Deployment Plan</a>
+            <a class="quick-link" href="links-dashboard.html">🔗 All Links</a>
+            <a class="quick-link" href="implementations-board.html">⭐ Implementations</a>
+        </div>
+        
+        <!-- Files -->
+        <div class="panel files-panel">
+            <h2>📁 Files (23)</h2>
+            <div class="content" id="files-list"></div>
+        </div>
+        
+        <div class="timestamp" id="timestamp"></div>
+    </div>
+    
+    <script>
+        const HUB_URL = 'http://100.112.11.35:8090';
+        
+        async function load() {
+            try {
+                // Health
+                const health = await fetch(HUB_URL + '/health').then(r => r.json());
+                document.getElementById('stat-nodes').textContent = health.nodes || 0;
+                document.getElementById('stat-tasks').textContent = health.tasks || 0;
+                document.getElementById('stat-files').textContent = health.files || 0;
+                
+                // Nodes
+                const nodesRes = await fetch(HUB_URL + '/api/nodes');
+                const nodesData = await nodesRes.json();
+                const nodes = Object.values(nodesData.nodes || {});
+                
+                document.getElementById('nodes-list').innerHTML = nodes.map(n => `
+                    <div class="node ${n.status || 'offline'}">
+                        <span class="name">${n.hostname || 'unknown'}</span>
+                        <span class="status ${n.status || 'offline'}">${n.status || 'offline'}</span>
+                    </div>
+                `).join('');
+                
+                // Tasks
+                const tasksRes = await fetch(HUB_URL + '/api/tasks');
+                const tasksData = await tasksRes.json();
+                const tasks = (tasksData.tasks || []).slice(0, 30);
+                
+                document.getElementById('tasks-list').innerHTML = tasks.map(t => {
+                    const isP1 = t.tags?.includes('p1') || t.title?.includes('[P1]');
+                    const isP2 = t.tags?.includes('p2') || t.title?.includes('[P2]');
+                    const isP3 = t.tags?.includes('p3') || t.title?.includes('[P3]');
+                    let tagClass = '';
+                    if (isP1) tagClass = 'p1';
+                    else if (isP2) tagClass = 'p2';
+                    else if (isP3) tagClass = 'p3';
+                    
+                    return `<div class="task">
+                        <span class="id">${t.id}</span>
+                        <span class="title">${t.title?.substring(0, 50) || 'Untitled'}</span>
+                        ${tagClass ? `<span class="tag ${tagClass}">${tagClass.toUpperCase()}</span>` : ''}
+                    </div>`;
+                }).join('');
+                
+                // Config
+                const configRes = await fetch(HUB_URL + '/api/config');
+                const config = await configRes.json();
+                
+                document.getElementById('config-list').innerHTML = Object.entries(config).map(([key, val]) => {
+                    const valStr = JSON.stringify(val);
+                    const disabled = valStr.includes('false') || valStr.includes('null');
+                    return `<div class="config-item">
+                        <span class="key">${key}</span>
+                        <span class="value ${disabled ? 'disabled' : ''}">${valStr.substring(0, 30)}</span>
+                    </div>`;
+                }).join('');
+                
+                // Files
+                const filesRes = await fetch(HUB_URL + '/api/files/list');
+                const filesData = await filesRes.json();
+                const files = (filesData.files || []).slice(0, 15);
+                
+                document.getElementById('files-list').innerHTML = files.map(f => `
+                    <div class="file">
+                        <span class="name">${f.name}</span>
+                        <span>${(f.size/1024).toFixed(0)}KB</span>
+                    </div>
+                `).join('');
+                
+                document.getElementById('timestamp').textContent = 'Updated: ' + new Date().toLocaleTimeString();
+                
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        
+        load();
+        setInterval(load, 15000);
+    </script>
+</body>
+</html>

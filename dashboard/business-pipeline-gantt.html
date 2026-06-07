@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Pipeline - Gantt Chart</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+            background: #0a0a0f; 
+            color: #fff; 
+            padding: 20px;
+        }
+        h1 { color: #00d4ff; margin-bottom: 4px; }
+        .subtitle { color: #666; margin-bottom: 20px; font-size: 0.9rem; }
+        
+        .level {
+            background: #141423;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .level-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .level h2 { color: #00ff88; font-size: 1rem; }
+        .level-duration { color: #666; font-size: 0.8rem; }
+        
+        .module {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+            padding: 8px;
+            background: #1a1a2e;
+            border-radius: 6px;
+        }
+        .module-name {
+            width: 160px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: #00d4ff;
+        }
+        .module-bar {
+            flex: 1;
+            height: 18px;
+            background: #252538;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .bar {
+            height: 100%;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            color: #000;
+            font-weight: 600;
+        }
+        
+        .finance { background: linear-gradient(90deg, #00d4ff, #0099cc); }
+        .sales { background: linear-gradient(90deg, #00ff88, #00cc6a); }
+        .marketing { background: linear-gradient(90deg, #ffa502, #cc8400); }
+        .operations { background: linear-gradient(90deg, #a855f7, #8430cc); }
+        .people { background: linear-gradient(90deg, #ff4757, #cc3945); }
+        
+        .vertical {
+            border-left: 3px solid #ffa502;
+            background: #1a1a2e;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 0 8px 8px 0;
+        }
+        .vertical h3 { color: #ffa502; font-size: 0.9rem; margin-bottom: 6px; }
+        .vertical-modules {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .vertical-modules span {
+            background: #252538;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: #aaa;
+        }
+        
+        .legend {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            font-size: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .legend-color { width: 12px; height: 12px; border-radius: 2px; }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .stat {
+            background: #141423;
+            padding: 14px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-num { font-size: 1.5rem; font-weight: bold; color: #00d4ff; }
+        .stat-label { color: #666; font-size: 0.7rem; }
+        
+        @media (max-width: 768px) {
+            .module { flex-direction: column; align-items: flex-start; gap: 6px; }
+            .module-name { width: 100%; }
+            .module-bar { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <h1>📊 Business Pipeline - Gantt Chart</h1>
+    <p class="subtitle">Based on Mastermind Framework • 5 Systems • 6 Industries</p>
+    
+    <div class="stats">
+        <div class="stat"><div class="stat-num">5</div><div class="stat-label">Core Systems</div></div>
+        <div class="stat"><div class="stat-num">6</div><div class="stat-label">Industries</div></div>
+        <div class="stat"><div class="stat-num">30+</div><div class="stat-label">Process Modules</div></div>
+        <div class="stat"><div class="stat-num">4</div><div class="stat-label">Weeks</div></div>
+    </div>
+
+    <div class="legend">
+        <div class="legend-item"><div class="legend-color" style="background:#00d4ff"></div>Finance</div>
+        <div class="legend-item"><div class="legend-color" style="background:#00ff88"></div>Sales</div>
+        <div class="legend-item"><div class="legend-color" style="background:#ffa502"></div>Marketing</div>
+        <div class="legend-item"><div class="legend-color" style="background:#a855f7"></div>Operations</div>
+        <div class="legend-item"><div class="legend-color" style="background:#ff4757"></div>People</div>
+    </div>
+
+    <div class="level">
+        <div class="level-header">
+            <h2>💰 Level 1: Finance System (Week 1)</h2>
+            <span class="level-duration">Days 1-5</span>
+        </div>
+        <div class="module">
+            <div class="module-name">Cash Flow</div>
+            <div class="module-bar"><div class="bar finance" style="width:40%;margin-left:0">2 days</div></div>
+        </div>
+        <div class="module">
+            <div class="module-name">Budget</div>
+            <div class="module-bar"><div class="bar finance" style="width:40%;margin-left:20%">2 days</div></div>
+        </div>
+        <div class="module">
+            <div class="module-name">Reporting</div>
+            <div class="module-bar"><div class="bar finance" style="width:30%;margin-left:40%">1 day</div></div>
+        </div>
+    </div>
+
+    <div class="level">
+        <div class="level-header">
+            <h2>💼 Level 2: Sales System (Week 2)</h2>
+            <span class="level-duration">Days 6-10</span>
+        </div>
+        <div class="module">
+            <div class="module-name">Lead Gen</div>
+            <div class="module-bar"><div class="bar sales" style="width:40%;margin-left:50%">2 days</div></div>
+        </div>
+        <div class="module">
+            <div class="module-name">Outreach</div>
+            <div class="module-bar"><div class="bar sales" style="width:40%;margin-left:60%">2 days</div></div>
+        </div>
+        <div class="module">
+            <div class="module-name">CRM + Closing</div>
+            <div class="module-bar"><div class="bar sales" style="width:30%;margin-left:70%">1 day</div></div>
+        </div>
+    </div>
+
+    <div class="level">
+        <div class="level-header">
+            <h2>📢 Level 3: Marketing System (Week 3)</h2>
+            <span class="level-duration">Days 11-15</span>
+        </div>
+        <div class="module">
+            <div class="module-name">Content</div>
+            <div class="module-bar"><div class="bar marketing" style="width:40%;margin-left:80%">2 days</div></div>
+        </div>
+        <div class="module">
+            <div class="module-name">Social + SEO</div>
+            <div class="module-bar"><div class="bar marketing" style="width:40%;margin-left:90%">2 days</div></div>
+        </div>
+    </div>
+
+    <div class="level">
+        <div class="level-header">
+            <h2>⚙️ Level 4: Operations System (Week 4)</h2>
+            <span class="level-duration">Days 16-20</span>
+        </div>
+        <div class="module">
+            <div class="module-name">Projects</div>
+            <div class="module-bar"><div class="bar operations" style="width:35%;margin-left:100%">-</div></div>
+        </div>
+        <div class="module">
+            <div class="module-name">Tasks + Docs</div>
+            <div class="module-bar"><div class="bar operations" style="width:35%;margin-left:100%">-</div></div>
+        </div>
+    </div>
+
+    <div class="level">
+        <div class="level-header">
+            <h2>🏢 Industry Verticals (Ongoing)</h2>
+        </div>
+        
+        <div class="vertical">
+            <h3>🏠 Real Estate</h3>
+            <div class="vertical-modules">
+                <span>Lead Capture</span><span>Listings</span><span>Showings</span><span>Contracts</span><span>CRM</span>
+            </div>
+        </div>
+        
+        <div class="vertical">
+            <h3>⚖️ Legal</h3>
+            <div class="vertical-modules">
+                <span>Research</span><span>Document Review</span><span>Filing</span><span>Billing</span>
+            </div>
+        </div>
+        
+        <div class="vertical">
+            <h3>💻 SaaS</h3>
+            <div class="vertical-modules">
+                <span>Onboarding</span><span>Support</span><span>Feature Requests</span><span>Churn</span>
+            </div>
+        </div>
+        
+        <div class="vertical">
+            <h3>🏗️ Construction</h3>
+            <div class="vertical-modules">
+                <span>Bidding</span><span>Scheduling</span><span>Permits</span><span>Vendors</span>
+            </div>
+        </div>
+        
+        <div class="vertical">
+            <h3>💅 Salon</h3>
+            <div class="vertical-modules">
+                <span>Booking</span><span>Reminders</span><span>Inventory</span><span>Marketing</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

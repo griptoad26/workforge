@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cluster Hub - Mobile</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: rgba(20, 20, 35, 0.9);
+            --bg-card-hover: rgba(30, 30, 50, 0.95);
+            --accent-cyan: #00d4ff;
+            --accent-green: #00ff88;
+            --accent-orange: #ff9500;
+            --accent-purple: #a855f7;
+            --text-primary: #ffffff;
+            --text-secondary: #888;
+            --border-subtle: rgba(255,255,255,0.08);
+            --nav-height: 64px;
+        }
+        
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            touch-action: pan-y;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(180deg, #0a0a0f 0%, #12121f 50%, #0a0a12 100%);
+            color: var(--text-primary);
+            font-size: 14px;
+            padding-bottom: var(--nav-height);
+        }
+        
+        /* Pull to refresh */
+        .refresh-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-cyan);
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 100;
+            background: linear-gradient(180deg, rgba(0,212,255,0.1) 0%, transparent 100%);
+        }
+        
+        .refresh-indicator.visible {
+            opacity: 1;
+        }
+        
+        .refresh-indicator span {
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        /* Main scroll container */
+        .scroll-container {
+            height: calc(100vh - var(--nav-height));
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+        }
+        
+        /* Header stats */
+        .header {
+            padding: 16px;
+            padding-top: 20px;
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-green);
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+        
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 14px 10px;
+            text-align: center;
+            transition: transform 0.2s, background 0.2s;
+        }
+        
+        .stat-card:active {
+            transform: scale(0.95);
+        }
+        
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        .stat-card:nth-child(1) .stat-value { color: var(--accent-green); }
+        .stat-card:nth-child(2) .stat-value { color: var(--accent-cyan); }
+        .stat-card:nth-child(3) .stat-value { color: var(--accent-orange); }
+        
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Quick links section */
+        .section {
+            padding: 16px;
+        }
+        
+        .section-title {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        
+        /* Card grid - one column mobile, two tablet+ */
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        
+        @media (min-width: 640px) {
+            .card-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 16px;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            opacity: 0.7;
+        }
+        
+        .card:nth-child(1)::before { background: var(--accent-cyan); }
+        .card:nth-child(2)::before { background: var(--accent-green); }
+        .card:nth-child(3)::before { background: var(--accent-purple); }
+        .card:nth-child(4)::before { background: var(--accent-orange); }
+        .card:nth-child(5)::before { background: #ef4444; }
+        .card:nth-child(6)::before { background: #3b82f6; }
+        
+        .card:active {
+            background: var(--bg-card-hover);
+            transform: scale(0.98);
+        }
+        
+        .card-icon {
+            font-size: 1.5rem;
+            margin-bottom: 6px;
+        }
+        
+        .card-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+        
+        .card-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        
+        /* Bottom navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-height);
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 50;
+            padding: 0 8px;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 16px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 10px;
+            min-width: 60px;
+            min-height: 48px;
+            transition: color 0.2s;
+        }
+        
+        .nav-item:active {
+            color: var(--accent-cyan);
+        }
+        
+        .nav-item.active {
+            color: var(--accent-green);
+        }
+        
+        .nav-icon {
+            font-size: 1.4rem;
+            margin-bottom: 2px;
+        }
+        
+        /* Safe area inset for notched phones */
+        @supports (padding-bottom: env(safe-area-inset-bottom)) {
+            body {
+                padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom));
+            }
+            .bottom-nav {
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="refresh-indicator" id="refreshIndicator">
+        <span>⟳ Pull to refresh</span>
+    </div>
+    
+    <div class="scroll-container" id="scrollContainer">
+        <div class="header">
+            <h1>⬡ Cluster Hub</h1>
+            <div class="stats-row">
+                <div class="stat-card">
+                    <span class="stat-value">12</span>
+                    <span class="stat-label">Nodes</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">47</span>
+                    <span class="stat-label">Tasks</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">2.1k</span>
+                    <span class="stat-label">Files</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">Quick Access</div>
+            <div class="card-grid">
+                <a href="mission-control.html" class="card">
+                    <div class="card-icon">🎛️</div>
+                    <div class="card-title">Mission Control</div>
+                    <div class="card-desc">System overview</div>
+                </a>
+                <a href="agency.html" class="card">
+                    <div class="card-icon">🏢</div>
+                    <div class="card-title">Agency</div>
+                    <div class="card-desc">Agent management</div>
+                </a>
+                <a href="implementations-board.html" class="card">
+                    <div class="card-icon">📋</div>
+                    <div class="card-title">Implementations</div>
+                    <div class="card-desc">Board & tracking</div>
+                </a>
+                <a href="live-dashboard.html" class="card">
+                    <div class="card-icon">📊</div>
+                    <div class="card-title">Live Dashboard</div>
+                    <div class="card-desc">Real-time metrics</div>
+                </a>
+                <a href="deployment-guide.html" class="card">
+                    <div class="card-icon">🚀</div>
+                    <div class="card-title">Deployment</div>
+                    <div class="card-desc">Setup guide</div>
+                </a>
+                <a href="master-dashboard.html" class="card">
+                    <div class="card-icon">🎯</div>
+                    <div class="card-title">Master Dashboard</div>
+                    <div class="card-desc">Complete overview</div>
+                </a>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">System</div>
+            <div class="card-grid">
+                <a href="architecture.html" class="card">
+                    <div class="card-icon">🏗️</div>
+                    <div class="card-title">Architecture</div>
+                    <div class="card-desc">System design</div>
+                </a>
+                <a href="command-center.html" class="card">
+                    <div class="card-icon">💻</div>
+                    <div class="card-title">Command Center</div>
+                    <div class="card-desc">CLI interface</div>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <nav class="bottom-nav">
+        <a href="mobile-dashboard.html" class="nav-item active">
+            <span class="nav-icon">🏠</span>
+            <span>Home</span>
+        </a>
+        <a href="mission-control.html" class="nav-item">
+            <span class="nav-icon">🎛️</span>
+            <span>Mission</span>
+        </a>
+        <a href="live-dashboard.html" class="nav-item">
+            <span class="nav-icon">📊</span>
+            <span>Live</span>
+        </a>
+        <a href="master-dashboard.html" class="nav-item">
+            <span class="nav-icon">🎯</span>
+            <span>Master</span>
+        </a>
+    </nav>
+    
+    <script>
+        // Pull to refresh functionality
+        const scrollContainer = document.getElementById('scrollContainer');
+        const refreshIndicator = document.getElementById('refreshIndicator');
+        let startY = 0;
+        let currentY = 0;
+        let isPulling = false;
+        
+        scrollContainer.addEventListener('touchstart', (e) => {
+            startY = e.touches[0].clientY;
+            isPulling = false;
+        }, { passive: true });
+        
+        scrollContainer.addEventListener('touchmove', (e) => {
+            if (scrollContainer.scrollTop > 0) return;
+            
+            currentY = e.touches[0].clientY;
+            const diff = currentY - startY;
+            
+            if (diff > 50 && !isPulling) {
+                isPulling = true;
+                refreshIndicator.classList.add('visible');
+            }
+        }, { passive: true });
+        
+        scrollContainer.addEventListener('touchend', () => {
+            if (isPulling && currentY - startY > 100) {
+                // Simulate refresh
+                refreshIndicator.querySelector('span').textContent = '⟳ Refreshing...';
+                setTimeout(() => {
+                    refreshIndicator.classList.remove('visible');
+                    refreshIndicator.querySelector('span').textContent = '⟳ Pull to refresh';
+                    isPulling = false;
+                }, 1000);
+            } else {
+                refreshIndicator.classList.remove('visible');
+                isPulling = false;
+            }
+        }, { passive: true });
+        
+        // Add ripple effect on card tap
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                card.style.setProperty('--ripple-x', x + 'px');
+                card.style.setProperty('--ripple-y', y + 'px');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agency Buildout - Gantt Chart</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+            background: #0a0a0f; 
+            color: #fff; 
+            padding: 20px;
+        }
+        h1 { color: #00d4ff; margin-bottom: 8px; }
+        .subtitle { color: #888; margin-bottom: 20px; font-size: 0.9rem; }
+        
+        .phase {
+            margin-bottom: 24px;
+            background: #141423;
+            border-radius: 12px;
+            padding: 16px;
+        }
+        .phase-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .phase h2 { 
+            color: #00ff88; 
+            font-size: 1rem;
+        }
+        .phase-duration {
+            color: #666;
+            font-size: 0.8rem;
+        }
+        
+        .role {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+            padding: 8px;
+            background: #1a1a2e;
+            border-radius: 6px;
+        }
+        .role-name {
+            width: 160px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: #00d4ff;
+        }
+        .role-bar {
+            flex: 1;
+            height: 16px;
+            background: #252538;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        .bar {
+            height: 100%;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            color: #000;
+            font-weight: 600;
+        }
+        
+        .phase1 { background: linear-gradient(90deg, #00d4ff, #0099cc); }
+        .phase2 { background: linear-gradient(90deg, #00ff88, #00cc6a); }
+        .phase3 { background: linear-gradient(90deg, #ffa502, #cc8400); }
+        .phase4 { background: linear-gradient(90deg, #a855f7, #8430cc); }
+        .phase5 { background: linear-gradient(90deg, #ff4757, #cc3945); }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .stat {
+            background: #141423;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-num { font-size: 1.8rem; font-weight: bold; color: #00d4ff; }
+        .stat-label { color: #666; font-size: 0.75rem; }
+        
+        .legend {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            font-size: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .legend-color { 
+            width: 12px; 
+            height: 12px; 
+            border-radius: 2px; 
+        }
+        
+        .industry {
+            background: #1a1a2e;
+            border-left: 3px solid #ffa502;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            border-radius: 0 6px 6px 0;
+        }
+        .industry h3 { color: #ffa502; font-size: 0.9rem; margin-bottom: 6px; }
+        .industry-agents { 
+            display: flex; 
+            gap: 8px; 
+            flex-wrap: wrap; 
+            font-size: 0.75rem; 
+            color: #888;
+        }
+        .industry-agents span { background: #252538; padding: 3px 8px; border-radius: 4px; }
+        
+        @media (max-width: 768px) {
+            .role { flex-direction: column; align-items: flex-start; gap: 6px; }
+            .role-name { width: 100%; }
+            .role-bar { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 Agency Buildout - Gantt Chart</h1>
+    <p class="subtitle">159 agents • 130+ use cases • 4 weeks to operational</p>
+    
+    <div class="stats">
+        <div class="stat"><div class="stat-num">159</div><div class="stat-label">Total Agents</div></div>
+        <div class="stat"><div class="stat-num">130+</div><div class="stat-label">Use Cases</div></div>
+        <div class="stat"><div class="stat-num">6</div><div class="stat-label">Industries</div></div>
+        <div class="stat"><div class="stat-num">4</div><div class="stat-label">Weeks</div></div>
+    </div>
+
+    <div class="legend">
+        <div class="legend-item"><div class="legend-color" style="background:#00d4ff"></div> Foundation</div>
+        <div class="legend-item"><div class="legend-color" style="background:#00ff88"></div> Marketing</div>
+        <div class="legend-item"><div class="legend-color" style="background:#ffa502"></div> Sales</div>
+        <div class="legend-item"><div class="legend-color" style="background:#a855f7"></div> Operations</div>
+        <div class="legend-item"><div class="legend-color" style="background:#ff4757"></div> Industry</div>
+    </div>
+
+    <div class="phase">
+        <div class="phase-header">
+            <h2>📋 Phase 1: Foundation (Days 1-7)</h2>
+            <span class="phase-duration">Week 1</span>
+        </div>
+        <div class="role">
+            <div class="role-name">Orchestrator</div>
+            <div class="role-bar"><div class="bar phase1" style="width:100%">4 weeks</div></div>
+        </div>
+        <div class="role">
+            <div class="role-name">Project Manager</div>
+            <div class="role-bar"><div class="bar phase1" style="width:70%;margin-left:0">1 week</div></div>
+        </div>
+        <div class="role">
+            <div class="role-name">Knowledge Base</div>
+            <div class="role-bar"><div class="bar phase1" style="width:50%;margin-left:0">3 days</div></div>
+        </div>
+    </div>
+
+    <div class="phase">
+        <div class="phase-header">
+            <h2>📢 Phase 2: Marketing (Days 3-14)</h2>
+            <span class="phase-duration">Week 1-2</span>
+        </div>
+        <div class="role">
+            <div class="role-name">Content Creator</div>
+            <div class="role-bar"><div class="bar phase2" style="width:80%;margin-left:20%">1 week</div></div>
+        </div>
+        <div class="role">
+            <div class="role-name">Social Media Manager</div>
+            <div class="role-bar"><div class="bar phase2" style="width:70%;margin-left:30%">1 week</div></div>
+        </div>
+        <div class="role">
+            <div class="role-name">SEO Specialist</div>
+            <div class="role-bar"><div class="bar phase2" style="width:60%;margin-left:30%">5 days</div></div>
+        </div>
+        <div class="role">
+            <div class="role-name">Email Marketing</div>
+            <div class="role-bar"><div class="bar phase2" style="width:50%;margin-left:40%">4 days</div></div>
+        </div>
+    </div>
+
+    <div class="phase">
+        <div class="phase-header">
+            <h2>💰 Phase 3: Sales (Days 7-21)</h2>
+            <span class="phase-duration">Week 2-3</span>
+        </div>
+        <div class="role">
+            <div class="role-name">Lead Generator</div>
+            <div class="role-bar"><div class="bar phase3" style="width:60%;margin-left:50%">1 week</div></div>
+        </div>
+        <div class="role">
+            <div class="role-name">CRM Agent</div>
+            <div class="role-bar"><div class="bar phase3" style="width:50%;margin-left:50%">5 days</div></div>
+        </div>
+        <div class="role">
+            <div class="role-name">Outreach Agent</div>
+            <div class="role-bar"><div class="bar phase3" style="width:50%;margin-left:60%">5 days</div></div>
+        </div>
+        <div class="role">
+            <div class="role-name">Pipeline Analyst</div>
+            <div class="role-bar"><div class="bar phase3" style="width:40%;margin-left:60%">3 days</div></div>
+        </div>
+    </div>
+
+    <div class="phase">
+        <div class="phase-header">
+            <h2>⚙️ Phase 4: Operations (Days 14-28)</h2>
+            <span class="phase-duration">Week 3-4</span>
+        </div>
+        <div class="role">
+            <div class="role-name">Invoice Tracker</div>
+            <div class="role-bar"><div class="bar phase4" style="width:40%;margin-left:70%">4 days</div></div>
+        </div>
+        <div class="role">
+            <div class="role-name">Meeting Scheduler</div>
+            <div class="role-bar"><div class="bar phase4" style="width:30%;margin-left:70%">3 days</div></div>
+        </div>
+        <div class="role">
+            <div class="role-name">Team Collaboration</div>
+            <div class="role-bar"><div class="bar phase4" style="width:40%;margin-left:80%">4 days</div></div>
+        </div>
+    </div>
+
+    <div class="phase">
+        <div class="phase-header">
+            <h2>🏢 Phase 5: Industry Verticals (Days 14-30)</h2>
+            <span class="phase-duration">Week 3-4</span>
+        </div>
+        
+        <div class="industry">
+            <h3>🏠 Real Estate</h3>
+            <div class="industry-agents">
+                <span>Property Lister</span>
+                <span>CRM Agent</span>
+                <span>Tenant Screening</span>
+                <span>Listing Optimizer</span>
+            </div>
+        </div>
+        
+        <div class="industry">
+            <h3>⚖️ Legal</h3>
+            <div class="industry-agents">
+                <span>Paralegal Research</span>
+                <span>Document Review</span>
+                <span>Case Manager</span>
+                <span>Filing Automation</span>
+            </div>
+        </div>
+        
+        <div class="industry">
+            <h3>💻 SaaS</h3>
+            <div class="industry-agents">
+                <span>Customer Support</span>
+                <span>Bug Tracker</span>
+                <span>CI/CD Monitor</span>
+                <span>Feature Request</span>
+            </div>
+        </div>
+        
+        <div class="industry">
+            <h3>🏗️ Construction</h3>
+            <div class="industry-agents">
+                <span>Project Tracker</span>
+                <span>Vendor Manager</span>
+                <span>Permit Processor</span>
+                <span>Budget Planner</span>
+            </div>
+        </div>
+        
+        <div class="industry">
+            <h3>💅 Salon</h3>
+            <div class="industry-agents">
+                <span>Booking Agent</span>
+                <span>Client CRM</span>
+                <span>Inventory Manager</span>
+                <span>Reminder Bot</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="phase">
+        <div class="phase-header">
+            <h2>🎯 Immediate Next Steps</h2>
+        </div>
+        <div style="color:#888;font-size:0.9rem;line-height:1.6;">
+            <p>1. <strong>Today:</strong> Install OCMI on T1-nuc</p>
+            <p>2. <strong>Day 3:</strong> Deploy Content + Social Media agents</p>
+            <p>3. <strong>Day 7:</strong> Launch Sales pipeline</p>
+            <p>4. <strong>Day 14:</strong> First industry vertical live</p>
+        </div>
+    </div>
+</body>
+</html>

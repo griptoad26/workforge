@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agency Pipeline - Gantt Chart</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif; 
+            background: #0a0a0f; 
+            color: #fff; 
+            padding: 20px;
+        }
+        h1 { color: #00d4ff; margin-bottom: 20px; }
+        
+        .phase {
+            margin-bottom: 30px;
+            background: #141423;
+            border-radius: 12px;
+            padding: 16px;
+        }
+        .phase h2 { 
+            color: #00ff88; 
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+        
+        .gantt-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 8px;
+            background: #1a1a2e;
+            border-radius: 6px;
+        }
+        .agent-name {
+            width: 200px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .agent-bar {
+            flex: 1;
+            height: 20px;
+            background: #333;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        .bar {
+            height: 100%;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: #000;
+            font-weight: 600;
+        }
+        .bar.phase1 { background: #00d4ff; width: 25%; }
+        .bar.phase2 { background: #00ff88; width: 50%; margin-left: 25%; }
+        .bar.phase3 { background: #ffa502; width: 75%; margin-left: 25%; }
+        .bar.phase4 { background: #a855f7; width: 100%; }
+        
+        .legend {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            font-size: 0.8rem;
+        }
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .legend-color { width: 12px; height: 12px; border-radius: 2px; }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+        .stat {
+            background: #141423;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-num { font-size: 2rem; font-weight: bold; color: #00d4ff; }
+        .stat-label { color: #888; font-size: 0.8rem; }
+        
+        .dedupe {
+            background: #1a1a2e;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: #ffa502;
+        }
+    </style>
+</head>
+<body>
+    <h1>📊 Agency Pipeline - Gantt Chart</h1>
+    
+    <div class="legend">
+        <div class="legend-item"><div class="legend-color" style="background:#00d4ff"></div> Phase 1: Foundation</div>
+        <div class="legend-item"><div class="legend-color" style="background:#00ff88"></div> Phase 2: Core Agents</div>
+        <div class="legend-item"><div class="legend-color" style="background:#ffa502"></div> Phase 3: Marketing</div>
+        <div class="legend-item"><div class="legend-color" style="background:#a855f7"></div> Phase 4: Sales</div>
+    </div>
+    
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-num">23</div>
+            <div class="stat-label">Unique Roles</div>
+        </div>
+        <div class="stat">
+            <div class="stat-num">8</div>
+            <div class="stat-label">Phases</div>
+        </div>
+        <div class="stat">
+            <div class="stat-num">-60%</div>
+            <div class="stat-label">Duplicates Removed</div>
+        </div>
+    </div>
+
+    <div class="phase">
+        <h2>🎯 Phase 1: Foundation (Week 1-2)</h2>
+        <div class="gantt-row">
+            <div class="agent-name">Orchestrator</div>
+            <div class="agent-bar"><div class="bar phase4">4 weeks</div></div>
+        </div>
+        <div class="gantt-row">
+            <div class="agent-name">Project Manager</div>
+            <div class="agent-bar"><div class="bar phase2">2 weeks</div></div>
+        </div>
+    </div>
+
+    <div class="phase">
+        <h2>💻 Phase 2: Engineering (Week 2-4)</h2>
+        <div class="gantt-row">
+            <div class="agent-name">Backend Architect</div>
+            <div class="agent-bar"><div class="bar phase2">2 weeks</div></div>
+        </div>
+        <div class="gantt-row">
+            <div class="agent-name">Frontend Developer</div>
+            <div class="agent-bar"><div class="bar phase3">2 weeks</div></div>
+        </div>
+        <div class="gantt-row">
+            <div class="agent-name">QA Engineer</div>
+            <div class="agent-bar"><div class="bar phase3">1 week</div></div>
+        </div>
+        <div class="gantt-row">
+            <div class="agent-name">DevOps Automator</div>
+            <div class="agent-bar"><div class="bar phase3">1 week</div></div>
+        </div>
+    </div>
+
+    <div class="phase">
+        <h2>📢 Phase 3: Marketing (Week 3-6)</h2>
+        <div class="gantt-row">
+            <div class="agent-name">Content Creator</div>
+            <div class="agent-bar"><div class="bar phase3">3 weeks</div></div>
+        </div>
+        <div class="gantt-row">
+            <div class="agent-name">SEO Specialist</div>
+            <div class="agent-bar"><div class="bar phase3">2 weeks</div></div>
+        </div>
+        <div class="gantt-row">
+            <div class="agent-name">Social Media Strategist</div>
+            <div class="agent-bar"><div class="bar phase3">2 weeks</div></div>
+        </div>
+        <div class="gantt-row">
+            <div class="agent-name">Growth Hacker</div>
+            <div class="agent-bar"><div class="bar phase4">2 weeks</div></div>
+        </div>
+    </div>
+
+    <div class="phase">
+        <h2>💰 Phase 4: Sales (Week 5-8)</h2>
+        <div class="gantt-row">
+            <div class="agent-name">Lead Analyst</div>
+            <div class="agent-bar"><div class="bar phase4">2 weeks</div></div>
+        </div>
+        <div class="gantt-row">
+            <div class="agent-name">Outbound Strategist</div>
+            <div class="agent-bar"><div class="bar phase4">2 weeks</div></div>
+        </div>
+        <div class="gantt-row">
+            <div class="agent-name">Pipeline Analyst</div>
+            <div class="agent-bar"><div class="bar phase4">2 weeks</div></div>
+        </div>
+    </div>
+
+    <div class="phase">
+        <h2>🎨 Phase 5: Design (Week 2-4)</h2>
+        <div class="gantt-row">
+            <div class="agent-name">UI Designer</div>
+            <div class="agent-bar"><div class="bar phase2">2 weeks</div></div>
+        </div>
+        <div class="gantt-row">
+            <div class="agent-name">UX Architect</div>
+            <div class="agent-bar"><div class="bar phase2">1 week</div></div>
+        </div>
+        <div class="gantt-row">
+            <div class="agent-name">Brand Guardian</div>
+            <div class="agent-bar"><div class="bar phase3">1 week</div></div>
+        </div>
+    </div>
+
+    <div class="dedupe">
+        ⚠️ <strong>Consolidated from 111 → 23 unique agents</strong><br>
+        Removed duplicates like: 4 Twitter agents → 1, 5 SEO agents → 1, 3 LinkedIn → 1
+    </div>
+</body>
+</html>

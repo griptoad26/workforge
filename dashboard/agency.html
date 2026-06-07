@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏢</text></svg>">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="icon"  xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏢</text></svg>"> -->
+    <title>Agency of Agents Architecture</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            color: #eee;
+            min-height: 100vh;
+            padding: 30px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        h1 {
+            font-size: 2.2rem;
+            text-align: center;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00ff88, #00d4ff, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #00ff88;
+            margin: 30px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #00d4ff;
+        }
+        
+        .diagram {
+            background: rgba(0,0,0,0.4);
+            border-radius: 16px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        
+        /* Agency HQ */
+        .hq {
+            background: linear-gradient(145deg, #1a3a5a, #0a2a4a);
+            border: 3px solid #00d4ff;
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .hq-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00d4ff;
+            margin-bottom: 15px;
+        }
+        
+        .hq-services {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .hq-service {
+            background: rgba(0,212,255,0.2);
+            border: 1px solid #00d4ff;
+            border-radius: 10px;
+            padding: 12px 20px;
+        }
+        
+        .hq-service strong { color: #00d4ff; display: block; }
+        .hq-service small { color: #888; font-size: 0.8rem; }
+        
+        /* Task Flow Arrows */
+        .flow-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 30px 0;
+        }
+        
+        .flow-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+        
+        .flow-arrow {
+            font-size: 1.5rem;
+            color: #00ff88;
+        }
+        
+        .flow-arrow-up { color: #ff6b6b; }
+        .flow-arrow-down { color: #00ff88; }
+        
+        /* NUC Agents */
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .agent {
+            background: linear-gradient(145deg, #1a3a2a, #0a2a1a);
+            border: 2px solid #22c55e;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .agent-icon { font-size: 2rem; margin-bottom: 8px; }
+        .agent-name { font-weight: bold; color: #22c55e; }
+        .agent-ip { font-size: 0.75rem; color: #666; margin: 5px 0; }
+        
+        .agent-tasks {
+            background: rgba(34,197,94,0.1);
+            border-radius: 6px;
+            padding: 8px;
+            margin-top: 10px;
+            font-size: 0.8rem;
+        }
+        
+        .task-count {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #22c55e;
+        }
+        
+        /* Delegation */
+        .delegate-box {
+            background: rgba(255,107,107,0.1);
+            border: 2px solid #ff6b6b;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .delegate-title {
+            color: #ff6b6b;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .delegate-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        /* Offload */
+        .offload-box {
+            background: rgba(124,58,237,0.1);
+            border: 2px solid #7c3aed;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .offload-title {
+            color: #7c3aed;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        /* Use Cases */
+        .usecase {
+            background: rgba(255,255,255,0.05);
+            border-left: 4px solid #00d4ff;
+            padding: 12px 15px;
+            margin: 10px 0;
+        }
+        
+        .usecase strong { color: #00d4ff; }
+        
+        /* Legend */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+        }
+        
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        th { background: rgba(0,212,255,0.1); color: #00d4ff; }
+        
+        .check { color: #22c55e; }
+        .arrow-icon { color: #ff6b6b; }
+        
+        code {
+            background: #222;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .highlight {
+            color: #00ff88;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏢 Agency of Agents Architecture</h1>
+        <p class="subtitle">Task Delegation & Offloading with EVO-X2</p>
+        
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-dot" style="background:#00d4ff"></div>
+                <span>Hub (EVO-X2)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background:#22c55e"></div>
+                <span>Agent (NUC)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background:#ff6b6b"></div>
+                <span>Delegation</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background:#7c3aed"></div>
+                <span>Offload</span>
+            </div>
+        </div>
+        
+        <!-- Main Architecture -->
+        <div class="diagram">
+            <h2 style="text-align:center; margin-top:0;">🏢 Agency HQ (EVO-X2)</h2>
+            
+            <div class="hq">
+                <div class="hq-title">🎯 Task Coordination Center</div>
+                <div class="hq-services">
+                    <div class="hq-service">
+                        <strong>📋 Task Registry</strong>
+                        <small>All tasks from all agents</small>
+                    </div>
+                    <div class="hq-service">
+                        <strong>👤 Delegation</strong>
+                        <small>Assign to right agent</small>
+                    </div>
+                    <div class="hq-service">
+                        <strong>⚡ Offload Handler</strong>
+                        <small>Heavy compute (112GB VRAM)</small>
+                    </div>
+                    <div class="hq-service">
+                        <strong>🔍 History Query</strong>
+                        <small>Discord + task memory</small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Delegation Flow -->
+            <div class="flow-container">
+                <div class="flow-row">
+                    <span class="arrow-icon">⬆️</span>
+                    <span>Delegates task TO agent</span>
+                </div>
+                <div class="flow-row">
+                    <span>⬇️ Agent reports back</span>
+                </div>
+            </div>
+            
+            <!-- Agent Grid -->
+            <div class="agent-grid">
+                <div class="agent">
+                    <div class="agent-icon">💻</div>
+                    <div class="agent-name">win-20o3</div>
+                    <div class="agent-ip">100.x.x.x</div>
+                    <div class="agent-tasks">
+                        <div class="task-count">3</div>
+                        <small>own tasks</small>
+                    </div>
+                </div>
+                <div class="agent">
+                    <div class="agent-icon">💻</div>
+                    <div class="agent-name">drone</div>
+                    <div class="agent-ip">100.x.x.x</div>
+                    <div class="agent-tasks">
+                        <div class="task-count">5</div>
+                        <small>own tasks</small>
+                    </div>
+                </div>
+                <div class="agent">
+                    <div class="agent-icon">💻</div>
+                    <div class="agent-name">pup2-1</div>
+                    <div class="agent-ip">100.x.x.x</div>
+                    <div class="agent-tasks">
+                        <div class="task-count">2</div>
+                        <small>own tasks</small>
+                    </div>
+                </div>
+                <div class="agent">
+                    <div class="agent-icon">💻</div>
+                    <div class="agent-name">iota</div>
+                    <div class="agent-ip">100.x.x.x</div>
+                    <div class="agent-tasks">
+                        <div class="task-count">4</div>
+                        <small>own tasks</small>
+                    </div>
+                </div>
+                <div class="agent">
+                    <div class="agent-icon">💻</div>
+                    <div class="agent-name">molty-botz</div>
+                    <div class="agent-ip">100.x.x.x</div>
+                    <div class="agent-tasks">
+                        <div class="task-count">1</div>
+                        <small>own tasks</small>
+                    </div>
+                </div>
+                <div class="agent">
+                    <div class="agent-icon">💻</div>
+                    <div class="agent-name">yolo</div>
+                    <div class="agent-ip">100.x.x.x</div>
+                    <div class="agent-tasks">
+                        <div class="task-count">0</div>
+                        <small>own tasks</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Delegation -->
+        <div class="delegate-box">
+            <div class="delegate-title">🔄 How Delegation Works</div>
+            
+            <table>
+                <tr>
+                    <th>Step</th>
+                    <th>Action</th>
+                    <th>Direction</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Task arrives at Hub</td>
+                    <td>NUC → Hub</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Hub evaluates task requirements</td>
+                    <td>Internal</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Hub delegates to best agent</td>
+                    <td><span class="arrow-icon">⬆️</span> Hub → NUC</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Agent works on task</td>
+                    <td>Processing</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Agent reports completion</td>
+                    <td><span class="arrow-icon">⬇️</span> NUC → Hub</td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- Offloading -->
+        <div class="offload-box">
+            <div class="offload-title">⚡ Offloading Heavy Work to EVO-X2</div>
+            
+            <p style="margin-bottom:15px;">
+                Your EVO-X2 has <strong>112GB VRAM</strong>. Other NUCs can offload heavy tasks:
+            </p>
+            
+            <table>
+                <tr>
+                    <th>Task Type</th>
+                    <th>NUC (limited)</th>
+                    <th>EVO-X2 (powerful)</th>
+                </tr>
+                <tr>
+                    <td>Small code fix</td>
+                    <td class="check">✅ Fast</td>
+                    <td>Overkill</td>
+                </tr>
+                <tr>
+                    <td>Large codebase analysis</td>
+                    <td>❌ Can't</td>
+                    <td class="check">✅ Mixtral 8x7B</td>
+                </tr>
+                <tr>
+                    <td>70B model query</td>
+                    <td>❌ No VRAM</td>
+                    <td class="check">✅ Qwen 72B</td>
+                </tr>
+                <tr>
+                    <td>Full repo embedding</td>
+                    <td>❌ Too slow</td>
+                    <td class="check">✅ 128GB RAM</td>
+                </tr>
+                <tr>
+                    <td>Complex reasoning</td>
+                    <td>Slow</td>
+                    <td class="check">✅ Fast</td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- Use Cases -->
+        <h2>🎯 Use Cases for Delegation</h2>
+        
+        <div class="usecase">
+            <strong>1. Specialized Skills</strong><br>
+            "This task needs Node.js expertise → delegate to pup2-1"
+        </div>
+        
+        <div class="usecase">
+            <strong>2. Load Balancing</strong><br>
+            "pup2-1 is busy → delegate to iota"
+        </div>
+        
+        <div class="usecase">
+            <strong>3. Heavy Compute</strong><br>
+            "This needs 44GB VRAM → offload to EVO-X2"
+        </div>
+        
+        <div class="usecase">
+            <strong>4. Context Needs</strong><br>
+            "This needs conversation history → query Hub"
+        </div>
+        
+        <div class="usecase">
+            <strong>5. Timezone</strong><br>
+            "It's night in US → delegate to NUC in different timezone"
+        </div>
+        
+        <!-- Summary -->
+        <h2>📋 Summary</h2>
+        
+        <div class="diagram">
+            <table>
+                <tr>
+                    <th>Component</th>
+                    <th>Responsibility</th>
+                </tr>
+                <tr>
+                    <td><strong>Hub (EVO-X2)</strong></td>
+                    <td>Central coordination, heavy compute, history</td>
+                </tr>
+                <tr>
+                    <td><strong>Agent (NUC)</strong></td>
+                    <td>Own tasks, local work, quick responses</td>
+                </tr>
+                <tr>
+                    <td><strong>Delegation</strong></td>
+                    <td>Hub assigns tasks to best agent</td>
+                </tr>
+                <tr>
+                    <td><strong>Offload</strong></td>
+                    <td>NUCs send heavy work to EVO-X2</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="usecase" style="background: rgba(0,255,136,0.1); border-left-color: #00ff88;">
+            <strong>🏆 The Vision:</strong> 
+            An agency where each NUC is an independent agent, but they work together through the Hub. 
+            EVO-X2 is the "senior partner" with heavy compute, all others are specialists 
+            that can delegate up or handle their own cases.
+        </div>
+        
+    </div>
+</body>
+</html>

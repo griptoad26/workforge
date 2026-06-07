@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="icon"  xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📋</text></svg>"> -->
+    <title>OpenClaw Agent Deployment Plan v0.4</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+            color: #eee;
+            min-height: 100vh;
+            padding: 30px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        h1 {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00ff88, #00d4ff, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .version {
+            text-align: center;
+            background: #7c3aed;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 0 auto 10px;
+        }
+        
+        .subtitle { text-align: center; color: #888; margin-bottom: 30px; }
+        
+        h2 {
+            color: #00ff88;
+            margin: 30px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #00d4ff;
+        }
+        
+        h3 { color: #00d4ff; margin: 20px 0 10px; }
+        
+        .diagram {
+            background: rgba(0,0,0,0.4);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .platform {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #333;
+        }
+        
+        .platform.windows { border-color: #0078d4; }
+        .platform.linux { border-color: #22c55e; }
+        .platform.wsl { border-color: #f97316; }
+        .platform.docker { border-color: #2499ed; }
+        .platform.vps { border-color: #7c3aed; }
+        
+        .platform-icon { font-size: 2rem; margin-bottom: 10px; }
+        .platform-title { font-weight: bold; margin-bottom: 10px; }
+        
+        .platform.windows .platform-title { color: #0078d4; }
+        .platform.linux .platform-title { color: #22c55e; }
+        .platform.wsl .platform-title { color: #f97316; }
+        .platform.docker .platform-title { color: #2499ed; }
+        .platform.vps .platform-title { color: #7c3aed; }
+        
+        .step {
+            background: rgba(255,255,255,0.03);
+            border-left: 3px solid #00d4ff;
+            padding: 12px 15px;
+            margin: 10px 0;
+        }
+        
+        .step-num {
+            display: inline-block;
+            background: #00d4ff;
+            color: #000;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .step-windows {
+            border-left-color: #0078d4;
+            background: rgba(0,120,212,0.05);
+        }
+        
+        .step-linux {
+            border-left-color: #22c55e;
+            background: rgba(34,197,94,0.05);
+        }
+        
+        .step-wsl {
+            border-left-color: #f97316;
+            background: rgba(249,115,22,0.05);
+        }
+        
+        code {
+            background: #222;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background: #1a1a2e;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        
+        .check { color: #22c55e; }
+        .warning { color: #f59e0b; }
+        .important { color: #ff6b6b; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        th { background: rgba(0,212,255,0.1); color: #00d4ff; }
+        
+        .phase {
+            background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(124,58,237,0.1));
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .phase-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #00d4ff;
+            margin-bottom: 15px;
+        }
+        
+        .terminal-box {
+            background: #0a0a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        
+        .terminal-title {
+            color: #888;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+        
+        .terminal-title::before {
+            content: "💻 ";
+        }
+        
+        .security-box {
+            background: rgba(255,107,107,0.1);
+            border: 1px solid #ff6b6b;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .security-title {
+            color: #ff6b6b;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .todo-box {
+            background: rgba(245,158,11,0.1);
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .todo-title {
+            color: #f59e0b;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 OpenClaw Agent Deployment Plan</h1>
+        <div class="version">v0.4</div>
+        <p class="subtitle">Multi-Platform + Docker + VPS + WSL Implementation</p>
+        
+        <!-- Deployment Targets -->
+        <h2>📋 Deployment Targets</h2>
+        
+        <div class="platform-grid">
+            <div class="platform windows">
+                <div class="platform-icon">🪟</div>
+                <div class="platform-title">Windows Native</div>
+                <p style="font-size:0.9rem; color:#888;">PowerShell (Admin)</p>
+            </div>
+            <div class="platform wsl">
+                <div class="platform-icon">🐧</div>
+                <div class="platform-title">WSL (Windows)</div>
+                <p style="font-size:0.9rem; color:#888;">Ubuntu in Windows</p>
+            </div>
+            <div class="platform linux">
+                <div class="platform-icon">🐧</div>
+                <div class="platform-title">Linux Native</div>
+                <p style="font-size:0.9rem; color:#888;">Ubuntu/Debian</p>
+            </div>
+            <div class="platform docker">
+                <div class="platform-icon">🐳</div>
+                <div class="platform-title">Docker</div>
+                <p style="font-size:0.9rem; color:#888;">Containerized</p>
+            </div>
+            <div class="platform vps">
+                <div class="platform-icon">☁️</div>
+                <div class="platform-title">VPS/Cloud</div>
+                <p style="font-size:0.9rem; color:#888;">Remote servers</p>
+            </div>
+        </div>
+        
+        <!-- Security -->
+        <div class="security-box">
+            <div class="security-title">🔒 Security Best Practices</div>
+            <table>
+                <tr><th>Area</th><th>Recommendation</th></tr>
+                <tr><td>API Keys</td><td>Use environment variables, never commit to files</td></tr>
+                <tr><td>Tailscale</td><td>Use auth key (not login), enable HTTPS</td></tr>
+                <tr><td>Cluster Hub</td><td>Add authentication token</td></tr>
+                <tr><td>Discord Bot</td><td>Use least-privilege permissions</td></tr>
+                <tr><td>Local LLM</td><td>Don't expose to external network unless needed</td></tr>
+                <tr><td>Firewall</td><td>Only allow necessary ports</td></tr>
+            </table>
+        </div>
+        
+        <!-- Phase 1: Windows Native -->
+        <div class="phase">
+            <div class="phase-title">🪟 Phase 1: Windows Native</div>
+            
+            <h3>Terminal Access</h3>
+            <div class="terminal-box">
+                <div class="terminal-title">PowerShell (Administrator) - NOT WSL</div>
+                <p style="color:#888; font-size:0.9rem;">
+                    Right-click Start → Windows PowerShell (Admin)<br>
+                    <strong>NOT</strong> Command Prompt, <strong>NOT</strong> WSL
+                </p>
+            </div>
+            
+            <div class="step step-windows">
+                <span class="step-num">1</span>
+                <strong>Check prerequisites:</strong>
+                <ul style="margin-left:20px; margin-top:5px;">
+                    <li>PowerShell 5.1+ (pre-installed on Win10/11)</li>
+                    <li>Python installed (<code>python --version</code>)</li>
+                    <li>Tailscale installed on Windows (not WSL!)</li>
+                </ul>
+            </div>
+            
+            <div class="step step-windows">
+                <span class="step-num">2</span>
+                <strong>Install Python if needed:</strong>
+                <pre style="margin:10px 0;"># Download from python.org or use winget
+winget install Python.Python.3.12</pre>
+            </div>
+            
+            <div class="step step-windows">
+                <span class="step-num">3</span>
+                <strong>⚠️ Tailscale MUST be on Windows side:</strong>
+                <pre style="margin:10px 0;"># Install Tailscale in PowerShell (Admin), NOT in WSL!
+winget install tailscale
+
+# Start Tailscale
+Start-Service Tailscale
+
+# Verify
+tailscale status</pre>
+                <p style="color:#f97316; font-size:0.9rem; margin-top:5px;">
+                    ❌ Don't run "tailscale" in WSL - it conflicts with Windows Tailscale!
+                </p>
+            </div>
+            
+            <div class="step step-windows">
+                <span class="step-num">4</span>
+                <strong>Create OpenClaw directory:</strong>
+                <pre style="margin:10px 0;">New-Item -ItemType Directory -Path C:\OpenClaw -Force
+cd C:\OpenClaw</pre>
+            </div>
+            
+            <div class="step step-windows">
+                <span class="step-num">5</span>
+                <strong>Download OCMI modules:</strong>
+                <pre style="margin:10px 0;">$env:CLUSTER_HUB_URL = "http://100.112.11.35:8090"
+
+Invoke-WebRequest -Uri "$env:CLUSTER_HUB_URL/api/files/ocmi_settings.py" -OutFile ocmi_settings.py
+Invoke-WebRequest -Uri "$env:CLUSTER_HUB_URL/api/files/sync_cluster_hub.py" -OutFile sync_cluster_hub.py
+Invoke-WebRequest -Uri "$env:CLUSTER_HUB_URL/api/files/cross_session.py" -OutFile cross_session.py</pre>
+            </div>
+            
+            <div class="step step-windows">
+                <span class="step-num">6</span>
+                <strong>Set environment variables (persistent):</strong>
+                <pre style="margin:10px 0;"># System-wide (requires Admin)
+[System.Environment]::SetEnvironmentVariable("CLUSTER_HUB_URL", "http://100.112.11.35:8090", "Machine")
+[System.Environment]::SetEnvironmentVariable("OCMI_SYNC_ENABLED", "true", "Machine")</pre>
+            </div>
+            
+            <h3>Troubleshooting</h3>
+            <table>
+                <tr><th>Problem</th><th>Solution</th></tr>
+                <tr><td>WSL Tailscale conflicts</td><td>Uninstall Tailscale in WSL, use Windows Tailscale</td></tr>
+                <tr><td>Python not found</td><td>Restart PowerShell after install</td></tr>
+                <tr><td>Permission denied</td><td>Run PowerShell as Administrator</td></tr>
+            </table>
+        </div>
+        
+        <!-- Phase 2: WSL -->
+        <div class="phase">
+            <div class="phase-title">🐧 Phase 2: WSL (Windows Subsystem for Linux)</div>
+            
+            <h3>Terminal Access</h3>
+            <div class="terminal-box">
+                <div class="terminal-title">WSL Ubuntu Terminal</div>
+                <p style="color:#888; font-size:0.9rem;">
+                    Open Ubuntu from Start Menu (not PowerShell!)
+                </p>
+            </div>
+            
+            <h3>⚠️ Important: Tailscale on Windows, Not WSL</h3>
+            <div class="warning-box" style="background: rgba(249,115,22,0.1); border-color: #f97316; padding:15px; border-radius:8px; margin:15px 0;">
+                <p><strong>DO NOT install Tailscale in WSL!</strong></p>
+                <p>Install Tailscale in Windows PowerShell (Admin) instead. WSL will use Windows' Tailscale via <code>\\wsl$\</code> or the Windows IP.</p>
+            </div>
+            
+            <div class="step step-wsl">
+                <span class="step-num">1</span>
+                <strong>Install WSL (in PowerShell Admin):</strong>
+                <pre style="margin:10px 0;">wsl --install</pre>
+                <p style="color:#888; font-size:0.9rem;">Restart computer when prompted</p>
+            </div>
+            
+            <div class="step step-wsl">
+                <span class="step-num">2</span>
+                <strong>Open Ubuntu (not PowerShell!) and update:</strong>
+                <pre style="margin:10px 0;">sudo apt update && sudo apt upgrade -y</pre>
+            </div>
+            
+            <div class="step step-wsl">
+                <span class="step-num">3</span>
+                <strong>Install Python and dependencies:</strong>
+                <pre style="margin:10px 0;">sudo apt install -y python3 python3-pip python3-venv
+pip3 install requests flask</pre>
+            </div>
+            
+            <div class="step step-wsl">
+                <span class="step-num">4</span>
+                <strong>Create directory and download modules:</strong>
+                <pre style="margin:10px 0;">mkdir -p ~/.openclaw/memory
+cd ~/.openclaw/memory
+
+export CLUSTER_HUB_URL="http://100.112.11.35:8090"
+curl -o ocmi_settings.py "$CLUSTER_HUB_URL/api/files/ocmi_settings.py"
+curl -o sync_cluster_hub.py "$CLUSTER_HUB_URL/api/files/sync_cluster_hub.py"
+curl -o cross_session.py "$CLUSTER_HUB_URL/api/files/cross_session.py"</pre>
+            </div>
+            
+            <div class="step step-wsl">
+                <span class="step-num">5</span>
+                <strong>Access Windows Tailscale from WSL:</strong>
+                <pre style="margin:10px 0;"># WSL can access Windows network - try:
+curl http://100.112.11.35:8090/health
+
+# Or use Windows localhost proxy:
+# In Windows PowerShell (Admin):
+netsh interface portproxy add v4tov4 listenport=8090 connectport=8090 connectaddress=127.0.0.1</pre>
+            </div>
+            
+            <h3>WSL Networking</h3>
+            <table>
+                <tr><th>From</th><th>To</th><th>Method</th></tr>
+                <tr><td>WSL → EVO-X2</td><td>100.112.11.35</td><td>Direct (Tailscale)</td></tr>
+                <tr><td>Windows → WSL</td><td>localhost:port</td><td>Direct</td></tr>
+                <tr><td>EVO-X2 → WSL</td><td>Need port proxy</td><td>netsh</td></tr>
+            </table>
+        </div>
+        
+        <!-- Phase 3: Linux Native -->
+        <div class="phase">
+            <div class="phase-title">🐧 Phase 3: Linux Native</div>
+            
+            <h3>Terminal Access</h3>
+            <div class="terminal-box">
+                <div class="terminal-title">SSH or Local Terminal</div>
+                <p style="color:#888; font-size:0.9rem;">
+                    SSH (remote) or Terminal app (local)
+                </p>
+            </div>
+            
+            <div class="step step-linux">
+                <span class="step-num">1</span>
+                <strong>Update and install dependencies:</strong>
+                <pre style="margin:10px 0;">sudo apt update && sudo apt upgrade -y
+sudo apt install -y python3 python3-pip curl</pre>
+            </div>
+            
+            <div class="step step-linux">
+                <span class="step-num">2</span>
+                <strong>Install Tailscale:</strong>
+                <pre style="margin:10px 0;">curl -fsSL https://tailscale.com/install.sh | sh
+sudo tailscaled &
+sudo tailscale up</pre>
+            </div>
+            
+            <div class="step step-linux">
+                <span class="step-num">3</span>
+                <strong>Download OCMI modules:</strong>
+                <pre style="margin:10px 0;">mkdir -p ~/.openclaw/memory
+cd ~/.openclaw/memory
+
+export CLUSTER_HUB_URL="http://100.112.11.35:8090"
+curl -o ocmi_settings.py "$CLUSTER_HUB_URL/api/files/ocmi_settings.py"
+curl -o sync_cluster_hub.py "$CLUSTER_HUB_URL/api/files/sync_cluster_hub.py"
+curl -o cross_session.py "$CLUSTER_HUB_URL/api/files/cross_session.py"
+
+pip3 install requests flask</pre>
+            </div>
+            
+            <div class="step step-linux">
+                <span class="step-num">4</span>
+                <strong>Create systemd service:</strong>
+                <pre style="margin:10px 0;">sudo nano /etc/systemd/system/openclaw.service
+
+# Paste service config, then:
+sudo systemctl daemon-reload
+sudo systemctl enable openclaw
+sudo systemctl start openclaw</pre>
+            </div>
+        </div>
+        
+        <!-- Phase 4: Docker -->
+        <div class="phase">
+            <div class="phase-title">🐳 Phase 4: Docker Deployment</div>
+            
+            <h3>Dockerfile</h3>
+            <pre><code>FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install dependencies
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
+# Copy OCMI modules
+COPY ocmi_settings.py sync_cluster_hub.py cross_session.py ./
+
+# Environment
+ENV CLUSTER_HUB_URL=http://100.112.11.35:8090
+ENV OCMI_SYNC_ENABLED=true
+
+EXPOSE 8080 8081 8090
+
+CMD ["python3", "-c", "
+    from sync_cluster_hub import get_sync
+    import time
+    sync = get_sync()
+    print('Agent started')
+    while True: time.sleep(60)
+"]</code></pre>
+            
+            <h3>Deploy</h3>
+            <pre><code># Build
+docker build -t openclaw-agent .
+
+# Run
+docker run -d \
+  --name my-agent \
+  -e CLUSTER_HUB_URL=http://100.112.11.35:8090 \
+  openclaw-agent</code></pre>
+        </div>
+        
+        <!-- Phase 5: VPS -->
+        <div class="phase">
+            <div class="phase-title">☁️ Phase 5: VPS/Cloud Deployment</div>
+            
+            <h3>Supported Platforms</h3>
+            <div class="platform-grid">
+                <div class="platform vps">DigitalOcean</div>
+                <div class="platform vps">AWS EC2</div>
+                <div class="platform vps">Azure</div>
+                <div class="platform vps">Linode</div>
+            </div>
+            
+            <h3>VPS Install Script</h3>
+            <pre><code>#!/bin/bash
+# Run as root on VPS
+
+HUB_URL="http://100.112.11.35:8090"
+AGENT_NAME="${AGENT_NAME:-vps-agent}"
+
+# Install
+apt update && apt install -y python3 python3-pip curl
+
+# Download modules
+mkdir -p /opt/openclaw
+cd /opt/openclaw
+curl -o ocmi_settings.py "$HUB_URL/api/files/ocmi_settings.py"
+curl -o sync_cluster_hub.py "$HUB_URL/api/files/sync_cluster_hub.py"
+
+pip3 install requests flask
+
+# Create service
+cat > /etc/systemd/system/openclaw.service << EOF
+[Unit]
+Description=OpenClaw Agent
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 -c "from sync_cluster_hub import get_sync; get_sync().register(); import time; time.sleep(999999)"
+Restart=always
+Environment=CLUSTER_HUB_URL=$HUB_URL
+Environment=AGENT_NAME=$AGENT_NAME
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable openclaw
+systemctl start openclaw</code></pre>
+        </div>
+        
+        <!-- TODO: Future Tasks -->
+        <div class="todo-box">
+            <div class="todo-title">📋 TODO: Future Implementation Tasks</div>
+            
+            <table>
+                <tr><th>Task</th><th>Description</th><th>Status</th></tr>
+                <tr><td>System Settings Install Script</td><td>Automated script to configure newly deployed agents with proper settings</td><td>⏳ Pending</td></tr>
+                <tr><td>OCMI v0.4 Release</td><td>Bundle all modules into installable package</td><td>⏳ Pending</td></tr>
+                <tr><td>Auth Token Security</td><td>Add API token to Cluster Hub</td><td>⏳ Pending</td></tr>
+                <tr><td>OneDrive Sync Module</td><td>memory/sync_onedrive.py</td><td>⏳ Pending</td></tr>
+                <tr><td>Nextcloud Sync Module</td><td>memory/sync_nextcloud.py</td><td>⏳ Pending</td></tr>
+                <tr><td>Docker Compose</td><td>Multi-agent docker-compose.yml</td><td>⏳ Pending</td></tr>
+                <tr><td>Agent Auto-Discovery</td><td>Agents auto-register with Hub</td><td>⏳ Pending</td></tr>
+            </table>
+        </div>
+        
+        <!-- Quick Reference -->
+        <h2>📋 Quick Reference by Platform</h2>
+        
+        <table>
+            <tr><th>Platform</th><th>Terminal</th><th>Tailscale</th><th>Command</th></tr>
+            <tr><td>Windows</td><td>PowerShell (Admin)</td><td>Windows</td><td><code>curl</code></td></tr>
+            <tr><td>WSL</td><td>Ubuntu App</td><td>Windows</td><td>curl</td></tr>
+            <tr><td>Linux</td><td>Terminal/SSH</td><td>Linux</td><td>curl</td></tr>
+            <tr><td>Docker</td><td>Host terminal</td><td>Host</td><td>docker run</td></tr>
+            <tr><td>VPS</td><td>SSH</td><td>VPS</td><td>curl</td></tr>
+        </table>
+        
+    </div>
+</body>
+</html>

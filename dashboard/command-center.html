@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCMI Command Center</title>
+    <!-- <link rel="icon"  xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>"> -->
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+            color: #eee;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        h1 {
+            font-size: 2rem;
+            text-align: center;
+            background: linear-gradient(90deg, #00ff88, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle { text-align: center; color: #888; margin-bottom: 20px; }
+        
+        /* Nav */
+        .nav {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        
+        .nav-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 10px 20px;
+            color: #888;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(0,212,255,0.1);
+            border-color: #00d4ff;
+            color: #00d4ff;
+        }
+        
+        .nav-btn.active {
+            background: rgba(0,212,255,0.2);
+            border-color: #00d4ff;
+            color: #00d4ff;
+        }
+        
+        /* Sections */
+        .section { display: none; }
+        .section.active { display: block; }
+        
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00d4ff;
+        }
+        
+        .stat-label { color: #888; font-size: 0.9rem; }
+        
+        /* Nodes */
+        .node-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+        
+        .node {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid #333;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .node.online { border-color: #22c55e; }
+        .node.offline { border-color: #ef4444; }
+        
+        .node-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .node-name { font-weight: bold; font-size: 1.1rem; }
+        
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        .status-badge.online { background: rgba(34,197,94,0.2); color: #22c55e; }
+        .status-badge.offline { background: rgba(239,68,68,0.2); color: #ef4444; }
+        
+        .node-details { font-size: 0.85rem; color: #888; }
+        .node-details div { margin: 5px 0; }
+        
+        /* Tasks */
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .task {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .task-priority {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+        
+        .task-priority.high { background: rgba(239,68,68,0.2); color: #ef4444; }
+        .task-priority.medium { background: rgba(245,158,11,0.2); color: #f59e0b; }
+        .task-priority.low { background: rgba(34,197,94,0.2); color: #22c55e; }
+        
+        /* Files */
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .file-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .file-icon { font-size: 2rem; margin-bottom: 10px; }
+        .file-name { font-weight: bold; font-size: 0.9rem; }
+        
+        .file-link {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 16px;
+            background: #00d4ff;
+            color: #000;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+        
+        /* Refresh */
+        .refresh-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 12px 30px;
+            background: #00d4ff;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        
+        .timestamp { text-align: center; color: #666; font-size: 0.8rem; margin-top: 15px; }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 OCMI Command Center</h1>
+        <p class="subtitle">Your AI Agent Network Dashboard</p>
+        
+        <!-- Navigation -->
+        <div class="nav">
+            <a href="#" class="nav-btn active" onclick="show('overview')">📊 Overview</a>
+            <a href="#" class="nav-btn" onclick="show('nodes')">🖥️ Nodes</a>
+            <a href="#" class="nav-btn" onclick="show('tasks')">📋 Tasks</a>
+            <a href="#" class="nav-btn" onclick="show('files')">📁 Files</a>
+            <a href="#" class="nav-btn" onclick="show('docs')">📚 Docs</a>
+        </div>
+        
+        <!-- Overview Section -->
+        <div id="overview" class="section active">
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-nodes">-</div>
+                    <div class="stat-label">Connected Agents</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-tasks">-</div>
+                    <div class="stat-label">Total Tasks</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-files">-</div>
+                    <div class="stat-label">Shared Files</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-open">-</div>
+                    <div class="stat-label">Open Tasks</div>
+                </div>
+            </div>
+            
+            <h3 style="color:#00ff88; margin: 20px 0 15px;">Recent Activity</h3>
+            
+        <!-- Known Machines Grid -->
+        <h3 style="color:#00ff88; margin: 30px 0 15px;">Your 7-NUC Cluster</h3>
+        
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:15px;">
+            
+            <!-- EVO-X2 -->
+            <div class="node online" style="border-color:#00d4ff;">
+                <div class="node-header">
+                    <span class="node-name">🟦 EVO-X2</span>
+                    <span class="status-badge online">HUB</span>
+                </div>
+                <div class="node-details">
+                    <div><strong>Role:</strong> Hub + Oracle</div>
+                    <div><strong>Status:</strong> Running</div>
+                    <div><strong>IP:</strong> 100.112.11.35</div>
+                </div>
+            </div>
+            
+            <!-- win-20o3 -->
+            <div class="node" id="node-win-20o3">
+                <div class="node-header">
+                    <span class="node-name">💻 win-20o3</span>
+                    <span class="status-badge" id="badge-win-20o3">pending</span>
+                </div>
+                <div class="node-details">
+                    <div><strong>Role:</strong> Agent</div>
+                    <div><strong>Status:</strong> <span id="status-win-20o3">Not connected</span></div>
+                    <div><strong>Action:</strong> <a href="deployment-guide.html" style="color:#00d4ff;">Install</a></div>
+                </div>
+            </div>
+            
+            <!-- drone -->
+            <div class="node" id="node-drone">
+                <div class="node-header">
+                    <span class="node-name">💻 drone</span>
+                    <span class="status-badge" id="badge-drone">pending</span>
+                </div>
+                <div class="node-details">
+                    <div><strong>Role:</strong> Agent</div>
+                    <div><strong>Status:</strong> <span id="status-drone">Not connected</span></div>
+                    <div><strong>Action:</strong> <a href="deployment-guide.html" style="color:#00d4ff;">Install</a></div>
+                </div>
+            </div>
+            
+            <!-- pup2-1 -->
+            <div class="node" id="node-pup2-1">
+                <div class="node-header">
+                    <span class="node-name">💻 pup2-1</span>
+                    <span class="status-badge" id="badge-pup2-1">pending</span>
+                </div>
+                <div class="node-details">
+                    <div><strong>Role:</strong> Agent</div>
+                    <div><strong>Status:</strong> <span id="status-pup2-1">Not connected</span></div>
+                    <div><strong>Action:</strong> <a href="deployment-guide.html" style="color:#00d4ff;">Install</a></div>
+                </div>
+            </div>
+            
+            <!-- iota -->
+            <div class="node" id="node-iota">
+                <div class="node-header">
+                    <span class="node-name">💻 iota</span>
+                    <span class="status-badge" id="badge-iota">pending</span>
+                </div>
+                <div class="node-details">
+                    <div><strong>Role:</strong> Agent</div>
+                    <div><strong>Status:</strong> <span id="status-iota">Not connected</span></div>
+                    <div><strong>Action:</strong> <a href="deployment-guide.html" style="color:#00d4ff;">Install</a></div>
+                </div>
+            </div>
+            
+            <!-- molty-botz -->
+            <div class="node" id="node-molty-botz">
+                <div class="node-header">
+                    <span class="node-name">💻 molty-botz</span>
+                    <span class="status-badge" id="badge-molty-botz">pending</span>
+                </div>
+                <div class="node-details">
+                    <div><strong>Role:</strong> Agent</div>
+                    <div><strong>Status:</strong> <span id="status-molty-botz">Not connected</span></div>
+                    <div><strong>Action:</strong> <a href="deployment-guide.html" style="color:#00d4ff;">Install</a></div>
+                </div>
+            </div>
+            
+            <!-- yolo -->
+            <div class="node" id="node-yolo">
+                <div class="node-header">
+                    <span class="node-name">💻 yolo</span>
+                    <span class="status-badge" id="badge-yolo">pending</span>
+                </div>
+                <div class="node-details">
+                    <div><strong>Role:</strong> Agent</div>
+                    <div><strong>Status:</strong> <span id="status-yolo">Not connected</span></div>
+                    <div><strong>Action:</strong> <a href="deployment-guide.html" style="color:#00d4ff;">Install</a></div>
+                </div>
+            </div>
+            
+            <!-- t1-nuc -->
+            <div class="node offline" id="node-t1-nuc">
+                <div class="node-header">
+                    <span class="node-name">💻 t1-nuc</span>
+                    <span class="status-badge offline">offline</span>
+                </div>
+                <div class="node-details">
+                    <div><strong>Role:</strong> Agent</div>
+                    <div><strong>Status:</strong> Offline</div>
+                    <div><strong>Action:</strong> Power on</div>
+                </div>
+            </div>
+            
+        </div>
+
+<div id="recent-tasks" class="task-list"></div>
+        </div>
+        
+        <!-- Nodes Section -->
+        <div id="nodes" class="section">
+            <h3 style="color:#00ff88; margin: 0 0 15px;">Connected Agents</h3>
+            <div id="node-list" class="node-grid"></div>
+        </div>
+        
+        <!-- Tasks Section -->
+        <div id="tasks" class="section">
+            <h3 style="color:#00ff88; margin: 0 0 15px;">All Tasks</h3>
+            <div id="task-list" class="task-list"></div>
+        </div>
+        
+        <!-- Files Section -->
+        <div id="files" class="section">
+            <h3 style="color:#00ff88; margin: 0 0 15px;">Shared Files</h3>
+            <div id="file-list" class="file-grid"></div>
+        </div>
+        
+        <!-- Docs Section -->
+        <div id="docs" class="section">
+            <h3 style="color:#00ff88; margin: 0 0 15px;">Documentation & Guides</h3>
+            <div class="file-grid">
+                <div class="file-card">
+                    <div class="file-icon">🚀</div>
+                    <div class="file-name">Installation Guide</div>
+                    <a href="deployment-guide.html" target="_blank" class="file-link">Open</a>
+                </div>
+                <div class="file-card">
+                    <div class="file-icon">🖥️</div>
+                    <div class="file-name">Architecture</div>
+                    <a href="architecture.html" target="_blank" class="file-link">Open</a>
+                </div>
+                <div class="file-card">
+                    <div class="file-icon">🏢</div>
+                    <div class="file-name">Agency Model</div>
+                    <a href="agency.html" target="_blank" class="file-link">Open</a>
+                </div>
+                <div class="file-card">
+                    <div class="file-icon">📋</div>
+                    <div class="file-name">Deployment Plan</div>
+                    <a href="deployment-plan.html" target="_blank" class="file-link">Open</a>
+                </div>
+                <div class="file-card">
+                    <div class="file-icon">📊</div>
+                    <div class="file-name">Live Dashboard</div>
+                    <a href="live-dashboard.html" target="_blank" class="file-link">Open</a>
+                </div>
+                <div class="file-card">
+                    <div class="file-icon">📝</div>
+                    <div class="file-name">Task Dashboard</div>
+                    <a href="ocmi-dashboard-enhanced.html" target="_blank" class="file-link">Open</a>
+                </div>
+            </div>
+        </div>
+        
+        <button class="refresh-btn" onclick="refresh()">🔄 Refresh All</button>
+        <div class="timestamp" id="timestamp"></div>
+    </div>
+    
+    <script>
+        const HUB_URL = 'http://100.112.11.35:8090';
+        
+        function show(section) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(section).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        
+        // Update machine status based on Hub nodes
+        function updateMachineStatus(nodes) {
+            const knownMachines = ['x2-nuc', 'win-20o3', 'drone', 'pup2-1', 'iota', 'molty-botz', 'yolo', 't1-nuc'];
+            
+            nodes.forEach(node => {
+                const hostname = node.hostname || '';
+                knownMachines.forEach(machine => {
+                    if (hostname.toLowerCase().includes(machine.toLowerCase())) {
+                        const badge = document.getElementById('badge-' + machine);
+                        const status = document.getElementById('status-' + machine);
+                        const nodeDiv = document.getElementById('node-' + machine);
+                        
+                        if (badge && status && nodeDiv) {
+                            badge.className = 'status-badge online';
+                            badge.textContent = 'online';
+                            status.textContent = node.last_seen ? new Date(node.last_seen).toLocaleTimeString() : 'online';
+                            nodeDiv.className = 'node online';
+                        }
+                    }
+                });
+            });
+        }
+
+        async function refresh() {
+            try {
+                // Health
+                const health = await fetch(HUB_URL + '/health').then(r => r.json());
+                
+                document.getElementById('stat-nodes').textContent = health.nodes || 0;
+                document.getElementById('stat-tasks').textContent = health.tasks || 0;
+                document.getElementById('stat-files').textContent = health.files || 0;
+                
+                // Nodes
+                const nodesRes = await fetch(HUB_URL + '/api/nodes');
+                const nodesData = await nodesRes.json();
+                const nodes = nodesData.nodes || {};
+                const nodeList = Object.values(nodes);
+                
+                document.getElementById('stat-nodes').textContent = nodeList.filter(n => n.status === 'online').length;
+                
+                // Render nodes
+                document.getElementById('node-list').innerHTML = nodeList.length ? nodeList.map(n => `
+                    <div class="node ${n.status || 'offline'}">
+                        <div class="node-header">
+                            <span class="node-name">${n.hostname || 'Unknown'}</span>
+                            <span class="status-badge ${n.status || 'offline'}">${n.status || 'offline'}</span>
+                        </div>
+                        <div class="node-details">
+                            <div><strong>OS:</strong> ${n.os || 'Unknown'}</div>
+                            <div><strong>IP:</strong> ${n.ip || 'N/A'}</div>
+                            <div><strong>Last Seen:</strong> ${formatTime(n.last_seen)}</div>
+                            <div><strong>Capabilities:</strong> ${(n.capabilities || []).join(', ') || 'None'}</div>
+                        </div>
+                    </div>
+                `).join('') : '<p style="color:#666;">No agents connected</p>';
+                
+                // Tasks
+                const tasksRes = await fetch(HUB_URL + '/api/tasks');
+                const tasksData = await tasksRes.json();
+                const tasks = tasksData.tasks || [];
+                
+                const openCount = tasks.filter(t => t.status !== 'done' && t.status !== 'completed').length;
+                document.getElementById('stat-open').textContent = openCount;
+                
+                // Render tasks
+                document.getElementById('task-list').innerHTML = tasks.length ? tasks.map(t => `
+                    <div class="task">
+                        <div>
+                            <strong>${t.title || 'Untitled'}</strong>
+                            <span class="task-priority ${t.priority || 'low'}">${t.priority || 'low'}</span>
+                        </div>
+                        <span style="color:#888;">${t.status || 'pending'}</span>
+                    </div>
+                `).join('') : '<p style="color:#666;">No tasks</p>';
+                
+                // Recent tasks
+                document.getElementById('recent-tasks').innerHTML = tasks.slice(0, 5).map(t => `
+                    <div class="task">
+                        <div>
+                            <strong>${t.title || 'Untitled'}</strong>
+                            <span class="task-priority ${t.priority || 'low'}">${t.priority || 'low'}</span>
+                        </div>
+                        <span style="color:#888;">${t.status || 'pending'}</span>
+                    </div>
+                `).join('');
+                
+                // Files
+                const filesRes = await fetch(HUB_URL + '/api/files/list');
+                const filesData = await filesRes.json();
+                const files = filesData.files || [];
+                
+                document.getElementById('file-list').innerHTML = files.length ? files.map(f => `
+                    <div class="file-card">
+                        <div class="file-icon">📄</div>
+                        <div class="file-name">${f.name}</div>
+                        <div style="color:#666;font-size:0.8rem;">${f.size} bytes</div>
+                    </div>
+                `).join('') : '<p style="color:#666;">No files</p>';
+                
+                document.getElementById('timestamp').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+                
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        
+        function formatTime(iso) {
+            if (!iso) return 'Never';
+            return new Date(iso).toLocaleString();
+        }
+        
+        refresh();
+        setInterval(refresh, 15000);
+    </script>
+</body>
+</html>

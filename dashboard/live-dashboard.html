@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📡</text></svg>">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cluster Hub - Live Connections</title>
+    <!-- <link rel="icon"  xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖥️</text></svg>"> -->
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+            color: #eee;
+            min-height: 100vh;
+            padding: 30px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        
+        h1 {
+            font-size: 2rem;
+            text-align: center;
+            background: linear-gradient(90deg, #00ff88, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle { text-align: center; color: #888; margin-bottom: 30px; }
+        
+        .refresh-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 12px 30px;
+            background: #00d4ff;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        .refresh-btn:hover { opacity: 0.9; }
+        
+        .status {
+            text-align: center;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .status-ok { color: #22c55e; }
+        .status-error { color: #ef4444; }
+        
+        .node-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .node {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid #333;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .node.online { border-color: #22c55e; }
+        .node.offline { border-color: #ef4444; }
+        
+        .node-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .node-icon { font-size: 2rem; }
+        
+        .node-name { font-size: 1.2rem; font-weight: bold; }
+        
+        .node-status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .node-status.online { background: rgba(34,197,94,0.2); color: #22c55e; }
+        .node-status.offline { background: rgba(239,68,68,0.2); color: #ef4444; }
+        
+        .node-details {
+            font-size: 0.9rem;
+            color: #888;
+        }
+        
+        .node-details div { margin: 5px 0; }
+        
+        .node-details strong { color: #00d4ff; }
+        
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .timestamp { text-align: center; color: #666; font-size: 0.8rem; margin-top: 20px; }
+        
+        .stat-box {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #00d4ff;
+        }
+        
+        .stat-label { color: #888; font-size: 0.9rem; }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖥️ Cluster Hub - Live Connections</h1>
+        <p class="subtitle">Real-time view of connected agents</p>
+        
+        <div class="status" id="status">
+            <span class="status-ok">● Hub Online</span>
+        </div>
+        
+        <div class="stat-box">
+            <div class="stat">
+                <div class="stat-value" id="nodeCount">-</div>
+                <div class="stat-label">Nodes</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="taskCount">-</div>
+                <div class="stat-label">Tasks</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="fileCount">-</div>
+                <div class="stat-label">Files</div>
+            </div>
+        </div>
+        
+        <button class="refresh-btn" onclick="refresh()">🔄 Refresh</button>
+        
+        <h2 style="color:#00ff88; margin:30px 0 15px;">Connected Agents</h2>
+        
+        <div class="node-grid" id="nodes">
+            <div class="empty">Loading...</div>
+        </div>
+        
+        <div class="timestamp" id="timestamp"></div>
+    </div>
+    
+    <script>
+        const HUB_URL = 'http://100.112.11.35:8090';
+        
+        async function refresh() {
+            try {
+                // Get health
+                const health = await fetch(HUB_URL + '/health').then(r => r.json());
+                
+                document.getElementById('nodeCount').textContent = health.nodes || 0;
+                document.getElementById('taskCount').textContent = health.tasks || 0;
+                document.getElementById('fileCount').textContent = health.files || 0;
+                
+                // Get nodes
+                const nodesRes = await fetch(HUB_URL + '/api/nodes');
+                const nodesData = await nodesRes.json();
+                
+                const nodesContainer = document.getElementById('nodes');
+                const nodes = nodesData.nodes || {};
+                const nodeList = Object.values(nodes);
+                
+                if (nodeList.length === 0) {
+                    nodesContainer.innerHTML = '<div class="empty">No agents connected yet.<br>Run the install script on other machines to connect.</div>';
+                } else {
+                    nodesContainer.innerHTML = nodeList.map(node => `
+                        <div class="node ${node.status || 'offline'}">
+                            <div class="node-header">
+                                <span class="node-icon">💻</span>
+                                <span class="node-name">${node.hostname || 'Unknown'}</span>
+                                <span class="node-status ${node.status || 'offline'}">${node.status || 'offline'}</span>
+                            </div>
+                            <div class="node-details">
+                                <div><strong>OS:</strong> ${node.os || 'Unknown'}</div>
+                                <div><strong>IP:</strong> ${node.ip || 'N/A'}</div>
+                                <div><strong>Last Seen:</strong> ${formatTime(node.last_seen)}</div>
+                                <div><strong>Capabilities:</strong> ${(node.capabilities || []).join(', ') || 'None'}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+                
+                document.getElementById('timestamp').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+                
+            } catch (e) {
+                document.getElementById('status').innerHTML = '<span class="status-error">● Hub Offline - ' + e.message + '</span>';
+            }
+        }
+        
+        function formatTime(isoString) {
+            if (!isoString) return 'Never';
+            const date = new Date(isoString);
+            return date.toLocaleString();
+        }
+        
+        // Auto-refresh every 10 seconds
+        refresh();
+        setInterval(refresh, 10000);
+    </script>
+</body>
+</html>

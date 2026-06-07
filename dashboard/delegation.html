@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Delegation</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #0a0a0f; color: #fff; padding: 20px; }
+        h1 { color: #00d4ff; margin-bottom: 20px; }
+        .nuc-list { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+        .nuc-btn { background: #1a1a2e; border: 1px solid #333; color: #888; padding: 10px 16px; border-radius: 8px; cursor: pointer; }
+        .nuc-btn.active { background: #00d4ff; color: #000; border-color: #00d4ff; }
+        .task { background: #141423; padding: 12px; margin-bottom: 8px; border-radius: 8px; border: 1px solid #333; }
+        .task-id { font-family: monospace; color: #00d4ff; font-size: 12px; }
+        .task-title { margin: 4px 0; }
+        .task-actions { display: flex; gap: 8px; margin-top: 8px; }
+        button { padding: 8px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; }
+        .btn-delegate { background: #00ff88; color: #000; }
+        .btn-claim { background: #00d4ff; color: #000; }
+        .section { margin-bottom: 24px; }
+        .section h2 { color: #888; font-size: 14px; margin-bottom: 12px; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+    <h1>↔️ Task Delegation</h1>
+    
+    <div class="nuc-list">
+        <button class="nuc-btn active" onclick="filterNUC(null)">All</button>
+        <button class="nuc-btn" onclick="filterNUC('x2-nuc')">x2-nuc</button>
+        <button class="nuc-btn" onclick="filterNUC('t1-nuc')">t1-nuc</button>
+        <button class="nuc-btn" onclick="filterNUC('drone')">drone</button>
+        <button class="nuc-btn" onclick="filterNUC('iota')">iota</button>
+        <button class="nuc-btn" onclick="filterNUC('molty-botz')">molty-botz</button>
+        <button class="nuc-btn" onclick="filterNUC('win-20o3')">win-20o3</button>
+        <button class="nuc-btn" onclick="filterNUC('pup2-1')">pup2-1</button>
+        <button class="nuc-btn" onclick="filterNUC('yolo')">yolo</button>
+    </div>
+
+    <div class="section">
+        <h2>Unassigned Tasks</h2>
+        <div id="unassigned"></div>
+    </div>
+
+    <div class="section">
+        <h2>Delegated Tasks</h2>
+        <div id="delegated"></div>
+    </div>
+
+    <script>
+        const NODES = ['x2-nuc', 't1-nuc', 'drone', 'iota', 'molty-botz', 'win-20o3', 'pup2-1', 'yolo'];
+        let allTasks = [];
+        let currentFilter = null;
+
+        async function loadTasks() {
+            const r = await fetch('/api/tasks');
+            const data = await r.json();
+            allTasks = data.tasks || [];
+            render();
+        }
+
+        function render() {
+            const unassigned = allTasks.filter(t => !t.assignee && currentFilter === null);
+            const delegated = allTasks.filter(t => t.assignee && (currentFilter === null || t.assignee === currentFilter));
+            
+            document.getElementById('unassigned').innerHTML = unassigned.map(t => createTaskHTML(t, true)).join('');
+            document.getElementById('delegated').innerHTML = delegated.map(t => createTaskHTML(t, false)).join('');
+        }
+
+        function createTaskHTML(t, canDelegate) {
+            return `
+                <div class="task">
+                    <div class="task-id">${t.id}</div>
+                    <div class="task-title">${t.title}</div>
+                    <div class="task-actions">
+                        ${canDelegate ? NODES.map(n => `<button class="btn-delegate" onclick="delegate('${t.id}', '${n}')">→ ${n}</button>`).join('') : ''}
+                        <button class="btn-claim" onclick="claim('${t.id}')">Claim</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function delegate(taskId, nuc) {
+            await fetch(`/api/tasks/${taskId}`, {
+                method: 'PATCH',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({assignee: nuc, status: 'delegated'})
+            });
+            loadTasks();
+        }
+
+        async function claim(taskId) {
+            await fetch(`/api/tasks/${taskId}`, {
+                method: 'PATCH',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({assignee: 'x2-nuc', status: 'in_progress'})
+            });
+            loadTasks();
+        }
+
+        function filterNUC(nuc) {
+            currentFilter = nuc;
+            document.querySelectorAll('.nuc-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            render();
+        }
+
+        loadTasks();
+    </script>
+</body>
+</html>

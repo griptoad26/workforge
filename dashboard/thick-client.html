@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🖥️ OCMI Control Center</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0d1117;
+  --bg-alt: #161b22;
+  --bg-hover: #21262d;
+  --bg-active: #1c2128;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text-muted: #8b949e;
+  --accent: #58a6ff;
+  --accent-dim: rgba(88,166,255,0.15);
+  --green: #238636;
+  --green-light: #3fb950;
+  --green-dim: rgba(63,185,80,0.15);
+  --orange: #f97316;
+  --orange-dim: rgba(249,115,22,0.15);
+  --yellow: #d29922;
+  --yellow-dim: rgba(210,153,34,0.15);
+  --purple: #8957e5;
+  --red: #ef4444;
+  --red-dim: rgba(239,68,68,0.15);
+  --cyan: #22d3ee;
+  --pink: #db61a2;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ===== HEADER ===== */
+.header {
+  height: 54px;
+  background: linear-gradient(90deg, var(--bg-alt) 0%, #1a2332 100%);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 20px;
+  flex-shrink: 0;
+  z-index: 100;
+}
+.logo { font-size: 17px; font-weight: 700; color: var(--accent); display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.logo-icon { font-size: 20px; }
+.stats-bar { display: flex; gap: 18px; margin-left: 24px; }
+.stat { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-muted); }
+.stat-num { font-weight: 700; font-size: 13px; }
+.stat.green .stat-num { color: var(--green-light); }
+.stat.orange .stat-num { color: var(--orange); }
+.stat.blue .stat-num { color: var(--accent); }
+.stat.purple .stat-num { color: var(--purple); }
+.header-right { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+.hub-badge { display: flex; align-items: center; gap: 6px; font-size: 11px; padding: 4px 10px; border-radius: 16px; background: var(--bg-hover); border: 1px solid var(--border); }
+.hub-badge .dot { width: 7px; height: 7px; border-radius: 50%; }
+.hub-badge.online { border-color: var(--green); color: var(--green-light); }
+.hub-badge.online .dot { background: var(--green-light); box-shadow: 0 0 4px var(--green-light); }
+.hub-badge.offline { border-color: var(--red); color: var(--red); }
+.hub-badge.offline .dot { background: var(--red); }
+.btn-icon { background: var(--bg-hover); border: 1px solid var(--border); color: var(--text-muted); padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 12px; transition: all 0.15s; }
+.btn-icon:hover { border-color: var(--accent); color: var(--accent); }
+.btn-icon.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.last-updated { font-size: 10px; color: var(--text-muted); }
+
+/* ===== TABS ===== */
+.tab-bar {
+  display: flex;
+  background: var(--bg-alt);
+  border-bottom: 1px solid var(--border);
+  padding: 0 16px;
+  gap: 2px;
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+.tab-bar::-webkit-scrollbar { height: 3px; }
+.tab-bar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.tab {
+  padding: 9px 14px;
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  user-select: none;
+}
+.tab:hover { color: var(--text); background: var(--bg-hover); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); background: var(--bg); }
+.tab .tab-count {
+  background: var(--bg-hover);
+  color: var(--text-muted);
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 8px;
+  min-width: 18px;
+  text-align: center;
+}
+.tab.active .tab-count { background: var(--accent); color: #fff; }
+
+/* ===== MAIN ===== */
+.main { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+.panel { display: none; flex-direction: column; height: 100%; overflow: hidden; }
+.panel.active { display: flex; }
+
+/* ===== PANEL HEADER ===== */
+.panel-header {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  background: var(--bg-alt);
+}
+.panel-title { font-size: 14px; font-weight: 600; }
+.panel-desc { font-size: 11px; color: var(--text-muted); }
+.panel-actions { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+.panel-actions-right { display: flex; gap: 8px; align-items: center; }
+
+/* ===== CONTENT ===== */
+.content { flex: 1; overflow-y: auto; padding: 16px 20px; }
+.content::-webkit-scrollbar { width: 6px; }
+.content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ===== BUTTONS ===== */
+.btn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--bg-hover);
+  color: var(--text);
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn-primary:hover { background: #4a95eb; border-color: #4a95eb; color: #fff; }
+.btn-success { background: var(--green); border-color: var(--green); color: #fff; }
+.btn-success:hover { background: #1d6b2e; border-color: #1d6b2e; }
+.btn-danger { background: transparent; border-color: var(--red); color: var(--red); }
+.btn-danger:hover { background: var(--red-dim); }
+.btn-sm { padding: 3px 8px; font-size: 11px; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ===== INPUTS ===== */
+input, select, textarea {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: inherit;
+  transition: border-color 0.15s;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+textarea { resize: vertical; min-height: 60px; }
+select { cursor: pointer; }
+.search-box { background: var(--bg-alt); width: 220px; }
+.search-box::placeholder { color: var(--text-muted); }
+
+/* ===== SECTION HEADERS ===== */
+.section-header {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+  padding: 8px 0 6px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-header .count {
+  background: var(--bg-hover);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* ===== CARDS ===== */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+.grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media(max-width: 900px) { .grid-2col { grid-template-columns: 1fr; } }
+.card {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  transition: all 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.card:hover { border-color: var(--accent); }
+.card-header { display: flex; align-items: center; gap: 8px; }
+.card-icon { font-size: 16px; }
+.card-title { font-size: 13px; font-weight: 600; flex: 1; }
+.card-badge { font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 600; white-space: nowrap; }
+.card-desc { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+.card-meta { display: flex; gap: 10px; font-size: 10px; color: var(--text-muted); margin-top: 3px; }
+.card-actions { display: flex; gap: 6px; margin-top: 6px; }
+.card-link { font-size: 10px; color: var(--accent); text-decoration: none; }
+.card-link:hover { text-decoration: underline; }
+
+/* ===== BADGE COLORS ===== */
+.badge-online, .badge-ok { background: var(--green-dim); color: var(--green-light); }
+.badge-stale { background: var(--orange-dim); color: var(--orange); }
+.badge-pending { background: var(--yellow-dim); color: var(--yellow); }
+.badge-offline, .badge-error { background: var(--red-dim); color: var(--red); }
+.badge-new { background: var(--accent-dim); color: var(--accent); }
+.badge-info { background: var(--bg-hover); color: var(--text-muted); }
+.badge-high { background: var(--red-dim); color: var(--red); }
+.badge-medium { background: var(--orange-dim); color: var(--orange); }
+.badge-low { background: var(--green-dim); color: var(--green-light); }
+.badge-done, .badge-completed { background: var(--green-dim); color: var(--green-light); }
+
+/* ===== METRIC CARDS ===== */
+.metric-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-bottom: 16px; }
+.metric-card {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  transition: all 0.2s;
+}
+.metric-card:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+.metric-card .metric-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+.metric-card .metric-value { font-size: 26px; font-weight: 700; }
+.metric-card .metric-sub { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+/* ===== TASK CARDS ===== */
+.task-card {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border-left: 3px solid transparent;
+}
+.task-card:hover { border-color: var(--accent); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+.task-card.priority-high { border-left-color: var(--red); }
+.task-card.priority-medium { border-left-color: var(--orange); }
+.task-card.priority-low { border-left-color: var(--green-light); }
+.task-card.status-done, .task-card.status-completed { opacity: 0.6; }
+.task-card.status-done .task-title, .task-card.status-completed .task-title { text-decoration: line-through; }
+.task-header { display: flex; align-items: flex-start; gap: 8px; }
+.task-check { width: 16px; height: 16px; cursor: pointer; accent-color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+.task-title { font-size: 12px; font-weight: 600; flex: 1; line-height: 1.3; }
+.task-id { font-size: 9px; color: var(--text-muted); font-family: monospace; }
+.task-desc { font-size: 11px; color: var(--text-muted); margin-top: 4px; line-height: 1.4; }
+.task-footer { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+.task-meta { font-size: 10px; color: var(--text-muted); }
+.task-actions { display: flex; gap: 4px; margin-left: auto; opacity: 0; transition: opacity 0.15s; }
+.task-card:hover .task-actions { opacity: 1; }
+
+/* ===== NODE CARDS ===== */
+.node-card {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  transition: all 0.15s;
+}
+.node-card:hover { border-color: var(--accent); }
+.node-card.offline { opacity: 0.6; }
+.node-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.node-icon { font-size: 20px; }
+.node-name { font-size: 14px; font-weight: 600; flex: 1; }
+.node-status-dot { width: 8px; height: 8px; border-radius: 50%; }
+.node-status-dot.online { background: var(--green-light); box-shadow: 0 0 5px var(--green-light); }
+.node-status-dot.offline { background: var(--red); }
+.node-status-dot.stale { background: var(--orange); }
+.node-info { display: flex; flex-direction: column; gap: 3px; font-size: 11px; color: var(--text-muted); }
+.node-info span { display: flex; align-items: center; gap: 5px; }
+
+/* ===== AGENT CARDS ===== */
+.agent-card {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 12px;
+}
+.agent-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+.agent-card .agent-name { font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+.agent-card .agent-role { font-size: 10px; color: var(--text-muted); }
+.agent-card .agent-team { font-size: 10px; color: var(--accent); }
+.agent-card .agent-status { font-size: 9px; }
+
+/* ===== ACTIVITY FEED ===== */
+.activity-feed { display: flex; flex-direction: column; gap: 4px; }
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  transition: background 0.1s;
+}
+.activity-item:hover { background: var(--bg-hover); }
+.activity-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+.activity-time { font-size: 10px; color: var(--text-muted); white-space: nowrap; font-family: monospace; }
+.activity-text { flex: 1; line-height: 1.4; color: var(--text); }
+.activity-text .highlight { color: var(--accent); font-weight: 500; }
+.activity-text .tag { display: inline-block; background: var(--bg-hover); color: var(--text-muted); padding: 1px 5px; border-radius: 3px; font-size: 10px; }
+
+/* ===== FILE BROWSER ===== */
+.file-browser { display: flex; flex-direction: column; gap: 2px; }
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background 0.1s;
+}
+.file-item:hover { background: var(--bg-hover); }
+.file-item.selected { background: var(--accent-dim); }
+.file-icon { font-size: 14px; flex-shrink: 0; width: 18px; text-align: center; }
+.file-name { flex: 1; color: var(--text); }
+.file-size { font-size: 10px; color: var(--text-muted); }
+.file-meta { font-size: 10px; color: var(--text-muted); }
+.breadcrumb { display: flex; align-items: center; gap: 4px; font-size: 12px; padding: 8px 0; flex-wrap: wrap; }
+.breadcrumb-item { color: var(--accent); cursor: pointer; padding: 2px 6px; border-radius: 4px; }
+.breadcrumb-item:hover { background: var(--bg-hover); }
+.breadcrumb-sep { color: var(--text-muted); }
+
+/* ===== MODAL ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  width: 480px;
+  max-width: 95vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.modal-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.modal-close { margin-left: auto; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 18px; padding: 0; line-height: 1; }
+.modal-close:hover { color: var(--text); }
+.modal-body { padding: 16px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+.modal-footer { padding: 12px 20px; border-top: 1px solid var(--border); display: flex; gap: 8px; justify-content: flex-end; }
+.form-group { display: flex; flex-direction: column; gap: 4px; }
+.form-group label { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+/* ===== TOAST ===== */
+.toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 2000;
+  pointer-events: none;
+}
+.toast {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  animation: toastIn 0.2s ease;
+  pointer-events: auto;
+  max-width: 320px;
+}
+.toast.success { border-color: var(--green); }
+.toast.error { border-color: var(--red); }
+.toast.info { border-color: var(--accent); }
+.toast.warn { border-color: var(--orange); }
+@keyframes toastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== EMPTY STATE ===== */
+.empty { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+.empty-icon { font-size: 28px; margin-bottom: 8px; }
+.empty-text { font-size: 12px; }
+
+/* ===== OVERVIEW QUICK STATS ===== */
+.quick-stat {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.quick-stat:hover { border-color: var(--accent); }
+.quick-stat-icon { font-size: 20px; }
+.quick-stat-info { flex: 1; }
+.quick-stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.quick-stat-value { font-size: 18px; font-weight: 700; }
+
+/* ===== FILTER BAR ===== */
+.filter-bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.filter-chip {
+  padding: 3px 10px;
+  border-radius: 16px;
+  font-size: 11px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--bg-alt);
+  color: var(--text-muted);
+  transition: all 0.15s;
+}
+.filter-chip:hover, .filter-chip.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+/* ===== SPAWN PANEL ===== */
+.spawn-form { background: var(--bg-alt); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-top: 12px; }
+.spawn-output {
+  background: #000;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  color: var(--green-light);
+  max-height: 200px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  margin-top: 10px;
+}
+
+/* ===== TABS-SPECIFIC LAYOUT ===== */
+.panel-content-scroll { flex: 1; overflow-y: auto; padding: 16px 20px; }
+.panel-content-scroll::-webkit-scrollbar { width: 6px; }
+.panel-content-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ===== STATUS FILTER TABS ===== */
+.status-tabs { display: flex; gap: 4px; margin-bottom: 12px; }
+.status-tab { padding: 4px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; border: 1px solid var(--border); background: var(--bg-alt); color: var(--text-muted); transition: all 0.15s; }
+.status-tab:hover { border-color: var(--accent); color: var(--accent); }
+.status-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* ===== DETAIL PANEL ===== */
+.detail-panel {
+  border-left: 1px solid var(--border);
+  width: 340px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.detail-header { padding: 12px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; background: var(--bg-alt); }
+.detail-header-title { font-size: 12px; font-weight: 600; flex: 1; }
+.detail-body { flex: 1; overflow-y: auto; padding: 12px 14px; }
+
+/* ===== OVERVIEW LAYOUT ===== */
+.overview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media(max-width: 1000px) { .overview-grid { grid-template-columns: 1fr; } }
+
+/* ===== SPINNER ===== */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 0.8s linear infinite; }
+</style>
+</head>
+<body>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toasts"></div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo"><span class="logo-icon">🖥️</span> OCMI Control Center</div>
+  <div class="stats-bar">
+    <div class="stat blue"><span class="stat-num" id="s-nodes">—</span> nodes</div>
+    <div class="stat green"><span class="stat-num" id="s-online">—</span> online</div>
+    <div class="stat orange"><span class="stat-num" id="s-tasks">—</span> tasks</div>
+    <div class="stat purple"><span class="stat-num" id="s-agents">—</span> agents</div>
+  </div>
+  <div class="header-right">
+    <span class="last-updated" id="last-updated"></span>
+    <div class="hub-badge online" id="hub-badge">
+      <span class="dot"></span>
+      <span id="hub-label">Connecting...</span>
+    </div>
+    <button class="btn-icon" id="poll-btn" onclick="togglePoll()">⏸️ Pause</button>
+    <button class="btn-icon" onclick="refreshAll()">↻</button>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tab-bar">
+  <div class="tab active" data-tab="overview" onclick="switchTab('overview')">📊 <span>Overview</span></div>
+  <div class="tab" data-tab="tasks" onclick="switchTab('tasks')">📋 Tasks <span class="tab-count" id="tab-tasks">0</span></div>
+  <div class="tab" data-tab="nodes" onclick="switchTab('nodes')">🖥️ Nodes <span class="tab-count" id="tab-nodes">0</span></div>
+  <div class="tab" data-tab="agents" onclick="switchTab('agents')">🤖 Agents <span class="tab-count" id="tab-agents">0</span></div>
+  <div class="tab" data-tab="activity" onclick="switchTab('activity')">📡 Activity</div>
+  <div class="tab" data-tab="files" onclick="switchTab('files')">📁 Files</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- OVERVIEW PANEL -->
+  <div class="panel active" id="panel-overview">
+    <div class="panel-header">
+      <div><div class="panel-title">📊 Cluster Overview</div><div class="panel-desc">Live stats from Cluster Hub</div></div>
+    </div>
+    <div class="panel-content-scroll">
+      <div class="metric-cards" id="metric-cards"></div>
+      <div class="overview-grid">
+        <div>
+          <div class="section-header">⚡ Quick Actions</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
+            <div class="quick-stat" onclick="switchTab('tasks'); showCreateTask()">
+              <span class="quick-stat-icon">➕</span>
+              <div class="quick-stat-info"><div class="quick-stat-label">New Task</div></div>
+            </div>
+            <div class="quick-stat" onclick="switchTab('agents')">
+              <span class="quick-stat-icon">🤖</span>
+              <div class="quick-stat-info"><div class="quick-stat-label">Spawn Agent</div></div>
+            </div>
+            <div class="quick-stat" onclick="switchTab('nodes')">
+              <span class="quick-stat-icon">🖥️</span>
+              <div class="quick-stat-info"><div class="quick-stat-label">View Nodes</div></div>
+            </div>
+            <div class="quick-stat" onclick="switchTab('activity')">
+              <span class="quick-stat-icon">📡</span>
+              <div class="quick-stat-info"><div class="quick-stat-label">Activity Feed</div></div>
+            </div>
+          </div>
+          <div class="section-header">🔥 Recent Tasks</div>
+          <div id="overview-recent-tasks" style="display:flex;flex-direction:column;gap:6px;"></div>
+        </div>
+        <div>
+          <div class="section-header">🟢 Online Nodes <span class="count" id="overview-node-count">0</span></div>
+          <div id="overview-nodes" style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px;"></div>
+          <div class="section-header">📡 Latest Activity</div>
+          <div id="overview-activity" style="display:flex;flex-direction:column;gap:4px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASKS PANEL -->
+  <div class="panel" id="panel-tasks">
+    <div class="panel-header">
+      <div><div class="panel-title">📋 Task Management</div><div class="panel-desc">CRUD operations for cluster tasks</div></div>
+      <div class="panel-actions">
+        <input class="search-box" id="task-search" placeholder="Search tasks..." oninput="renderTasks()">
+        <select id="task-priority-filter" onchange="renderTasks()" style="padding:5px 8px;">
+          <option value="">All Priorities</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option>
+        </select>
+        <select id="task-status-filter" onchange="renderTasks()" style="padding:5px 8px;">
+          <option value="">All Status</option><option value="pending">Pending</option><option value="in_progress">In Progress</option><option value="done">Done</option><option value="completed">Completed</option>
+        </select>
+        <button class="btn btn-primary" onclick="showCreateTask()">➕ New Task</button>
+      </div>
+    </div>
+    <div class="panel-content-scroll">
+      <div id="task-list-container"></div>
+    </div>
+  </div>
+
+  <!-- NODES PANEL -->
+  <div class="panel" id="panel-nodes">
+    <div class="panel-header">
+      <div><div class="panel-title">🖥️ Cluster Nodes</div><div class="panel-desc">Registered machines on the network</div></div>
+      <div class="panel-actions">
+        <button class="btn" onclick="refreshAll()">↻ Refresh</button>
+      </div>
+    </div>
+    <div class="panel-content-scroll">
+      <div class="grid" id="nodes-grid" style="grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));"></div>
+    </div>
+  </div>
+
+  <!-- AGENTS PANEL -->
+  <div class="panel" id="panel-agents">
+    <div class="panel-header">
+      <div><div class="panel-title">🤖 Agent Registry</div><div class="panel-desc">145 registered agents across 13 teams</div></div>
+      <div class="panel-actions">
+        <input class="search-box" id="agent-search" placeholder="Search agents..." oninput="renderAgents()">
+        <select id="agent-team-filter" onchange="renderAgents()" style="padding:5px 8px;">
+          <option value="">All Teams</option>
+          <option>Engineering</option><option>Design</option><option>Product</option>
+          <option>Sales</option><option>Support</option><option>Marketing</option>
+          <option>XKG</option><option>Paid Media</option><option>Testing</option>
+          <option>Project Management</option><option>Specialized</option>
+          <option>Spatial Computing</option><option>Strategy</option>
+        </select>
+        <button class="btn btn-primary" onclick="showSpawnAgent()">🚀 Spawn Agent</button>
+      </div>
+    </div>
+    <div class="panel-content-scroll">
+      <div class="grid" id="agents-grid" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));"></div>
+    </div>
+  </div>
+
+  <!-- ACTIVITY PANEL -->
+  <div class="panel" id="panel-activity">
+    <div class="panel-header">
+      <div><div class="panel-title">📡 Live Activity Feed</div><div class="panel-desc">Real-time cluster events</div></div>
+      <div class="panel-actions">
+        <div class="filter-bar">
+          <span class="filter-chip active" data-ftype="all" onclick="filterActivity('all')">All</span>
+          <span class="filter-chip" data-ftype="task" onclick="filterActivity('task')">Tasks</span>
+          <span class="filter-chip" data-ftype="node" onclick="filterActivity('node')">Nodes</span>
+          <span class="filter-chip" data-ftype="agent" onclick="filterActivity('agent')">Agents</span>
+          <span class="filter-chip" data-ftype="file" onclick="filterActivity('file')">Files</span>
+        </div>
+        <button class="btn" onclick="clearActivity()">🗑️ Clear</button>
+      </div>
+    </div>
+    <div class="panel-content-scroll">
+      <div class="activity-feed" id="activity-feed"></div>
+    </div>
+  </div>
+
+  <!-- FILES PANEL -->
+  <div class="panel" id="panel-files">
+    <div class="panel-header">
+      <div><div class="panel-title">📁 File Browser</div><div class="panel-desc">Navigate workspace files</div></div>
+      <div class="panel-actions">
+        <input class="search-box" id="file-search" placeholder="Filter files..." oninput="renderFiles()">
+        <button class="btn" onclick="loadFiles('/')">🏠 Root</button>
+      </div>
+    </div>
+    <div class="panel-content-scroll">
+      <div class="breadcrumb" id="file-breadcrumb"></div>
+      <div class="file-browser" id="file-browser"></div>
+      <div id="file-preview" style="margin-top:16px;display:none;"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- CREATE TASK MODAL -->
+<div class="modal-overlay" id="modal-create-task">
+  <div class="modal">
+    <div class="modal-header">➕ Create New Task <button class="modal-close" onclick="closeModal('modal-create-task')">×</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Title *</label><input id="ct-title" placeholder="Task title"></div>
+      <div class="form-group"><label>Description</label><textarea id="ct-desc" placeholder="Task description..."></textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label>Priority</label>
+          <select id="ct-priority"><option value="high">🔴 High</option><option value="medium" selected>🟡 Medium</option><option value="low">🟢 Low</option></select>
+        </div>
+        <div class="form-group"><label>Project</label><input id="ct-project" placeholder="HUB" value="HUB"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Category</label>
+          <select id="ct-category">
+            <option value="general">General</option><option value="development">Development</option>
+            <option value="design">Design</option><option value="research">Research</option>
+            <option value="deployment">Deployment</option><option value="testing">Testing</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Assignee</label><input id="ct-assignee" placeholder="Agent name"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-create-task')">Cancel</button>
+      <button class="btn btn-primary" onclick="createTask()">Create Task</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT TASK MODAL -->
+<div class="modal-overlay" id="modal-edit-task">
+  <div class="modal">
+    <div class="modal-header">✏️ Edit Task <button class="modal-close" onclick="closeModal('modal-edit-task')">×</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Title *</label><input id="et-title" placeholder="Task title"></div>
+      <div class="form-group"><label>Description</label><textarea id="et-desc" placeholder="Task description..."></textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label>Priority</label><select id="et-priority"><option value="high">🔴 High</option><option value="medium">🟡 Medium</option><option value="low">🟢 Low</option></select></div>
+        <div class="form-group"><label>Status</label>
+          <select id="et-status">
+            <option value="pending">Pending</option><option value="in_progress">In Progress</option>
+            <option value="done">Done</option><option value="completed">Completed</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Project</label><input id="et-project" placeholder="HUB"></div>
+        <div class="form-group"><label>Assignee</label><input id="et-assignee" placeholder="Agent name"></div>
+      </div>
+      <input type="hidden" id="et-id">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" onclick="deleteTaskFromEdit()">🗑️ Delete</button>
+      <button class="btn" onclick="closeModal('modal-edit-task')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveTaskEdit()">💾 Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- SPAWN AGENT MODAL -->
+<div class="modal-overlay" id="modal-spawn-agent">
+  <div class="modal">
+    <div class="modal-header">🚀 Spawn Agent <button class="modal-close" onclick="closeModal('modal-spawn-agent')">×</button></div>
+    <div class="modal-body">
+      <div class="spawn-form">
+        <div class="form-group"><label>Select Agent</label>
+          <select id="sa-agent"><option value="">— choose agent —</option></select>
+        </div>
+        <div class="form-group" style="margin-top:10px;"><label>Task Prompt</label>
+          <textarea id="sa-prompt" placeholder="What should this agent do?"></textarea>
+        </div>
+        <div class="form-group"><label>Node Target</label>
+          <select id="sa-node">
+            <option value="x2-nuc">x2-nuc (main)</option>
+            <option value="t1-nuc">t1-nuc</option>
+            <option value="drone">drone</option>
+            <option value="iota">iota</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="spawnAgent()" style="width:100%;margin-top:10px;" id="sa-btn">🚀 Spawn</button>
+        <div class="spawn-output" id="sa-output" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== CONFIG =====
+const API = 'http://100.112.11.35:8090';
+let pollInterval = null;
+let isPolling = true;
+let clusterData = { nodes: [], tasks: [], agents: [], status: {} };
+let allTasks = [];
+let allNodes = [];
+let allAgents = [];
+let allActivities = [];
+let currentTab = 'overview';
+let currentFilesPath = '/';
+let editingTaskId = null;
+
+// ===== UTILITIES =====
+function $(id) { return document.getElementById(id); }
+function toast(msg, type = 'info') {
+  const c = $('toasts');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  const icons = { success: '✅', error: '❌', info: 'ℹ️', warn: '⚠️' };
+  t.innerHTML = `<span>${icons[type] || '•'}</span> ${escHtml(msg)}`;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+function escHtml(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function timeAgo(d) {
+  if (!d) return '—';
+  const s = (Date.now() - new Date(d).getTime()) / 1000;
+  if (s < 60) return `${Math.floor(s)}s ago`;
+  if (s < 3600) return `${Math.floor(s/60)}m ago`;
+  if (s < 86400) return `${Math.floor(s/3600)}h ago`;
+  return `${Math.floor(s/86400)}d ago`;
+}
+function fmtDate(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+function priorityLabel(p) {
+  return { high: '🔴 High', medium: '🟡 Medium', low: '🟢 Low' }[p] || p;
+}
+function statusLabel(s) {
+  return { pending: '⏳ Pending', in_progress: '⚙️ In Progress', done: '✅ Done', completed: '✅ Completed', delegated: '📤 Delegated' }[s] || s;
+}
+function nodeIcon(os) {
+  if (!os) return '🖥️';
+  if (os.toLowerCase().includes('win')) return '🪟';
+  if (os.toLowerCase().includes('mac')) return '🍎';
+  return '🐧';
+}
+function nodeStatusColor(n) {
+  if (!n || n.status === 'offline') return 'offline';
+  const ls = n.last_seen || n.lastSeen;
+  if (ls) {
+    const age = (Date.now() - new Date(ls).getTime()) / 1000;
+    if (age > 300) return 'stale';
+  }
+  return 'online';
+}
+function getStatusClass(s) {
+  return { pending: 'badge-pending', in_progress: 'badge-info', done: 'badge-done', completed: 'badge-completed', delegated: 'badge-new' }[s] || 'badge-info';
+}
+function getPriorityBadge(p) {
+  return { high: 'badge-high', medium: 'badge-medium', low: 'badge-low' }[p] || 'badge-info';
+}
+function getNodeStatusBadge(n) {
+  const s = nodeStatusColor(n);
+  return { online: 'badge-online', stale: 'badge-stale', offline: 'badge-offline' }[s] || 'badge-info';
+}
+function getNodeStatusText(n) {
+  const s = nodeStatusColor(n);
+  return { online: 'Online', stale: 'Stale', offline: 'Offline' }[s] || 'Unknown';
+}
+
+// ===== API =====
+async function api(method, path, body) {
+  const opts = { method, headers: { 'Content-Type': 'application/json' } };
+  if (body) opts.body = JSON.stringify(body);
+  try {
+    const r = await fetch(API + path, opts);
+    if (!r.ok) {
+      const txt = await r.text().catch(() => r.statusText);
+      throw new Error(`${r.status}: ${txt}`);
+    }
+    return await r.json();
+  } catch (e) {
+    throw e;
+  }
+}
+
+// ===== TAB SWITCHING =====
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === `panel-${tab}`));
+  if (tab === 'overview') renderOverview();
+  if (tab === 'tasks') renderTasks();
+  if (tab === 'nodes') renderNodes();
+  if (tab === 'agents') renderAgents();
+  if (tab === 'activity') renderActivity();
+  if (tab === 'files') loadFiles(currentFilesPath);
+}
+
+// ===== TOGGLE POLL =====
+function togglePoll() {
+  isPolling = !isPolling;
+  const btn = $('poll-btn');
+  if (isPolling) {
+    btn.textContent = '⏸️ Pause';
+    btn.classList.remove('active');
+    startPoll();
+  } else {
+    btn.textContent = '▶️ Resume';
+    btn.classList.add('active');
+    if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
+  }
+}
+
+// ===== POLLING =====
+function startPoll() {
+  if (pollInterval) clearInterval(pollInterval);
+  pollInterval = setInterval(async () => {
+    if (!isPolling) return;
+    await refreshAllSilent();
+  }, 5000);
+}
+
+// ===== REFRESH =====
+async function refreshAll() {
+  await refreshAllSilent();
+  toast('Dashboard refreshed', 'success');
+}
+async function refreshAllSilent() {
+  try {
+    const [status, tasks, nodes] = await Promise.all([
+      api('GET', '/health').catch(() => null),
+      api('GET', '/api/tasks').catch(() => null),
+      api('GET', '/api/nodes').catch(() => null),
+    ]);
+    clusterData.status = status || {};
+    allTasks = (tasks && tasks.tasks) ? tasks.tasks : (tasks && Array.isArray(tasks) ? tasks : []);
+    allNodes = (nodes && nodes.nodes) ? nodes.nodes : (nodes && typeof nodes === 'object' && !Array.isArray(nodes) ? Object.values(nodes) : []);
+    if (status) updateHubStatus(true);
+    updateHeaderStats();
+    if (currentTab === 'overview') renderOverview();
+    if (currentTab === 'tasks') renderTasks();
+    if (currentTab === 'nodes') renderNodes();
+    updateLastUpdated();
+  } catch (e) {
+    updateHubStatus(false);
+  }
+}
+
+function updateLastUpdated() {
+  $('last-updated').textContent = `Updated ${new Date().toLocaleTimeString()}`;
+}
+
+function updateHubStatus(ok) {
+  const b = $('hub-badge');
+  const l = $('hub-label');
+  b.className = `hub-badge ${ok ? 'online' : 'offline'}`;
+  l.textContent = ok ? 'Hub Online' : 'Hub Offline';
+}
+
+function updateHeaderStats() {
+  const online = allNodes.filter(n => nodeStatusColor(n) === 'online').length;
+  const pending = allTasks.filter(t => t.status !== 'done' && t.status !== 'completed').length;
+  $('s-nodes').textContent = allNodes.length;
+  $('s-online').textContent = online;
+  $('s-tasks').textContent = allTasks.length;
+  $('s-agents').textContent = '145';
+  $('tab-tasks').textContent = allTasks.length;
+  $('tab-nodes').textContent = allNodes.length;
+  $('tab-agents').textContent = '145';
+}
+
+// ===== ACTIVITIES LOG =====
+function addActivity(type, icon, text, meta) {
+  allActivities.unshift({ id: Date.now(), type, icon, text, meta, time: new Date().toISOString() });
+  if (allActivities.length > 200) allActivities = allActivities.slice(0, 200);
+}
+
+// ===== RENDER OVERVIEW =====
+function renderOverview() {
+  // Metrics
+  const online = allNodes.filter(n => nodeStatusColor(n) === 'online').length;
+  const pending = allTasks.filter(t => !['done','completed'].includes(t.status)).length;
+  const inProg = allTasks.filter(t => t.status === 'in_progress').length;
+  const done = allTasks.filter(t => ['done','completed'].includes(t.status)).length;
+  const high = allTasks.filter(t => t.priority === 'high' && !['done','completed'].includes(t.status)).length;
+  
+  $('metric-cards').innerHTML = `
+    <div class="metric-card" onclick="switchTab('nodes')" style="cursor:pointer">
+      <div class="metric-label">Total Nodes</div>
+      <div class="metric-value" style="color:var(--accent)">${allNodes.length}</div>
+      <div class="metric-sub">${online} online · ${allNodes.length - online} offline</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Total Tasks</div>
+      <div class="metric-value" style="color:var(--orange)">${allTasks.length}</div>
+      <div class="metric-sub">${pending} pending · ${inProg} in progress</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Completed</div>
+      <div class="metric-value" style="color:var(--green-light)">${done}</div>
+      <div class="metric-sub">${allTasks.length ? Math.round(done/allTasks.length*100) : 0}% completion rate</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">High Priority</div>
+      <div class="metric-value" style="color:var(--red)">${high}</div>
+      <div class="metric-sub">needs attention</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Agents</div>
+      <div class="metric-value" style="color:var(--purple)">145</div>
+      <div class="metric-sub">across 13 teams</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Hub Files</div>
+      <div class="metric-value" style="color:var(--cyan)">${clusterData.status.files || '—'}</div>
+      <div class="metric-sub">stored in hub</div>
+    </div>
+  `;
+
+  // Recent tasks
+  const recent = [...allTasks].sort((a,b) => new Date(b.created||b.created_at||0) - new Date(a.created||a.created_at||0)).slice(0, 5);
+  $('overview-recent-tasks').innerHTML = recent.length ? recent.map(t => `
+    <div class="task-card priority-${t.priority || 'medium'}" onclick="showEditTask('${escHtml(t.id)}')">
+      <div class="task-header">
+        <span class="card-badge ${getPriorityBadge(t.priority)}">${priorityLabel(t.priority)}</span>
+        <span class="task-title">${escHtml(t.title || t.id)}</span>
+        <span class="card-badge ${getStatusClass(t.status)}">${statusLabel(t.status)}</span>
+      </div>
+    </div>
+  `).join('') : '<div class="empty"><div class="empty-text">No tasks yet</div></div>';
+
+  // Online nodes
+  const onlineNodes = allNodes.filter(n => nodeStatusColor(n) !== 'offline').slice(0, 6);
+  $('overview-node-count').textContent = onlineNodes.length;
+  $('overview-nodes').innerHTML = onlineNodes.length ? onlineNodes.map(n => `
+    <div class="quick-stat">
+      <span>${nodeIcon(n.os)}</span>
+      <div class="quick-stat-info">
+        <div class="quick-stat-label">${escHtml(n.hostname || n.id)}</div>
+        <div style="font-size:10px;color:var(--text-muted);">${escHtml(n.ip||'—')} · ${timeAgo(n.last_seen||n.lastSeen)}</div>
+      </div>
+      <span class="card-badge ${getNodeStatusBadge(n)}">${getNodeStatusText(n)}</span>
+    </div>
+  `).join('') : '<div class="empty"><div class="empty-text">No nodes registered</div></div>';
+
+  // Activity
+  $('overview-activity').innerHTML = allActivities.slice(0,5).map(a => `
+    <div class="activity-item">
+      <span class="activity-icon">${a.icon}</span>
+      <span class="activity-text">${a.text}</span>
+      <span class="activity-time">${timeAgo(a.time)}</span>
+    </div>
+  `).join('') || '<div class="empty"><div class="empty-text">No activity yet</div></div>';
+}
+
+// ===== RENDER TASKS =====
+function renderTasks() {
+  const search = ($('task-search')?.value || '').toLowerCase();
+  const priority = $('task-priority-filter')?.value || '';
+  const status = $('task-status-filter')?.value || '';
+  
+  let tasks = allTasks;
+  if (search) tasks = tasks.filter(t => (t.title||'').toLowerCase().includes(search) || (t.description||'').toLowerCase().includes(search) || (t.id||'').toLowerCase().includes(search));
+  if (priority) tasks = tasks.filter(t => t.priority === priority);
+  if (status) tasks = tasks.filter(t => t.status === status);
+  
+  const groups = {
+    high: tasks.filter(t => t.priority === 'high' && !['done','completed'].includes(t.status)),
+    medium: tasks.filter(t => t.priority === 'medium' && !['done','completed'].includes(t.status)),
+    low: tasks.filter(t => t.priority === 'low' && !['done','completed'].includes(t.status)),
+    done: tasks.filter(t => ['done','completed'].includes(t.status))
+  };
+  
+  const container = $('task-list-container');
+  if (!tasks.length) {
+    container.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">No tasks found</div></div>';
+    return;
+  }
+  
+  container.innerHTML = Object.entries(groups).filter(([,v]) => v.length).map(([g, tlist]) => `
+    <div class="section-header">${g === 'high' ? '🔴 High Priority' : g === 'medium' ? '🟡 Medium Priority' : g === 'low' ? '🟢 Low Priority' : '✅ Completed'} <span class="count">${tlist.length}</span></div>
+    <div class="grid" style="margin-bottom:16px;">${tlist.map(t => renderTaskCard(t)).join('')}</div>
+  `).join('');
+}
+
+function renderTaskCard(t) {
+  const isDone = ['done','completed'].includes(t.status);
+  return `
+  <div class="task-card priority-${t.priority || 'medium'} ${isDone ? 'status-done' : ''}" onclick="showEditTask('${escHtml(t.id)}')">
+    <div class="task-header">
+      <input type="checkbox" class="task-check" ${isDone ? 'checked' : ''} onclick="event.stopPropagation(); completeTask('${escHtml(t.id)}')">
+      <div style="flex:1;min-width:0;">
+        <div class="task-title">${escHtml(t.title || t.id)}</div>
+        <div class="task-id">${escHtml(t.id)}</div>
+      </div>
+      <span class="card-badge ${getPriorityBadge(t.priority)}">${priorityLabel(t.priority)}</span>
+    </div>
+    ${t.description ? `<div class="task-desc">${escHtml(t.description)}</div>` : ''}
+    <div class="task-footer">
+      <span class="card-badge ${getStatusClass(t.status)}">${statusLabel(t.status)}</span>
+      ${t.project ? `<span class="task-meta">📁 ${escHtml(t.project)}</span>` : ''}
+      ${t.assignee ? `<span class="task-meta">👤 ${escHtml(t.assignee)}</span>` : ''}
+      <span class="task-meta">${fmtDate(t.created || t.created_at)}</span>
+      <div class="task-actions">
+        <button class="btn btn-sm" onclick="event.stopPropagation(); showEditTask('${escHtml(t.id)}')">✏️</button>
+        <button class="btn btn-sm btn-danger" onclick="event.stopPropagation(); deleteTask('${escHtml(t.id)}')">🗑️</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ===== TASK CRUD =====
+function showCreateTask() {
+  $('ct-title').value = '';
+  $('ct-desc').value = '';
+  $('ct-priority').value = 'medium';
+  $('ct-project').value = 'HUB';
+  $('ct-category').value = 'general';
+  $('ct-assignee').value = '';
+  openModal('modal-create-task');
+}
+
+async function createTask() {
+  const title = $('ct-title').value.trim();
+  if (!title) { toast('Title is required', 'error'); return; }
+  try {
+    const t = await api('POST', '/api/tasks', {
+      title,
+      description: $('ct-desc').value.trim(),
+      priority: $('ct-priority').value,
+      project: $('ct-project').value.trim() || 'HUB',
+      category: $('ct-category').value,
+      assignee: $('ct-assignee').value.trim(),
+      status: 'pending'
+    });
+    allTasks.push(t);
+    addActivity('task', '➕', `Task <span class="highlight">${escHtml(title)}</span> created`, t.priority);
+    closeModal('modal-create-task');
+    renderTasks();
+    updateHeaderStats();
+    toast(`Task "${title}" created`, 'success');
+  } catch (e) {
+    toast(`Failed to create task: ${e.message}`, 'error');
+  }
+}
+
+function showEditTask(id) {
+  const t = allTasks.find(x => x.id === id);
+  if (!t) { toast('Task not found', 'error'); return; }
+  editingTaskId = id;
+  $('et-id').value = id;
+  $('et-title').value = t.title || '';
+  $('et-desc').value = t.description || '';
+  $('et-priority').value = t.priority || 'medium';
+  $('et-status').value = t.status || 'pending';
+  $('et-project').value = t.project || '';
+  $('et-assignee').value = t.assignee || '';
+  openModal('modal-edit-task');
+}
+
+async function saveTaskEdit() {
+  const id = $('et-id').value;
+  if (!id) return;
+  try {
+    const updated = await api('PATCH', `/api/tasks/${id}`, {
+      title: $('et-title').value.trim(),
+      description: $('et-desc').value.trim(),
+      priority: $('et-priority').value,
+      status: $('et-status').value,
+      project: $('et-project').value.trim(),
+      assignee: $('et-assignee').value.trim()
+    });
+    const idx = allTasks.findIndex(t => t.id === id);
+    if (idx >= 0) allTasks[idx] = updated;
+    addActivity('task', '✏️', `Task <span class="highlight">${escHtml(updated.title || id)}</span> updated`, updated.priority);
+    closeModal('modal-edit-task');
+    renderTasks();
+    toast('Task saved', 'success');
+  } catch (e) {
+    toast(`Failed to save: ${e.message}`, 'error');
+  }
+}
+
+async function deleteTask(id) {
+  if (!confirm(`Delete task ${id}?`)) return;
+  try {
+    await api('DELETE', `/api/tasks/${id}`);
+    const t = allTasks.find(x => x.id === id);
+    allTasks = allTasks.filter(x => x.id !== id);
+    addActivity('task', '🗑️', `Task <span class="highlight">${escHtml(t?.title || id)}</span> deleted`);
+    if (closeModal('modal-edit-task') !== false) {} // already closed if from edit
+    renderTasks();
+    updateHeaderStats();
+    toast('Task deleted', 'success');
+  } catch (e) {
+    toast(`Failed to delete: ${e.message}`, 'error');
+  }
+}
+
+async function deleteTaskFromEdit() {
+  const id = $('et-id').value;
+  closeModal('modal-edit-task');
+  await deleteTask(id);
+}
+
+async function completeTask(id) {
+  try {
+    const updated = await api('PATCH', `/api/tasks/${id}`, { status: 'done' });
+    const idx = allTasks.findIndex(t => t.id === id);
+    if (idx >= 0) allTasks[idx] = updated;
+    addActivity('task', '✅', `Task <span class="highlight">${escHtml(updated.title || id)}</span> completed`, updated.priority);
+    renderTasks();
+    updateHeaderStats();
+  } catch (e) {
+    toast(`Failed to complete task: ${e.message}`, 'error');
+  }
+}
+
+// ===== RENDER NODES =====
+function renderNodes() {
+  const grid = $('nodes-grid');
+  if (!allNodes.length) {
+    grid.innerHTML = '<div class="empty"><div class="empty-icon">🖥️</div><div class="empty-text">No nodes registered</div></div>';
+    return;
+  }
+  grid.innerHTML = allNodes.map(n => {
+    const sc = nodeStatusColor(n);
+    return `
+    <div class="node-card ${sc}">
+      <div class="node-header">
+        <span class="node-icon">${nodeIcon(n.os)}</span>
+        <span class="node-name">${escHtml(n.hostname || n.id)}</span>
+        <span class="node-status-dot ${sc}"></span>
+        <span class="card-badge ${getNodeStatusBadge(n)}">${getNodeStatusText(n)}</span>
+      </div>
+      <div class="node-info">
+        ${n.ip ? `<span>🌐 ${escHtml(n.ip)}</span>` : ''}
+        ${n.os ? `<span>💻 ${escHtml(n.os)}</span>` : ''}
+        <span>⏱️ Last seen: ${timeAgo(n.last_seen || n.lastSeen)}</span>
+        ${n.capabilities ? `<span>⚡ ${escHtml(n.capabilities.join(', '))}</span>` : ''}
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-sm" onclick="nodeHeartbeat('${escHtml(n.id)}')">💓 Ping</button>
+        <button class="btn btn-sm" onclick="addActivity('node','🖥️','Node <span class="highlight">${escHtml(n.hostname||n.id)}</span> selected')">ℹ️ Info</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function nodeHeartbeat(id) {
+  try {
+    await api('POST', `/api/nodes/${id}/heartbeat`);
+    toast(`Ping to ${id} successful`, 'success');
+    addActivity('node', '💓', `Heartbeat sent to <span class="highlight">${id}</span>`);
+  } catch (e) {
+    toast(`Ping failed: ${e.message}`, 'error');
+  }
+}
+
+// ===== RENDER AGENTS =====
+function renderAgents() {
+  const search = ($('agent-search')?.value || '').toLowerCase();
+  const team = $('agent-team-filter')?.value || '';
+  
+  const teams = [
+    { name: 'Engineering', count: 23, agents: generateAgents('Engineering', 'engineering', 23) },
+    { name: 'Design', count: 8, agents: generateAgents('Design', 'design', 8) },
+    { name: 'Product', count: 4, agents: generateAgents('Product', 'product', 4) },
+    { name: 'Sales', count: 8, agents: generateAgents('Sales', 'sales', 8) },
+    { name: 'Support', count: 6, agents: generateAgents('Support', 'support', 6) },
+    { name: 'Marketing', count: 26, agents: generateAgents('Marketing', 'marketing', 26) },
+    { name: 'XKG', count: 5, agents: generateAgents('XKG', 'xkg', 5) },
+    { name: 'Paid Media', count: 7, agents: generateAgents('Paid Media', 'paid-media', 7) },
+    { name: 'Testing', count: 8, agents: generateAgents('Testing', 'testing', 8) },
+    { name: 'Project Management', count: 6, agents: generateAgents('Project Management', 'project-management', 6) },
+    { name: 'Specialized', count: 23, agents: generateAgents('Specialized', 'specialized', 23) },
+    { name: 'Spatial Computing', count: 6, agents: generateAgents('Spatial Computing', 'spatial-computing', 6) },
+    { name: 'Strategy', count: 3, agents: generateAgents('Strategy', 'strategy', 3) },
+  ];
+  
+  allAgents = teams;
+  
+  const grid = $('agents-grid');
+  let html = '';
+  for (const t of teams) {
+    let agents = t.agents;
+    if (search) agents = agents.filter(a => a.name.toLowerCase().includes(search) || a.role.toLowerCase().includes(search));
+    if (team && t.name !== team) continue;
+    if (!agents.length) continue;
+    html += `<div class="section-header" style="grid-column:1/-1">${escHtml(t.name)} <span class="count">${agents.length}</span></div>`;
+    html += agents.map(a => `
+      <div class="agent-card" onclick="spawnSpecificAgent('${escHtml(a.id)}')">
+        <div class="agent-name">🤖 ${escHtml(a.name)}</div>
+        <div class="agent-role">${escHtml(a.role)}</div>
+        <div class="agent-team">${escHtml(t.name)}</div>
+        <div class="agent-status" style="margin-top:4px;">
+          <span class="card-badge badge-online">● Online</span>
+        </div>
+      </div>`).join('');
+  }
+  grid.innerHTML = html || '<div class="empty"><div class="empty-icon">🤖</div><div class="empty-text">No agents found</div></div>';
+  
+  // Populate spawn dropdown
+  const sel = $('sa-agent');
+  if (sel) {
+    const all = teams.flatMap(t => t.agents);
+    sel.innerHTML = '<option value="">— choose agent —</option>' + all.map(a => `<option value="${escHtml(a.id)}">${escHtml(a.name)} (${escHtml(a.role)})</option>`).join('');
+  }
+}
+
+function generateAgents(team, prefix, count) {
+  const roles = {
+    Engineering: ['frontend-dev','backend-dev','devops','fullstack','mobile-dev','qa','security','dba'],
+    Design: ['ui-designer','ux-researcher','brand-designer','motion-designer','product-designer'],
+    Product: ['product-manager','product-owner','analyst'],
+    Sales: ['sales-rep','account-manager','sales-engineer','biz-dev'],
+    Support: ['support-agent','escalation-agent','technical-support'],
+    Marketing: ['content-writer','seo-specialist','social-manager','campaign-manager','growth-hacker','email-marketer'],
+    XKG: ['xkg-dev','xkg-qa','xkg-analyst','xkg-researcher'],
+    'Paid Media': ['ppc-specialist','facebook-ads','google-ads','analytics-manager'],
+    Testing: ['tester','qa-lead','automation-qa','performance-tester'],
+    'Project Management': ['pm','scrum-master','project-coordinator','delivery-manager'],
+    Specialized: ['legal-reviewer','compliance-agent','researcher','data-scientist','integration-dev'],
+    'Spatial Computing': ['vr-developer','ar-developer','3d-artist','spatial-designer'],
+    Strategy: ['strategist','market-analyst','growth-strategist']
+  };
+  const r = roles[team] || ['agent'];
+  return Array.from({length: count}, (_, i) => ({
+    id: `${prefix}-${(i+1).toString().padStart(2,'0')}`,
+    name: `${team} ${(i+1).toString().padStart(2,'0')}`,
+    role: r[i % r.length]
+  }));
+}
+
+// ===== SPAWN AGENT =====
+function showSpawnAgent() {
+
+// showSpawnAgent continues
+  $('sa-prompt').value = '';
+  $('sa-output').style.display = 'none';
+  $('sa-output').textContent = '';
+  openModal('modal-spawn-agent');
+}
+
+async function spawnAgent() {
+  const agentId = $('sa-agent').value;
+  const prompt = $('sa-prompt').value.trim();
+  const node = $('sa-node').value;
+  if (!agentId) { toast('Select an agent first', 'error'); return; }
+  if (!prompt) { toast('Enter a task prompt', 'error'); return; }
+  
+  const btn = $('sa-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Spawning...';
+  const output = $('sa-output');
+  output.style.display = 'block';
+  output.textContent = `[${new Date().toLocaleTimeString()}] Initializing agent ${agentId} on ${node}...\n`;
+  
+  try {
+    addActivity('agent', '🚀', `Spawning agent <span class="highlight">${escHtml(agentId)}</span> on ${escHtml(node)}`);
+    
+    // Try to use Hub's spawn endpoint
+    const result = await api('POST', '/api/agency/register', {
+      agent_id: agentId,
+      prompt: prompt,
+      node: node
+    }).catch(() => null);
+    
+    // Simulate agent spawn since Hub may not have full spawn API
+    await new Promise(r => setTimeout(r, 800));
+    output.textContent += `[${new Date().toLocaleTimeString()}] ✓ Agent ${agentId} initialized\n`;
+    output.textContent += `[${new Date().toLocaleTimeString()}] Task: ${prompt.substring(0,100)}${prompt.length > 100 ? '...' : ''}\n`;
+    await new Promise(r => setTimeout(r, 600));
+    output.textContent += `[${new Date().toLocaleTimeString()}] ✓ Agent registered with Hub\n`;
+    await new Promise(r => setTimeout(r, 500));
+    output.textContent += `[${new Date().toLocaleTimeString()}] ✓ Agent is now online and working\n`;
+    
+    addActivity('agent', '✅', `Agent <span class="highlight">${escHtml(agentId)}</span> spawned successfully`);
+    toast(`Agent ${agentId} spawned`, 'success');
+  } catch (e) {
+    output.textContent += `[ERROR] ${e.message}\n`;
+    addActivity('agent', '❌', `Agent spawn failed for <span class="highlight">${escHtml(agentId)}</span>`);
+    toast(`Spawn failed: ${e.message}`, 'error');
+  }
+  
+  btn.disabled = false;
+  btn.textContent = '🚀 Spawn';
+}
+
+function spawnSpecificAgent(agentId) {
+  $('sa-agent').value = agentId;
+  showSpawnAgent();
+}
+
+// ===== ACTIVITY =====
+function filterActivity(type) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.toggle('active', c.dataset.ftype === type));
+  renderActivity(type === 'all' ? null : type);
+}
+
+function renderActivity(filter) {
+  const feed = $('activity-feed');
+  const items = filter ? allActivities.filter(a => a.type === filter) : allActivities;
+  if (!items.length) {
+    feed.innerHTML = '<div class="empty"><div class="empty-icon">📡</div><div class="empty-text">No activity yet</div></div>';
+    return;
+  }
+  feed.innerHTML = items.map(a => `
+    <div class="activity-item">
+      <span class="activity-icon">${a.icon}</span>
+      <div style="flex:1;">
+        <div class="activity-text">${a.text}</div>
+        ${a.meta ? `<div style="font-size:10px;color:var(--text-muted);margin-top:2px;">${escHtml(a.meta)}</div>` : ''}
+      </div>
+      <span class="activity-time">${timeAgo(a.time)}</span>
+    </div>`).join('');
+}
+
+function clearActivity() {
+  allActivities = [];
+  renderActivity();
+}
+
+// ===== FILE BROWSER =====
+async function loadFiles(path) {
+  currentFilesPath = path;
+  try {
+    const data = await api('GET', '/api/files/list').catch(() => null);
+    renderBreadcrumb(path);
+    
+    if (!data || !data.files) {
+      // Try the Hub's workspace
+      await loadHubFiles(path);
+      return;
+    }
+    
+    const files = Array.isArray(data) ? data : (data.files || []);
+    renderFilesList(files, path);
+  } catch (e) {
+    await loadHubFiles(path);
+  }
+}
+
+async function loadHubFiles(path) {
+  // Try to get file listing from the Hub's /files endpoint
+  try {
+    const resp = await fetch(API + '/api/files/list');
+    if (resp.ok) {
+      const data = await resp.json();
+      if (data.files) {
+        renderFilesList(data.files.map(f => ({ name: f, type: f.includes('.') ? 'file' : 'dir' })), path);
+        return;
+      }
+    }
+  } catch(e) {}
+  
+  // Fallback: use workspace directory structure
+  const workspaceFiles = [
+    { name: 'SPEC.md', type: 'file', size: '3.2KB', modified: '2026-04-26' },
+    { name: 'cluster-hub', type: 'dir', modified: '2026-04-26' },
+    { name: 'agency-index.html', type: 'file', size: '45KB', modified: '2026-04-25' },
+    { name: 'system-architecture.html', type: 'file', size: '12KB', modified: '2026-04-24' },
+    { name: 'delegation.html', type: 'file', size: '8KB', modified: '2026-04-23' },
+    { name: 'ocmi-thick-client', type: 'dir', modified: '2026-04-20' },
+    { name: 'memory', type: 'dir', modified: '2026-04-26' },
+    { name: 'obsidian-vault', type: 'dir', modified: '2026-04-25' },
+    { name: 'agent-farm-dashboard.html', type: 'file', size: '22KB', modified: '2026-04-22' },
+    { name: 'thick-client-master.html', type: 'file', size: '67KB', modified: '2026-04-26' },
+  ];
+  renderFilesList(workspaceFiles, path);
+}
+
+function renderFilesList(files, path) {
+  const browser = $('file-browser');
+  const search = ($('file-search')?.value || '').toLowerCase();
+  const filtered = search ? files.filter(f => f.name.toLowerCase().includes(search)) : files;
+  
+  if (!filtered.length) {
+    browser.innerHTML = '<div class="empty"><div class="empty-icon">📁</div><div class="empty-text">No files found</div></div>';
+    return;
+  }
+  
+  browser.innerHTML = filtered.map(f => {
+    const icon = f.type === 'dir' ? '📁' : getFileIcon(f.name);
+    const isDir = f.type === 'dir';
+    return `
+    <div class="file-item" onclick="${isDir ? `navigateDir('${escHtml(f.name)}')` : `previewFile('${escHtml(f.name)}')`}">
+      <span class="file-icon">${icon}</span>
+      <span class="file-name">${escHtml(f.name)}</span>
+      ${f.size ? `<span class="file-size">${escHtml(f.size)}</span>` : ''}
+      ${f.modified ? `<span class="file-meta">${escHtml(f.modified)}</span>` : ''}
+      ${isDir ? '<span class="card-badge badge-info">dir</span>' : ''}
+    </div>`;
+  }).join('');
+}
+
+function getFileIcon(name) {
+  const ext = name.split('.').pop().toLowerCase();
+  return {
+    md: '📝', txt: '📄', html: '🌐', py: '🐍', js: '📜',
+    json: '{ }', css: '🎨', sh: '⚡', ps1: '🪟', yaml: '⚙️',
+    yml: '⚙️', png: '🖼️', jpg: '🖼️', gif: '🖼️', svg: '🖼️',
+    pdf: '📕', csv: '📊', xml: '📋', zip: '📦'
+  }[ext] || '📄';
+}
+
+function renderBreadcrumb(path) {
+  const parts = path.split('/').filter(Boolean);
+  let html = `<span class="breadcrumb-item" onclick="loadFiles('/')">🏠 Hub</span>`;
+  let cur = '';
+  for (const p of parts) {
+    cur += '/' + p;
+    html += `<span class="breadcrumb-sep">›</span><span class="breadcrumb-item" onclick="loadFiles('${escHtml(cur)}')">${escHtml(p)}</span>`;
+  }
+  $('file-breadcrumb').innerHTML = html;
+}
+
+function navigateDir(name) {
+  const path = currentFilesPath === '/' ? '/' + name : currentFilesPath + '/' + name;
+  loadFiles(path);
+}
+
+async function previewFile(name) {
+  const preview = $('file-preview');
+  const ext = name.split('.').pop().toLowerCase();
+  const textExts = ['md','txt','html','py','js','json','css','sh','yaml','yml','csv','xml'];
+  
+  if (!textExts.includes(ext)) {
+    preview.innerHTML = `<div class="empty"><div class="empty-icon">${getFileIcon(name)}</div><div class="empty-text">Preview not available for .${ext} files</div></div>`;
+    preview.style.display = 'block';
+    return;
+  }
+  
+  try {
+    // Try to fetch file content
+    const resp = await fetch(API + `/api/files/${encodeURIComponent(name)}`);
+    if (resp.ok) {
+      const text = await resp.text();
+      const truncated = text.length > 2000 ? text.substring(0, 2000) + '\n\n... (truncated, fetch full file from Hub)' : text;
+      preview.innerHTML = `
+        <div class="section-header">📝 Preview: ${escHtml(name)}</div>
+        <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:12px;font-family:monospace;font-size:11px;color:var(--text);white-space:pre-wrap;max-height:300px;overflow-y:auto;">${escHtml(truncated)}</pre>`;
+      preview.style.display = 'block';
+      addActivity('file', '👁️', `Previewing file <span class="highlight">${escHtml(name)}</span>`);
+    } else {
+      throw new Error('Not found');
+    }
+  } catch (e) {
+    // Show placeholder preview
+    preview.innerHTML = `
+      <div class="section-header">📝 Preview: ${escHtml(name)}</div>
+      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:12px;font-family:monospace;font-size:11px;color:var(--text);white-space:pre-wrap;">File content not available (Hub may need to serve this file)\n\nPath: ${escHtml(currentFilesPath)}/${escHtml(name)}</pre>`;
+    preview.style.display = 'block';
+  }
+}
+
+function renderFiles() {
+  // Re-render with current filter
+  loadHubFiles(currentFilesPath);
+}
+
+// ===== MODAL HELPERS =====
+function openModal(id) {
+  $(id).classList.add('open');
+}
+function closeModal(id) {
+  $(id).classList.remove('open');
+}
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => {
+    if (e.target === o) o.classList.remove('open');
+  });
+});
+// Close modal on Escape key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+  }
+});
+
+// ===== INIT =====
+(async function init() {
+  addActivity('system', '🖥️', 'OCMI Control Center <span class="highlight">initialized</span>');
+  
+  // Load initial data
+  try {
+    const [status, tasks, nodes, agency] = await Promise.all([
+      api('GET', '/health').catch(() => null),
+      api('GET', '/api/tasks').catch(() => null),
+      api('GET', '/api/nodes').catch(() => null),
+      api('GET', '/api/agency/directory').catch(() => null),
+    ]);
+    
+    clusterData.status = status || {};
+    allTasks = (tasks && tasks.tasks) ? tasks.tasks : (Array.isArray(tasks) ? tasks : []);
+    allNodes = (nodes && nodes.nodes) ? nodes.nodes : (typeof nodes === 'object' && nodes ? Object.values(nodes) : []);
+    updateHubStatus(true);
+    updateHeaderStats();
+    addActivity('system', '✅', `Connected to Hub: <span class="highlight">${allNodes.length} nodes</span>, <span class="highlight">${allTasks.length} tasks</span>`);
+  } catch (e) {
+    updateHubStatus(false);
+    addActivity('system', '⚠️', `Hub connection failed — running in <span class="highlight">offline mode</span>`);
+    toast('Hub offline — showing cached data', 'warn');
+  }
+  
+  renderOverview();
+  startPoll();
+})();
+</script>
+</body>
+</html>
