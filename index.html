@@ -1,48 +1,509 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Seele Agency - Login Required</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); color: #e0e0e0; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-    .login-container { text-align: center; padding: 40px; background: rgba(255,255,255,0.05); border-radius: 16px; border: 1px solid rgba(139,92,246,0.3); max-width: 400px; width: 90%; }
-    h1 { color: #8b5cf6; margin-bottom: 20px; font-size: 2rem; }
-    p { color: #9ca3af; margin-bottom: 30px; }
-    input { width: 100%; padding: 14px; font-size: 16px; border: 1px solid rgba(139,92,246,0.5); border-radius: 8px; background: rgba(255,255,255,0.1); color: white; margin-bottom: 16px; }
-    input::placeholder { color: #6b7280; }
-    button { width: 100%; background: #8b5cf6; color: white; padding: 14px; font-size: 16px; border: none; border-radius: 8px; cursor: pointer; }
-    button:hover { background: #7c3aed; }
-    .error { color: #ef4444; margin-top: 16px; display: none; }
-    .success { display: none; text-align: center; }
-    .success iframe { width: 100%; height: 90vh; border: none; border-radius: 8px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="XKG Desktop — keep every AI conversation local, searchable, and yours. Works on Windows, Mac, Ubuntu, iOS, and Android. One-time purchase, no subscription required.">
+<meta property="og:title" content="XKG Desktop — Your AI Conversations, Locally Yours">
+<meta property="og:description" content="Local-first knowledge graph for every LLM chat you've ever had. Grok, Claude, ChatGPT, Gemini — all in one searchable place. Yours forever.">
+<meta property="og:url" content="https://seele.agency/">
+<title>XKG Desktop — Local-First AI Conversation Knowledge Graph | Seele Agency</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d1117; --bg2: #161b22; --bg3: #21262d; --bg4: #30363d;
+    --text: #e6edf3; --text2: #8b949e; --text3: #6e7681;
+    --accent: #8b5cf6; --accent-h: #a78bfa; --accent-d: #7c3aed;
+    --success: #3fb950; --danger: #f85149; --warn: #d29922;
+    --gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%);
+  }
+  html, body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; line-height: 1.6; }
+  body { min-height: 100vh; }
+  a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
+  a:hover { color: var(--accent-h); }
+
+  /* ===== Layout ===== */
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  nav { position: sticky; top: 0; background: rgba(13,17,23,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--bg4); z-index: 100; }
+  nav .container { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; }
+  .logo { font-size: 18px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .logo-mark { width: 28px; height: 28px; background: var(--gradient); border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 14px; }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a { color: var(--text2); font-size: 14px; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta { background: var(--accent); color: white !important; padding: 8px 16px; border-radius: 8px; font-weight: 600; }
+  .nav-cta:hover { background: var(--accent-d); }
+
+  /* ===== Hero ===== */
+  .hero { padding: 80px 0 100px; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -20%; left: 50%; transform: translateX(-50%); width: 80%; height: 60%; background: radial-gradient(ellipse, rgba(139,92,246,0.15) 0%, transparent 70%); pointer-events: none; }
+  .hero h1 { font-size: 56px; font-weight: 800; line-height: 1.1; margin-bottom: 24px; letter-spacing: -0.02em; }
+  .hero h1 .grad { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero .tag { display: inline-block; padding: 6px 14px; background: rgba(139,92,246,0.15); color: var(--accent-h); border: 1px solid rgba(139,92,246,0.3); border-radius: 100px; font-size: 13px; font-weight: 500; margin-bottom: 24px; }
+  .hero p.lead { font-size: 20px; color: var(--text2); max-width: 720px; margin: 0 auto 40px; }
+  .hero-cta { display: inline-flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+  .btn { padding: 14px 28px; border-radius: 10px; font-weight: 600; font-size: 16px; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; border: none; cursor: pointer; }
+  .btn-primary { background: var(--gradient); color: white; box-shadow: 0 8px 30px rgba(139,92,246,0.3); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(139,92,246,0.4); color: white; }
+  .btn-secondary { background: var(--bg2); color: var(--text); border: 1px solid var(--bg4); }
+  .btn-secondary:hover { background: var(--bg3); color: var(--text); border-color: var(--accent); }
+  .hero-meta { margin-top: 32px; font-size: 14px; color: var(--text3); display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+  .hero-meta span::before { content: '✓'; color: var(--success); margin-right: 6px; font-weight: bold; }
+
+  /* ===== App preview ===== */
+  .preview { padding: 60px 0; }
+  .preview-card { background: var(--bg2); border: 1px solid var(--bg4); border-radius: 16px; padding: 20px; box-shadow: 0 30px 80px rgba(0,0,0,0.4); max-width: 900px; margin: 0 auto; }
+  .preview-bar { display: flex; gap: 6px; margin-bottom: 16px; }
+  .preview-dot { width: 12px; height: 12px; border-radius: 50%; }
+  .preview-dot:nth-child(1) { background: #ff5f57; }
+  .preview-dot:nth-child(2) { background: #febc2e; }
+  .preview-dot:nth-child(3) { background: #28c840; }
+  .preview-screen { background: #0a0d12; border-radius: 8px; aspect-ratio: 16/10; display: grid; grid-template-columns: 280px 1fr; overflow: hidden; }
+  .preview-side { background: #0d1117; border-right: 1px solid #30363d; padding: 14px; font-size: 12px; }
+  .preview-side-item { padding: 10px; border-radius: 6px; margin-bottom: 4px; color: #8b949e; }
+  .preview-side-item.active { background: #1f6feb22; color: #58a6ff; }
+  .preview-side-item .ti { color: #e6edf3; font-size: 13px; }
+  .preview-side-item .me { color: #6e7681; font-size: 11px; }
+  .preview-main { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+  .preview-msg { padding: 14px 18px; border-radius: 12px; max-width: 75%; font-size: 14px; }
+  .preview-msg.user { background: #1f6feb; color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+  .preview-msg.assistant { background: #161b22; border: 1px solid #30363d; color: #e6edf3; align-self: flex-start; border-bottom-left-radius: 4px; }
+  .preview-msg .role { font-size: 11px; color: #8b949e; margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .preview-input { margin-top: auto; background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 12px 16px; color: #6e7681; font-size: 13px; display: flex; justify-content: space-between; }
+
+  /* ===== Features ===== */
+  .features { padding: 100px 0; background: var(--bg2); border-top: 1px solid var(--bg4); border-bottom: 1px solid var(--bg4); }
+  .section-head { text-align: center; margin-bottom: 60px; }
+  .section-head h2 { font-size: 40px; font-weight: 800; margin-bottom: 16px; }
+  .section-head p { color: var(--text2); font-size: 18px; max-width: 600px; margin: 0 auto; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+  .feature { background: var(--bg); border: 1px solid var(--bg4); border-radius: 14px; padding: 32px; transition: all 0.2s; }
+  .feature:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 20px 40px rgba(139,92,246,0.1); }
+  .feature-icon { width: 48px; height: 48px; background: var(--gradient); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 20px; }
+  .feature h3 { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+  .feature p { color: var(--text2); font-size: 15px; }
+
+  /* ===== Platforms ===== */
+  .platforms { padding: 80px 0; }
+  .platform-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; max-width: 900px; margin: 0 auto; }
+  .plat { background: var(--bg2); border: 1px solid var(--bg4); border-radius: 12px; padding: 24px 16px; text-align: center; transition: all 0.2s; }
+  .plat:hover { border-color: var(--accent); background: var(--bg3); }
+  .plat-icon { font-size: 36px; margin-bottom: 10px; }
+  .plat-name { font-weight: 600; font-size: 15px; }
+  .plat-tag { color: var(--text3); font-size: 12px; margin-top: 2px; }
+
+  /* ===== Use cases ===== */
+  .use-cases { padding: 100px 0; background: var(--bg2); border-top: 1px solid var(--bg4); border-bottom: 1px solid var(--bg4); }
+  .cases { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+  .case-img { background: var(--bg); border: 1px solid var(--bg4); border-radius: 16px; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; font-size: 80px; }
+  .case-list { display: flex; flex-direction: column; gap: 24px; }
+  .case-item { display: flex; gap: 16px; align-items: flex-start; }
+  .case-num { width: 32px; height: 32px; background: var(--gradient); color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+  .case-item h4 { font-size: 17px; margin-bottom: 4px; }
+  .case-item p { color: var(--text2); font-size: 14px; }
+  @media (max-width: 768px) { .cases { grid-template-columns: 1fr; } }
+
+  /* ===== Pricing ===== */
+  .pricing { padding: 100px 0; }
+  .price-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; max-width: 1100px; margin: 0 auto; }
+  .price-card { background: var(--bg2); border: 1px solid var(--bg4); border-radius: 16px; padding: 32px; position: relative; transition: all 0.2s; }
+  .price-card.featured { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 20px 60px rgba(139,92,246,0.15); }
+  .price-card.featured::before { content: 'MOST POPULAR'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--gradient); color: white; padding: 4px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; }
+  .price-name { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .price-desc { color: var(--text2); font-size: 14px; margin-bottom: 20px; }
+  .price-amount { display: flex; align-items: baseline; gap: 4px; margin-bottom: 20px; }
+  .price-amount .num { font-size: 44px; font-weight: 800; }
+  .price-amount .per { color: var(--text2); font-size: 14px; }
+  .price-features { list-style: none; margin-bottom: 24px; }
+  .price-features li { padding: 8px 0; color: var(--text2); font-size: 14px; display: flex; gap: 8px; }
+  .price-features li::before { content: '✓'; color: var(--success); font-weight: bold; }
+  .price-cta { display: block; text-align: center; padding: 14px; border-radius: 10px; font-weight: 600; width: 100%; }
+  .price-cta.primary { background: var(--gradient); color: white; }
+  .price-cta.primary:hover { color: white; transform: translateY(-2px); }
+  .price-cta.secondary { background: var(--bg3); color: var(--text); border: 1px solid var(--bg4); }
+  .price-cta.secondary:hover { background: var(--bg4); color: var(--text); }
+
+  /* ===== FAQ ===== */
+  .faq { padding: 100px 0; background: var(--bg2); border-top: 1px solid var(--bg4); }
+  .faq-grid { max-width: 800px; margin: 0 auto; }
+  .faq-item { background: var(--bg); border: 1px solid var(--bg4); border-radius: 10px; margin-bottom: 12px; overflow: hidden; }
+  .faq-q { padding: 20px 24px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
+  .faq-q::after { content: '+'; font-size: 24px; color: var(--accent); transition: transform 0.2s; }
+  .faq-item.open .faq-q::after { content: '−'; }
+  .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.3s, padding 0.3s; padding: 0 24px; color: var(--text2); }
+  .faq-item.open .faq-a { max-height: 400px; padding: 0 24px 20px; }
+
+  /* ===== CTA ===== */
+  .cta { padding: 100px 0; text-align: center; }
+  .cta h2 { font-size: 44px; font-weight: 800; margin-bottom: 20px; }
+  .cta p { color: var(--text2); font-size: 18px; max-width: 600px; margin: 0 auto 32px; }
+
+  /* ===== Footer ===== */
+  footer { background: var(--bg2); border-top: 1px solid var(--bg4); padding: 40px 0 20px; color: var(--text2); font-size: 14px; }
+  .foot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 32px; margin-bottom: 32px; }
+  .foot-col h5 { color: var(--text); font-size: 14px; font-weight: 700; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .foot-col a { display: block; padding: 4px 0; color: var(--text2); }
+  .foot-col a:hover { color: var(--text); }
+  .foot-bottom { padding-top: 20px; border-top: 1px solid var(--bg4); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 36px; }
+    .hero p.lead { font-size: 16px; }
+    .section-head h2, .cta h2 { font-size: 28px; }
+    .nav-links a:not(.nav-cta) { display: none; }
+  }
+</style>
 </head>
 <body>
-  <div class="login-container" id="login-box">
-    <h1>Seele Agency</h1>
-    <p>Enter password to access</p>
-    <input type="password" id="password" placeholder="Enter password" onkeypress="if(event.key==='Enter')checkPwd()" />
-    <button onclick="checkPwd()">Access</button>
-    <p class="error" id="error">Incorrect password. Try again.</p>
-  </div>
-  
-  <div class="login-container success" id="content-box">
-    <iframe src="https://griptoad26.github.io/workforge/" title="Seele Hub"></iframe>
-  </div>
 
-  <script>
-    const PASSWORD = 'tabmind2026';
-    
-    function checkPwd() {
-      const pwd = document.getElementById('password').value;
-      if (pwd === PASSWORD) {
-        document.getElementById('login-box').style.display = 'none';
-        document.getElementById('content-box').style.display = 'block';
-      } else {
-        document.getElementById('error').style.display = 'block';
-        document.getElementById('password').value = '';
-      }
-    }
-  </script>
+<nav>
+  <div class="container">
+    <a href="/" class="logo"><span class="logo-mark">X</span> XKG Desktop</a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#downloads">Download</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+      <a href="/support.html">Support</a>
+      <a href="#downloads" class="nav-cta">Get XKG</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="container">
+    <span class="tag">v0.1.0 · Cross-platform · Local-first</span>
+    <h1>Your AI conversations,<br><span class="grad">locally yours</span></h1>
+    <p class="lead">
+      XKG Desktop aggregates every chat you've had with Grok, Claude, ChatGPT, and Gemini
+      into one searchable, persistent knowledge graph. Stored on your device. No cloud lock-in.
+      Yours forever.
+    </p>
+    <div class="hero-cta">
+      <a href="#downloads" class="btn btn-primary">↓ Download for free</a>
+      <a href="#features" class="btn btn-secondary">See how it works →</a>
+    </div>
+    <div class="hero-meta">
+      <span>Free forever</span>
+      <span>No account required</span>
+      <span>Open-source Tauri 2</span>
+      <span>Win · Mac · Linux · iOS · Android</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ APP PREVIEW ============ -->
+<section class="preview">
+  <div class="container">
+    <div class="preview-card">
+      <div class="preview-bar">
+        <span class="preview-dot"></span>
+        <span class="preview-dot"></span>
+        <span class="preview-dot"></span>
+      </div>
+      <div class="preview-screen">
+        <div class="preview-side">
+          <div style="font-size:11px; color:#6e7681; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; font-weight:600">Chats</div>
+          <div class="preview-side-item"><div class="ti">How to write a parser</div><div class="me">12 msgs · today</div></div>
+          <div class="preview-side-item active"><div class="ti">React hooks deep-dive</div><div class="me">8 msgs · 2h ago</div></div>
+          <div class="preview-side-item"><div class="ti">VPS pricing comparison</div><div class="me">4 msgs · yesterday</div></div>
+          <div class="preview-side-item"><div class="ti">Marketing copy review</div><div class="me">22 msgs · Jun 8</div></div>
+          <div class="preview-side-item"><div class="ti">Rust async patterns</div><div class="me">15 msgs · Jun 5</div></div>
+        </div>
+        <div class="preview-main">
+          <div class="preview-msg user">
+            <div class="role">You</div>
+            Explain the difference between useMemo and useCallback with a real example.
+          </div>
+          <div class="preview-msg assistant">
+            <div class="role">Grok · 2s ago</div>
+            Both memoize, but for different things. <code>useMemo</code> caches a computed <em>value</em>:
+            <br><br>
+            <code>const sorted = useMemo(() =&gt; items.sort(), [items]);</code>
+            <br><br>
+            <code>useCallback</code> caches a <em>function reference</em>:
+            <br><br>
+            <code>const handleClick = useCallback(() =&gt; doThing(id), [id]);</code>
+            <br><br>
+            Use <code>useMemo</code> when a calculation is expensive. Use <code>useCallback</code> when passing callbacks to memoized children to prevent re-renders.
+          </div>
+          <div class="preview-input">
+            <span>Message Grok…</span>
+            <span>➤</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES ============ -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-head">
+      <h2>Everything you've forgotten,<br>instantly searchable</h2>
+      <p>Stop scrolling back through 47 ChatGPT threads to find that one prompt. XKG indexes it all.</p>
+    </div>
+    <div class="grid-3">
+      <div class="feature">
+        <div class="feature-icon">🔒</div>
+        <h3>100% local storage</h3>
+        <p>Your chats live in a SQLite database on your device. We never see them, never train on them, never lose them when a provider sunsets a feature.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔍</div>
+        <h3>FTS5 full-text search</h3>
+        <p>Powered by SQLite's FTS5 engine with porter stemming. Search across all providers at once, instantly, even offline.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔄</div>
+        <h3>One-click provider sync</h3>
+        <p>Connect your API keys once. XKG pulls your conversation history from Grok, Claude, ChatGPT, and Gemini on your schedule.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📱</div>
+        <h3>Phone &amp; desktop, in sync</h3>
+        <p>The mobile app reads the same data over your local network or ZeroTier. Your AI history follows you everywhere.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🏷️</div>
+        <h3>Tags &amp; knowledge graph</h3>
+        <p>Tag conversations, link related prompts, build a personal knowledge graph that grows with you.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">⚡</div>
+        <h3>Native speed</h3>
+        <p>Built on Tauri 2 — the same Rust core that powers your OS. Sub-100ms search across 10,000+ messages.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PLATFORMS ============ -->
+<section class="platforms">
+  <div class="container">
+    <div class="section-head">
+      <h2>One codebase. Every device you own.</h2>
+      <p>Built with Tauri 2 — compiles natively to all five platforms from the same Rust source.</p>
+    </div>
+    <div class="platform-grid">
+      <div class="plat">
+        <div class="plat-icon">🪟</div>
+        <div class="plat-name">Windows 10/11</div>
+        <div class="plat-tag">.msi · NSIS installer</div>
+      </div>
+      <div class="plat">
+        <div class="plat-icon">🍎</div>
+        <div class="plat-name">macOS 10.13+</div>
+        <div class="plat-tag">.dmg · Universal (Intel + ARM)</div>
+      </div>
+      <div class="plat">
+        <div class="plat-icon">🐧</div>
+        <div class="plat-name">Ubuntu 22.04+</div>
+        <div class="plat-tag">AppImage · .deb · .rpm</div>
+      </div>
+      <div class="plat">
+        <div class="plat-icon">📱</div>
+        <div class="plat-name">Android 8+</div>
+        <div class="plat-tag">.apk · ARM64 + ARMv7 + x86_64</div>
+      </div>
+      <div class="plat">
+        <div class="plat-icon">📲</div>
+        <div class="plat-name">iOS 13+</div>
+        <div class="plat-tag">.ipa · App Store ready</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ USE CASES ============ -->
+<section class="use-cases">
+  <div class="container">
+    <div class="section-head">
+      <h2>Built for people who talk to AI daily</h2>
+    </div>
+    <div class="cases">
+      <div class="case-img">💡</div>
+      <div class="case-list">
+        <div class="case-item">
+          <div class="case-num">1</div>
+          <div>
+            <h4>Recover lost context</h4>
+            <p>That brilliant prompt you wrote last month? Find it in two seconds. Even if it was in a Claude chat you forgot to bookmark.</p>
+          </div>
+        </div>
+        <div class="case-item">
+          <div class="case-num">2</div>
+          <div>
+            <h4>Build a personal wiki</h4>
+            <p>Tag the gold, ignore the noise. XKG becomes a searchable brain of your best AI thinking.</p>
+          </div>
+        </div>
+        <div class="case-item">
+          <div class="case-num">3</div>
+          <div>
+            <h4>Switch LLMs without losing history</h4>
+            <p>Move from ChatGPT to Grok to Claude. XKG keeps your context portable across all of them.</p>
+          </div>
+        </div>
+        <div class="case-item">
+          <div class="case-num">4</div>
+          <div>
+            <h4>Work offline, sync later</h4>
+            <p>Write a draft prompt on the train, finish it on your desktop. XKG syncs over local network — no cloud, no leak.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="section-head">
+      <h2>Honest pricing. No bait-and-switch.</h2>
+      <p>One-time purchase. No monthly fee. Your data is always exportable.</p>
+    </div>
+    <div class="price-grid">
+      <div class="price-card">
+        <div class="price-name">Free</div>
+        <div class="price-desc">Local storage, single device</div>
+        <div class="price-amount"><span class="num">$0</span><span class="per">/forever</span></div>
+        <ul class="price-features">
+          <li>All core features</li>
+          <li>Local SQLite storage</li>
+          <li>One provider (Grok by default)</li>
+          <li>Desktop only</li>
+          <li>Community support</li>
+        </ul>
+        <a href="#downloads" class="price-cta secondary">Download free</a>
+      </div>
+      <div class="price-card featured">
+        <div class="price-name">XKG Pro</div>
+        <div class="price-desc">Multi-device sync, all providers</div>
+        <div class="price-amount"><span class="num">$29</span><span class="per">/one-time</span></div>
+        <ul class="price-features">
+          <li>Everything in Free</li>
+          <li>All 4 providers (Grok, Claude, ChatGPT, Gemini)</li>
+          <li>Multi-device sync (desktop + mobile)</li>
+          <li>Knowledge graph &amp; tags</li>
+          <li>Priority email support</li>
+          <li>Lifetime updates</li>
+        </ul>
+        <a href="/checkout.html?plan=pro" class="price-cta primary">Buy XKG Pro</a>
+      </div>
+      <div class="price-card">
+        <div class="price-name">Team</div>
+        <div class="price-desc">5 seats, shared knowledge graph</div>
+        <div class="price-amount"><span class="num">$99</span><span class="per">/one-time, 5 seats</span></div>
+        <ul class="price-features">
+          <li>Everything in Pro</li>
+          <li>5 user seats</li>
+          <li>Shared team knowledge graph</li>
+          <li>Admin dashboard</li>
+          <li>Onboarding session</li>
+        </ul>
+        <a href="/checkout.html?plan=team" class="price-cta secondary">Buy Team license</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="section-head">
+      <h2>Frequently asked</h2>
+    </div>
+    <div class="faq-grid">
+      <div class="faq-item open">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Is my data really private?</div>
+        <div class="faq-a">Yes. XKG stores everything in a SQLite database on your machine. We have no servers, no telemetry, no cloud. The only network calls are when you explicitly ask XKG to talk to a provider (Grok, Claude, etc.) to fetch or send a message.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What does the Pro license actually unlock?</div>
+        <div class="faq-a">The Free version is fully usable — local storage, search, one provider. Pro unlocks the other three providers (Claude, ChatGPT, Gemini), multi-device sync between desktop and mobile, knowledge graph tagging, and lifetime updates. After buying once, you never pay again.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Can I export my data?</div>
+        <div class="faq-a">Anytime. The DB is a standard SQLite file you can open with any tool. You can also export to JSONL, Markdown, or HTML via the in-app export. No lock-in, ever.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What if I cancel my subscription?</div>
+        <div class="faq-a">Pro is a one-time purchase, not a subscription. Once you buy it, it's yours forever, including all future updates. There is no recurring charge.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">How does the mobile sync work without a cloud?</div>
+        <div class="faq-a">XKG uses your local network (Wi-Fi) or ZeroTier/Tailscale. Your phone and desktop discover each other on the LAN and exchange data peer-to-peer. No data ever touches our infrastructure. We provide a tiny sync helper script (xkg-sync) that runs on either side.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Do I need an account?</div>
+        <div class="faq-a">No account, no email, no phone number. Just download and run. The only thing you'll add is your provider API keys (e.g. your x.ai key for Grok) — those are stored in your OS keyring, not on our servers.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Is the source code available?</div>
+        <div class="faq-a">Yes. The Tauri 2 desktop and mobile apps are on GitHub (griptoad26/xkg-desktop, griptoad26/xkg-mobile). The Pro features are compiled but verifiable against the public source.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="cta" id="downloads">
+  <div class="container">
+    <h2>Start keeping your AI history local</h2>
+    <p>Free download. No credit card. No account. Just download and use.</p>
+    <div class="hero-cta">
+      <a href="/downloads.html" class="btn btn-primary">↓ Download XKG Desktop</a>
+      <a href="/support.html" class="btn btn-secondary">Talk to us</a>
+    </div>
+    <p style="margin-top: 24px; color: var(--text3); font-size: 13px;">
+      Looking for XKG Mobile? <a href="/downloads.html#mobile">Get the Android APK →</a>
+    </p>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div class="foot-col">
+        <h5>Product</h5>
+        <a href="/downloads.html">Download</a>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+      <div class="foot-col">
+        <h5>Support</h5>
+        <a href="/support.html">Contact us</a>
+        <a href="/docs.html">Documentation</a>
+        <a href="https://github.com/griptoad26/xkg-desktop/issues">Report a bug</a>
+        <a href="https://github.com/griptoad26/xkg-desktop/discussions">Community</a>
+      </div>
+      <div class="foot-col">
+        <h5>Add-ons</h5>
+        <a href="/addons.html#cloud-sync">Cloud sync</a>
+        <a href="/addons.html#voice">Voice capture</a>
+        <a href="/addons.html#obsidian">Obsidian export</a>
+        <a href="/addons.html">View all →</a>
+      </div>
+      <div class="foot-col">
+        <h5>Company</h5>
+        <a href="/about.html">About</a>
+        <a href="https://github.com/griptoad26">GitHub</a>
+        <a href="/privacy.html">Privacy</a>
+        <a href="/terms.html">Terms</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Seele Agency · Made for AI power users</span>
+      <span>v0.1.0 · Last updated Jun 2026</span>
+    </div>
+  </div>
+</footer>
+
 </body>
 </html>

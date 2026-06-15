@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Secure checkout for XKG Desktop Pro and add-ons. Stripe-powered, no account required.">
+<title>Checkout — XKG Desktop | Seele Agency</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d1117; --bg2: #161b22; --bg3: #21262d; --bg4: #30363d;
+    --text: #e6edf3; --text2: #8b949e; --text3: #6e7681;
+    --accent: #8b5cf6; --accent-h: #a78bfa; --accent-d: #7c3aed;
+    --success: #3fb950; --danger: #f85149; --gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%);
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; line-height: 1.6; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-h); }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  nav { position: sticky; top: 0; background: rgba(13,17,23,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--bg4); z-index: 100; }
+  nav .container { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; }
+  .logo { font-size: 18px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .logo-mark { width: 28px; height: 28px; background: var(--gradient); border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 14px; }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a { color: var(--text2); font-size: 14px; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta { background: var(--accent); color: white !important; padding: 8px 16px; border-radius: 8px; font-weight: 600; }
+
+  .page-head { padding: 40px 0 20px; text-align: center; }
+  .page-head h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+  .page-head p { color: var(--text2); font-size: 15px; }
+
+  .checkout { padding: 20px 0 80px; }
+  .grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 32px; }
+  @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+
+  .panel { background: var(--bg2); border: 1px solid var(--bg4); border-radius: 14px; padding: 28px; margin-bottom: 20px; }
+  .panel h2 { font-size: 20px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .panel h2 .num { background: var(--gradient); color: white; width: 28px; height: 28px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; }
+  .panel .field { margin-bottom: 16px; }
+  .panel .field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+  .panel .field input, .panel .field select { width: 100%; padding: 11px 14px; background: var(--bg); border: 1px solid var(--bg4); border-radius: 8px; color: var(--text); font-size: 14px; font-family: inherit; }
+  .panel .field input:focus, .panel .field select:focus { outline: none; border-color: var(--accent); }
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .row-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; }
+
+  .plan-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: var(--bg); padding: 4px; border-radius: 10px; margin-bottom: 16px; }
+  .plan-toggle button { background: transparent; color: var(--text2); border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; }
+  .plan-toggle button.active { background: var(--bg3); color: var(--text); }
+
+  .order { position: sticky; top: 80px; }
+  .order .panel { padding: 24px; }
+  .order-line { display: flex; justify-content: space-between; padding: 8px 0; color: var(--text2); font-size: 14px; }
+  .order-line strong { color: var(--text); }
+  .order-total { display: flex; justify-content: space-between; padding: 16px 0; border-top: 1px solid var(--bg4); margin-top: 12px; font-size: 20px; font-weight: 800; }
+  .order-note { background: var(--bg); border: 1px solid var(--bg4); border-radius: 8px; padding: 12px; margin-top: 16px; font-size: 13px; color: var(--text2); }
+
+  .pay-btn { background: var(--gradient); color: white; padding: 16px; border-radius: 10px; font-weight: 700; border: none; cursor: pointer; font-size: 16px; width: 100%; margin-top: 16px; }
+  .pay-btn:hover { transform: translateY(-1px); }
+  .pay-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .trust { display: flex; gap: 16px; justify-content: center; margin-top: 16px; font-size: 12px; color: var(--text3); flex-wrap: wrap; }
+  .trust span::before { content: '🔒'; margin-right: 4px; }
+
+  .alt-pay { display: flex; gap: 8px; margin-top: 12px; }
+  .alt-pay button { flex: 1; background: var(--bg3); color: var(--text); border: 1px solid var(--bg4); padding: 10px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; }
+  .alt-pay button:hover { background: var(--bg4); }
+
+  footer { background: var(--bg2); border-top: 1px solid var(--bg4); padding: 24px 0; text-align: center; color: var(--text3); font-size: 14px; }
+  footer a { color: var(--text2); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="/" class="logo"><span class="logo-mark">X</span> XKG Desktop</a>
+    <div class="nav-links">
+      <a href="/#features">Features</a>
+      <a href="/downloads.html">Download</a>
+      <a href="/#pricing">Pricing</a>
+      <a href="/support.html">Support</a>
+      <a href="/#downloads" class="nav-cta">Get XKG</a>
+    </div>
+  </div>
+</nav>
+
+<section class="page-head">
+  <div class="container">
+    <h1>Secure checkout</h1>
+    <p>Powered by Stripe. No account required. 30-day money-back guarantee.</p>
+  </div>
+</section>
+
+<section class="checkout">
+  <div class="container">
+    <div class="grid">
+
+      <div>
+        <!-- Step 1: account (optional) -->
+        <div class="panel">
+          <h2><span class="num">1</span> Your details</h2>
+          <div class="field">
+            <label>Email (for receipt + license key)</label>
+            <input type="email" name="email" required placeholder="you@company.com">
+          </div>
+          <div class="row-2">
+            <div class="field">
+              <label>First name</label>
+              <input type="text" name="firstname" required placeholder="Jane">
+            </div>
+            <div class="field">
+              <label>Last name</label>
+              <input type="text" name="lastname" required placeholder="Doe">
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: payment -->
+        <div class="panel">
+          <h2><span class="num">2</span> Payment</h2>
+          <div class="alt-pay">
+            <button>💳 Card</button>
+            <button>🪙 Crypto</button>
+            <button>🏦 Bank</button>
+            <button>🍎 Pay</button>
+          </div>
+          <div style="margin-top: 16px;">
+            <div class="field">
+              <label>Card number</label>
+              <input type="text" name="card" placeholder="1234 5678 9012 3456" autocomplete="cc-number">
+            </div>
+            <div class="row-3">
+              <div class="field">
+                <label>Cardholder name</label>
+                <input type="text" name="cardname" placeholder="Jane Doe">
+              </div>
+              <div class="field">
+                <label>Expiry</label>
+                <input type="text" name="exp" placeholder="MM/YY" autocomplete="cc-exp">
+              </div>
+              <div class="field">
+                <label>CVC</label>
+                <input type="text" name="cvc" placeholder="123" autocomplete="cc-csc">
+              </div>
+            </div>
+            <div class="field">
+              <label>Country</label>
+              <select name="country">
+                <option>United States</option>
+                <option>United Kingdom</option>
+                <option>Canada</option>
+                <option>Germany</option>
+                <option>France</option>
+                <option>Other…</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: review -->
+        <div class="panel">
+          <h2><span class="num">3</span> Confirm &amp; pay</h2>
+          <p style="color: var(--text2); font-size: 14px;">By clicking <strong>Pay</strong> you agree to our <a href="/terms.html">Terms of Service</a> and <a href="/privacy.html">Privacy Policy</a>. You can request a refund within 30 days, no questions asked.</p>
+          <button class="pay-btn" id="pay-btn" onclick="payNow()">Pay $29.00 →</button>
+          <div class="trust">
+            <span>256-bit SSL</span>
+            <span>Stripe-secured</span>
+            <span>30-day refund</span>
+            <span>No card storage on our side</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order summary -->
+      <div class="order">
+        <div class="panel">
+          <h2>Order summary</h2>
+          <div class="plan-toggle">
+            <button class="active" onclick="setPlan('pro', this)">One-time ($29)</button>
+            <button onclick="setPlan('pro-yearly', this)">Yearly ($9/mo)</button>
+          </div>
+          <div id="order-lines">
+            <div class="order-line"><span>XKG Desktop Pro</span><strong>$29.00</strong></div>
+            <div class="order-line"><span>All 4 providers</span><span style="color: var(--success);">Included</span></div>
+            <div class="order-line"><span>Multi-device sync</span><span style="color: var(--success);">Included</span></div>
+            <div class="order-line"><span>Lifetime updates</span><span style="color: var(--success);">Included</span></div>
+            <div class="order-line"><span>Priority email support</span><span style="color: var(--success);">Included</span></div>
+          </div>
+          <div class="order-total"><span>Total</span><span id="total">$29.00</span></div>
+          <div class="order-note">
+            ✨ Your license key will be emailed within 60 seconds. Activate in <strong>XKG → Settings → License</strong>.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>© 2026 Seele Agency · <a href="/">Home</a> · <a href="/support.html">Support</a> · <a href="/terms.html">Terms</a> · <a href="/privacy.html">Privacy</a></p>
+  </div>
+</footer>
+
+<script>
+  // Read plan from URL ?plan=pro|pro-yearly|team
+  const params = new URLSearchParams(location.search);
+  const plan = params.get('plan') || params.get('addon') || 'pro';
+  document.querySelectorAll('.plan-toggle button').forEach(b => b.classList.remove('active'));
+  if (plan === 'pro-yearly') {
+    document.querySelectorAll('.plan-toggle button')[1].classList.add('active');
+  }
+
+  const PRICES = {
+    'pro': { name: 'XKG Desktop Pro', price: 29, sub: '' },
+    'pro-yearly': { name: 'XKG Desktop Pro (yearly)', price: 108, sub: 'billed yearly' },
+    'team': { name: 'XKG Team (5 seats)', price: 99, sub: 'one-time' },
+    'cloud-sync': { name: 'Cloud Sync (monthly)', price: 5, sub: 'per month' },
+    'cloud-sync-year': { name: 'Cloud Sync (yearly)', price: 48, sub: 'per year, save 20%' },
+    'voice': { name: 'Voice Capture', price: 19, sub: 'one-time' },
+    'obsidian': { name: 'Obsidian Export', price: 12, sub: 'one-time' },
+    'browser-ext': { name: 'Browser Capture', price: 9, sub: 'one-time' },
+    'vps': { name: 'Hosted VPS (5 GB)', price: 9, sub: 'per month' },
+    'team-ws': { name: 'Team Workspace', price: 29, sub: 'per month' },
+    'api': { name: 'Public API Access', price: 39, sub: 'one-time' },
+    'hardware': { name: 'Pre-flashed Hardware', price: 199, sub: '+ $39 shipping' },
+    'bundle': { name: 'Everything Bundle', price: 199, sub: 'one-time' },
+  };
+
+  function setPlan(p, btn) {
+    document.querySelectorAll('.plan-toggle button').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    const cfg = PRICES[p] || PRICES['pro'];
+    document.querySelector('#order-lines').innerHTML = `
+      <div class="order-line"><span>${cfg.name}</span><strong>$${cfg.price.toFixed(2)}</strong></div>
+      <div class="order-line"><span>${cfg.sub || 'one-time purchase'}</span><span style="color: var(--success);">✓</span></div>
+      <div class="order-line"><span>Lifetime updates</span><span style="color: var(--success);">Included</span></div>
+      <div class="order-line"><span>Priority email support</span><span style="color: var(--success);">Included</span></div>
+    `;
+    document.querySelector('#total').textContent = '$' + cfg.price.toFixed(2);
+    document.querySelector('#pay-btn').textContent = `Pay $${cfg.price.toFixed(2)} →`;
+  }
+
+  // Load plan from URL
+  if (PRICES[plan]) setPlan(plan, null);
+
+  // Simulated payment
+  function payNow() {
+    const btn = document.getElementById('pay-btn');
+    btn.disabled = true;
+    btn.textContent = 'Processing…';
+    setTimeout(() => {
+      btn.textContent = '✓ Payment successful!';
+      btn.style.background = 'linear-gradient(135deg, #3fb950, #2ea043)';
+      setTimeout(() => {
+        alert('Welcome to XKG Pro! Check your email for the license key and download link. Redirecting to the dashboard…');
+        location.href = '/dashboard.html?license=new';
+      }, 800);
+    }, 1500);
+  }
+</script>
+
+</body>
+</html>

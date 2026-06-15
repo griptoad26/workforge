@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Get help with XKG Desktop. Documentation, community support, priority support for Pro users, and a contact form for sales/partnerships.">
+<title>Support — XKG Desktop | Seele Agency</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d1117; --bg2: #161b22; --bg3: #21262d; --bg4: #30363d;
+    --text: #e6edf3; --text2: #8b949e; --text3: #6e7681;
+    --accent: #8b5cf6; --accent-h: #a78bfa; --accent-d: #7c3aed;
+    --success: #3fb950; --gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%);
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; line-height: 1.6; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-h); }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  nav { position: sticky; top: 0; background: rgba(13,17,23,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--bg4); z-index: 100; }
+  nav .container { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; }
+  .logo { font-size: 18px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .logo-mark { width: 28px; height: 28px; background: var(--gradient); border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 14px; }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a { color: var(--text2); font-size: 14px; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta { background: var(--accent); color: white !important; padding: 8px 16px; border-radius: 8px; font-weight: 600; }
+
+  .page-head { padding: 60px 0 40px; text-align: center; }
+  .page-head h1 { font-size: 44px; font-weight: 800; margin-bottom: 12px; }
+  .page-head p { color: var(--text2); font-size: 18px; max-width: 600px; margin: 0 auto; }
+
+  /* Support channels */
+  .channels { padding: 40px 0 60px; }
+  .channel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+  .channel { background: var(--bg2); border: 1px solid var(--bg4); border-radius: 14px; padding: 28px; transition: all 0.2s; }
+  .channel:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .channel-icon { width: 48px; height: 48px; background: var(--bg3); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 16px; }
+  .channel h3 { font-size: 18px; margin-bottom: 6px; }
+  .channel .tag { display: inline-block; padding: 2px 8px; background: var(--bg3); color: var(--text2); border-radius: 100px; font-size: 11px; margin-bottom: 12px; }
+  .channel .tag.pro { background: rgba(139,92,246,0.2); color: var(--accent-h); }
+  .channel p { color: var(--text2); font-size: 14px; margin-bottom: 16px; }
+  .channel .meta { color: var(--text3); font-size: 13px; }
+
+  /* Contact form */
+  .contact { padding: 80px 0; background: var(--bg2); border-top: 1px solid var(--bg4); }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 60px; align-items: start; max-width: 1100px; margin: 0 auto; }
+  .contact-info h2 { font-size: 32px; margin-bottom: 16px; }
+  .contact-info p { color: var(--text2); margin-bottom: 24px; }
+  .contact-list { list-style: none; }
+  .contact-list li { padding: 12px 0; border-bottom: 1px solid var(--bg4); display: flex; gap: 12px; align-items: flex-start; }
+  .contact-list .ic { color: var(--accent); font-weight: 700; }
+  .contact-list strong { display: block; margin-bottom: 2px; }
+  .contact-list span { color: var(--text2); font-size: 14px; }
+
+  form { background: var(--bg); border: 1px solid var(--bg4); border-radius: 14px; padding: 32px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { margin-bottom: 20px; }
+  .form-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 12px 14px; background: var(--bg2); border: 1px solid var(--bg4);
+    border-radius: 8px; color: var(--text); font-size: 14px; font-family: inherit;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    outline: none; border-color: var(--accent); background: var(--bg3);
+  }
+  .form-group textarea { min-height: 120px; resize: vertical; }
+  .form-submit { background: var(--gradient); color: white; padding: 14px 28px; border-radius: 10px; font-weight: 600; border: none; cursor: pointer; font-size: 15px; width: 100%; }
+  .form-submit:hover { transform: translateY(-1px); }
+  .form-note { font-size: 12px; color: var(--text3); margin-top: 12px; text-align: center; }
+
+  .faq-mini { padding: 60px 0; }
+  .faq-mini h2 { text-align: center; margin-bottom: 32px; font-size: 28px; }
+  .qa { background: var(--bg2); border: 1px solid var(--bg4); border-radius: 10px; padding: 20px; margin-bottom: 12px; max-width: 800px; margin-left: auto; margin-right: auto; }
+  .qa h4 { font-size: 15px; margin-bottom: 6px; color: var(--accent-h); }
+  .qa p { color: var(--text2); font-size: 14px; }
+
+  footer { background: var(--bg2); border-top: 1px solid var(--bg4); padding: 24px 0; text-align: center; color: var(--text3); font-size: 14px; }
+  footer a { color: var(--text2); }
+
+  @media (max-width: 768px) { .contact-grid { grid-template-columns: 1fr; gap: 40px; } .form-row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="/" class="logo"><span class="logo-mark">X</span> XKG Desktop</a>
+    <div class="nav-links">
+      <a href="/#features">Features</a>
+      <a href="/downloads.html">Download</a>
+      <a href="/#pricing">Pricing</a>
+      <a href="/support.html">Support</a>
+      <a href="/#downloads" class="nav-cta">Get XKG</a>
+    </div>
+  </div>
+</nav>
+
+<section class="page-head">
+  <div class="container">
+    <h1>How can we help?</h1>
+    <p>Free users get community support. Pro users get priority email support with a 24-hour response SLA.</p>
+  </div>
+</section>
+
+<!-- Support channels -->
+<section class="channels">
+  <div class="container">
+    <div class="channel-grid">
+      <div class="channel">
+        <div class="channel-icon">💬</div>
+        <h3>GitHub Discussions</h3>
+        <span class="tag">Free · Community</span>
+        <p>Ask questions, share workflows, and propose features. Searchable archive of every answer.</p>
+        <a href="https://github.com/griptoad26/xkg-desktop/discussions" class="meta">→ github.com/griptoad26/xkg-desktop/discussions</a>
+      </div>
+      <div class="channel">
+        <div class="channel-icon">🐛</div>
+        <h3>Report a bug</h3>
+        <span class="tag">Free · Community</span>
+        <p>Found something broken? Open a GitHub issue with the system info template. Most bugs get a fix in &lt;72h.</p>
+        <a href="https://github.com/griptoad26/xkg-desktop/issues/new" class="meta">→ github.com/griptoad26/xkg-desktop/issues</a>
+      </div>
+      <div class="channel">
+        <div class="channel-icon">📚</div>
+        <h3>Documentation</h3>
+        <span class="tag">Free · Self-serve</span>
+        <p>Setup guides, sync troubleshooting, provider configuration, and the full data schema reference.</p>
+        <a href="/docs.html" class="meta">→ docs.html</a>
+      </div>
+      <div class="channel">
+        <div class="channel-icon">📧</div>
+        <h3>Email support</h3>
+        <span class="tag pro">Pro · &lt;24h response</span>
+        <p>Direct line to the engineering team. Priority queue, screen-share debugging on request.</p>
+        <a href="mailto:support@seele.agency" class="meta">→ support@seele.agency</a>
+      </div>
+      <div class="channel">
+        <div class="channel-icon">💼</div>
+        <h3>Sales &amp; partnerships</h3>
+        <span class="tag">All users</span>
+        <p>Team licensing, custom integrations, white-labeling, and enterprise support contracts.</p>
+        <a href="mailto:sales@seele.agency" class="meta">→ sales@seele.agency</a>
+      </div>
+      <div class="channel">
+        <div class="channel-icon">🛡️</div>
+        <h3>Security disclosure</h3>
+        <span class="tag">Responsible disclosure</span>
+        <p>Found a vulnerability? We pay bounties. Email our PGP-signed security contact.</p>
+        <a href="mailto:security@seele.agency" class="meta">→ security@seele.agency</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact form -->
+<section class="contact">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-info">
+        <h2>Get in touch</h2>
+        <p>Pick a topic and we'll route your message to the right person. We respond to everything within 1 business day.</p>
+        <ul class="contact-list">
+          <li><span class="ic">→</span><div><strong>Pre-sales questions</strong><span>Volume discounts, custom builds, white-labeling</span></div></li>
+          <li><span class="ic">→</span><div><strong>Technical support</strong><span>Sync issues, install errors, provider setup</span></div></li>
+          <li><span class="ic">→</span><div><strong>Feature requests</strong><span>Tell us what would make XKG indispensable for you</span></div></li>
+          <li><span class="ic">→</span><div><strong>Partnerships</strong><span>For LLM providers, productivity apps, or AI tool makers</span></div></li>
+        </ul>
+      </div>
+      <form id="contact-form" onsubmit="submitForm(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Your name</label>
+            <input type="text" name="name" required placeholder="Jane Doe">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" required placeholder="you@company.com">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Topic</label>
+          <select name="topic" required>
+            <option value="">— pick one —</option>
+            <option>Pre-sales / pricing</option>
+            <option>Technical support (free user)</option>
+            <option>Technical support (Pro user)</option>
+            <option>Feature request</option>
+            <option>Partnership inquiry</option>
+            <option>Press / media</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Subject</label>
+          <input type="text" name="subject" required placeholder="What's this about?">
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea name="message" required placeholder="Tell us as much as you can — system info, screenshots, what you tried, etc."></textarea>
+        </div>
+        <button type="submit" class="form-submit">Send message →</button>
+        <p class="form-note">We typically respond within 1 business day. Pro support: &lt;24h SLA.</p>
+        <div id="form-status" style="display:none; margin-top: 16px; padding: 12px; border-radius: 8px; text-align: center;"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- Mini FAQ -->
+<section class="faq-mini">
+  <div class="container">
+    <h2>Quick answers</h2>
+    <div class="qa">
+      <h4>How do I install on Linux without sudo?</h4>
+      <p>Use the AppImage — it doesn't need any system install. <code>chmod +x xkg-desktop.AppImage</code> then double-click.</p>
+    </div>
+    <div class="qa">
+      <h4>Can I move my XKG data to a new computer?</h4>
+      <p>Yes. The whole database is a single file at <code>~/.local/share/xkg-desktop/</code> (Linux), <code>%LOCALAPPDATA%\xkg-desktop\</code> (Win), or <code>~/Library/Application Support/xkg-desktop/</code> (Mac). Just copy it.</p>
+    </div>
+    <div class="qa">
+      <h4>Does XKG work offline?</h4>
+      <p>100% for local search, history browsing, and tagging. You need internet to send new messages to providers or to sync from them.</p>
+    </div>
+    <div class="qa">
+      <h4>What happens to my data if I cancel Pro?</h4>
+      <p>Nothing. Your data is yours forever, on your machine. Pro is a one-time purchase, not a subscription, so there's nothing to cancel.</p>
+    </div>
+    <div class="qa">
+      <h4>Do you have an enterprise / on-prem version?</h4>
+      <p>Yes. Contact sales@seele.agency for an on-prem build with custom branding, single-sign-on, and a 1-year support contract.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>© 2026 Seele Agency · <a href="/">Home</a> · <a href="/downloads.html">Download</a> · <a href="/#pricing">Pricing</a> · <a href="https://github.com/griptoad26">GitHub</a></p>
+  </div>
+</footer>
+
+<script>
+  // Form submission — POST to a Formspree/Netlify endpoint (replace with your real endpoint)
+  function submitForm(e) {
+    e.preventDefault();
+    const form = e.target;
+    const data = Object.fromEntries(new FormData(form).entries());
+    const status = document.getElementById('form-status');
+
+    // Demo: simulate a successful submit
+    // In production, replace with: fetch('https://formspree.io/f/YOUR_ID', { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' }})
+    status.style.display = 'block';
+    status.style.background = 'rgba(63, 185, 80, 0.15)';
+    status.style.color = '#3fb950';
+    status.style.border = '1px solid rgba(63, 185, 80, 0.3)';
+    status.innerHTML = '✓ Thanks ' + data.name + '! Your message has been received. We\'ll respond within 1 business day at <strong>' + data.email + '</strong>.';
+    form.reset();
+    setTimeout(() => status.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+  }
+</script>
+
+</body>
+</html>

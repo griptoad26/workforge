@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Optional add-ons for XKG Desktop — cloud sync, voice capture, Obsidian export, browser extension, and more.">
+<title>Add-ons — XKG Desktop | Seele Agency</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d1117; --bg2: #161b22; --bg3: #21262d; --bg4: #30363d;
+    --text: #e6edf3; --text2: #8b949e; --text3: #6e7681;
+    --accent: #8b5cf6; --accent-h: #a78bfa; --accent-d: #7c3aed;
+    --success: #3fb950; --gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%);
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; line-height: 1.6; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-h); }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  nav { position: sticky; top: 0; background: rgba(13,17,23,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--bg4); z-index: 100; }
+  nav .container { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; }
+  .logo { font-size: 18px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .logo-mark { width: 28px; height: 28px; background: var(--gradient); border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 14px; }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a { color: var(--text2); font-size: 14px; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta { background: var(--accent); color: white !important; padding: 8px 16px; border-radius: 8px; font-weight: 600; }
+
+  .page-head { padding: 60px 0 40px; text-align: center; }
+  .page-head h1 { font-size: 44px; font-weight: 800; margin-bottom: 12px; }
+  .page-head p { color: var(--text2); font-size: 18px; max-width: 700px; margin: 0 auto; }
+
+  .addons { padding: 40px 0 80px; }
+  .addon { background: var(--bg2); border: 1px solid var(--bg4); border-radius: 16px; padding: 32px; margin-bottom: 20px; display: grid; grid-template-columns: 100px 1fr auto; gap: 28px; align-items: start; transition: all 0.2s; }
+  .addon:hover { border-color: var(--accent); }
+  .addon-icon { width: 80px; height: 80px; background: var(--bg3); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 40px; }
+  .addon-body h2 { font-size: 22px; margin-bottom: 6px; }
+  .addon-body .tag { display: inline-block; padding: 2px 8px; background: var(--bg3); color: var(--text2); border-radius: 100px; font-size: 11px; margin-right: 6px; margin-bottom: 10px; }
+  .addon-body .tag.pop { background: rgba(63,185,80,0.15); color: var(--success); }
+  .addon-body .tag.pro { background: rgba(139,92,246,0.2); color: var(--accent-h); }
+  .addon-body p { color: var(--text2); margin-bottom: 14px; }
+  .addon-body .features { list-style: none; }
+  .addon-body .features li { padding: 4px 0; color: var(--text2); font-size: 14px; display: flex; gap: 8px; }
+  .addon-body .features li::before { content: '✓'; color: var(--success); font-weight: bold; }
+  .addon-buy { text-align: center; }
+  .addon-price { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
+  .addon-price-sub { color: var(--text3); font-size: 13px; margin-bottom: 16px; }
+  .addon-btn { display: block; background: var(--gradient); color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; white-space: nowrap; }
+  .addon-btn:hover { color: white; transform: translateY(-1px); }
+  .addon-btn.alt { background: var(--bg3); border: 1px solid var(--bg4); margin-top: 8px; }
+  .addon-btn.alt:hover { background: var(--bg4); color: var(--text); }
+
+  .bundle { background: var(--bg2); border: 1px solid var(--accent); border-radius: 16px; padding: 32px; margin: 40px auto; max-width: 700px; text-align: center; }
+  .bundle h2 { font-size: 24px; margin-bottom: 8px; }
+  .bundle p { color: var(--text2); margin-bottom: 20px; }
+  .bundle .save { color: var(--success); font-weight: 700; }
+
+  footer { background: var(--bg2); border-top: 1px solid var(--bg4); padding: 24px 0; text-align: center; color: var(--text3); font-size: 14px; }
+  footer a { color: var(--text2); }
+
+  @media (max-width: 768px) { .addon { grid-template-columns: 1fr; text-align: center; } .addon-icon { margin: 0 auto; } .addon-buy { margin-top: 16px; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="/" class="logo"><span class="logo-mark">X</span> XKG Desktop</a>
+    <div class="nav-links">
+      <a href="/#features">Features</a>
+      <a href="/downloads.html">Download</a>
+      <a href="/#pricing">Pricing</a>
+      <a href="/support.html">Support</a>
+      <a href="/#downloads" class="nav-cta">Get XKG</a>
+    </div>
+  </div>
+</nav>
+
+<section class="page-head">
+  <div class="container">
+    <h1>Optional add-ons</h1>
+    <p>XKG Desktop is fully usable on its own. These are the extras power users add when they want more.</p>
+  </div>
+</section>
+
+<section class="addons">
+  <div class="container">
+
+    <div class="addon" id="cloud-sync">
+      <div class="addon-icon">☁️</div>
+      <div class="addon-body">
+        <h2>Cloud Sync <span class="tag pop">Popular</span> <span class="tag pro">Pro</span></h2>
+        <p>End-to-end encrypted sync between your desktop, phone, and any other device you own. Zero-knowledge: we can't read your chats even if we wanted to.</p>
+        <ul class="features">
+          <li>Sync across unlimited devices</li>
+          <li>End-to-end encryption (libsodium + your password)</li>
+          <li>Conflict resolution with vector clocks</li>
+          <li>Hosted on our infra (US, EU, or self-hosted)</li>
+          <li>Works on flaky networks (CRDT-based)</li>
+        </ul>
+      </div>
+      <div class="addon-buy">
+        <div class="addon-price">$5<span style="font-size:14px; color: var(--text3);">/mo</span></div>
+        <div class="addon-price-sub">or $48/yr (save 20%)</div>
+        <a href="/checkout.html?addon=cloud-sync" class="addon-btn">Add to plan</a>
+        <a href="#" class="addon-btn alt">Learn more</a>
+      </div>
+    </div>
+
+    <div class="addon" id="voice">
+      <div class="addon-icon">🎙️</div>
+      <div class="addon-body">
+        <h2>Voice Capture</h2>
+        <p>Push-to-talk from anywhere on your desktop. Whisper transcription, automatic conversation tagging, optional ElevenLabs response voice.</p>
+        <ul class="features">
+          <li>System-wide hotkey (configurable)</li>
+          <li>Local Whisper transcription (no cloud)</li>
+          <li>Auto-route to your active AI provider</li>
+          <li>ElevenLabs voice output (optional)</li>
+          <li>Works offline (Whisper tiny/base on-device)</li>
+        </ul>
+      </div>
+      <div class="addon-buy">
+        <div class="addon-price">$19</div>
+        <div class="addon-price-sub">one-time</div>
+        <a href="/checkout.html?addon=voice" class="addon-btn">Buy add-on</a>
+      </div>
+    </div>
+
+    <div class="addon" id="obsidian">
+      <div class="addon-icon">📓</div>
+      <div class="addon-body">
+        <h2>Obsidian Export</h2>
+        <p>One-way mirror of selected conversations to your local Obsidian vault. Daily notes, topic pages, full backlinking.</p>
+        <ul class="features">
+          <li>Auto-tag based on conversation content</li>
+          <li>Daily digest at midnight</li>
+          <li>Backlinks + graph integration</li>
+          <li>Selective sync (pick which tags export)</li>
+          <li>Markdown + frontmatter + Dataview support</li>
+        </ul>
+      </div>
+      <div class="addon-buy">
+        <div class="addon-price">$12</div>
+        <div class="addon-price-sub">one-time</div>
+        <a href="/checkout.html?addon=obsidian" class="addon-btn">Buy add-on</a>
+      </div>
+    </div>
+
+    <div class="addon" id="browser-ext">
+      <div class="addon-icon">🌐</div>
+      <div class="addon-body">
+        <h2>Browser Capture</h2>
+        <p>Auto-save every ChatGPT / Claude / Gemini / Grok conversation from your browser. Optional — turn it on per domain.</p>
+        <ul class="features">
+          <li>Chrome, Firefox, Edge, Safari, Brave</li>
+          <li>Auto-detect active provider</li>
+          <li>Skip private/incognito sessions</li>
+          <li>Selective sync (you choose which sites)</li>
+          <li>End-to-end encryption at rest</li>
+        </ul>
+      </div>
+      <div class="addon-buy">
+        <div class="addon-price">$9</div>
+        <div class="addon-price-sub">one-time</div>
+        <a href="/checkout.html?addon=browser-ext" class="addon-btn">Buy add-on</a>
+      </div>
+    </div>
+
+    <div class="addon" id="vps">
+      <div class="addon-icon">🖥️</div>
+      <div class="addon-body">
+        <h2>Hosted XKG VPS</h2>
+        <p>Your own private XKG instance on a VPS we manage. Includes 50 GB of sync storage, daily backups, and our uptime SLA.</p>
+        <ul class="features">
+          <li>5 GB / 50 GB / 500 GB plans</li>
+          <li>Daily encrypted backups</li>
+          <li>Custom domain support</li>
+          <li>Email + Discord integration</li>
+          <li>99.9% uptime SLA</li>
+        </ul>
+      </div>
+      <div class="addon-buy">
+        <div class="addon-price">$9<span style="font-size:14px; color: var(--text3);">/mo</span></div>
+        <div class="addon-price-sub">starts at 5 GB</div>
+        <a href="/checkout.html?addon=vps" class="addon-btn">Get a VPS</a>
+      </div>
+    </div>
+
+    <div class="addon" id="team">
+      <div class="addon-icon">👥</div>
+      <div class="addon-body">
+        <h2>Team Workspace</h2>
+        <p>Share a private knowledge graph with up to 10 teammates. Role-based access, audit log, single-sign-on.</p>
+        <ul class="features">
+          <li>Up to 10 seats per workspace</li>
+          <li>Admin dashboard</li>
+          <li>Audit log + activity reports</li>
+          <li>SAML / OIDC SSO</li>
+          <li>Quarterly strategy review</li>
+        </ul>
+      </div>
+      <div class="addon-buy">
+        <div class="addon-price">$29<span style="font-size:14px; color: var(--text3);">/mo</span></div>
+        <div class="addon-price-sub">up to 10 seats</div>
+        <a href="/checkout.html?addon=team" class="addon-btn">Start a team</a>
+      </div>
+    </div>
+
+    <div class="addon" id="api">
+      <div class="addon-icon">🔌</div>
+      <div class="addon-body">
+        <h2>Public API Access</h2>
+        <p>Read/write access to your XKG graph from your own tools. Webhooks, REST, and gRPC. Useful for automations and integrations.</p>
+        <ul class="features">
+          <li>REST + gRPC + webhooks</li>
+          <li>Rate-limited per token</li>
+          <li>OpenAPI 3.1 spec</li>
+          <li>Self-hostable (Docker)</li>
+          <li>Python, JS, Go, Rust SDKs</li>
+        </ul>
+      </div>
+      <div class="addon-buy">
+        <div class="addon-price">$39</div>
+        <div class="addon-price-sub">one-time, lifetime</div>
+        <a href="/checkout.html?addon=api" class="addon-btn">Buy add-on</a>
+      </div>
+    </div>
+
+    <div class="addon" id="hardware">
+      <div class="addon-icon">🔌</div>
+      <div class="addon-body">
+        <h2>Pre-flashed Hardware</h2>
+        <p>For users who want a turnkey experience. We ship a small fanless box with XKG pre-installed, your API keys, and 1 year of priority support.</p>
+        <ul class="features">
+          <li>Intel NUC or Raspberry Pi 5 (your choice)</li>
+          <li>Pre-configured with your provider keys</li>
+          <li>Auto-updates enabled</li>
+          <li>Always-on sync relay</li>
+          <li>1 year of priority support</li>
+        </ul>
+      </div>
+      <div class="addon-buy">
+        <div class="addon-price">$199</div>
+        <div class="addon-price-sub">+ $39 shipping</div>
+        <a href="/checkout.html?addon=hardware" class="addon-btn">Reserve a box</a>
+      </div>
+    </div>
+
+    <div class="bundle">
+      <h2>🌟 The Everything Bundle</h2>
+      <p>Get all eight add-ons for one discounted price. <span class="save">Save 40%.</span></p>
+      <div class="addon-price" style="margin-bottom: 16px;">$199<span style="font-size: 16px; color: var(--text3);"> one-time</span></div>
+      <a href="/checkout.html?addon=bundle" class="addon-btn" style="display: inline-block;">Get the bundle</a>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>© 2026 Seele Agency · <a href="/">Home</a> · <a href="/downloads.html">Download</a> · <a href="/support.html">Support</a> · <a href="mailto:sales@seele.agency">sales@seele.agency</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,28 +1,437 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Seele Downloads</title>
-  <style>
-    body { font-family: system-ui; background: #0f0f1a; color: #e0e0e0; padding: 40px; }
-    h1 { color: #8b5cf6; }
-    .product { background: rgba(255,255,255,0.1); border: 1px solid #8b5cf6; padding: 20px; margin: 20px 0; border-radius: 8px; }
-    .download { background: #8b5cf6; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; display: inline-block; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Download XKG Desktop — the local-first AI conversation knowledge graph. Free for Windows, Mac, Ubuntu, iOS, and Android.">
+<title>Download XKG Desktop — Free for All Platforms | Seele Agency</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d1117; --bg2: #161b22; --bg3: #21262d; --bg4: #30363d;
+    --text: #e6edf3; --text2: #8b949e; --text3: #6e7681;
+    --accent: #8b5cf6; --accent-h: #a78bfa; --accent-d: #7c3aed;
+    --success: #3fb950; --gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%);
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; line-height: 1.6; min-height: 100vh; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-h); }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+  nav { position: sticky; top: 0; background: rgba(13,17,23,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--bg4); z-index: 100; }
+  nav .container { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; }
+  .logo { font-size: 18px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .logo-mark { width: 28px; height: 28px; background: var(--gradient); border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 14px; }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a { color: var(--text2); font-size: 14px; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta { background: var(--accent); color: white !important; padding: 8px 16px; border-radius: 8px; font-weight: 600; }
+
+  .page-head { padding: 60px 0 40px; text-align: center; }
+  .page-head h1 { font-size: 44px; font-weight: 800; margin-bottom: 12px; }
+  .page-head p { color: var(--text2); font-size: 18px; max-width: 600px; margin: 0 auto; }
+
+  .downloads { padding: 40px 0 80px; }
+
+  .filter { display: flex; gap: 8px; justify-content: center; margin-bottom: 40px; flex-wrap: wrap; }
+  .filter button { background: var(--bg2); color: var(--text2); border: 1px solid var(--bg4); padding: 8px 18px; border-radius: 100px; font-size: 14px; cursor: pointer; transition: all 0.2s; }
+  .filter button:hover { color: var(--text); }
+  .filter button.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+  .dl-card { background: var(--bg2); border: 1px solid var(--bg4); border-radius: 14px; padding: 28px; transition: all 0.2s; position: relative; }
+  .dl-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+  .dl-card.recommended { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .dl-card.recommended::before { content: '★ RECOMMENDED'; position: absolute; top: -10px; left: 20px; background: var(--gradient); color: white; padding: 3px 12px; border-radius: 100px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
+  .dl-top { display: flex; gap: 16px; align-items: center; margin-bottom: 16px; }
+  .dl-icon { width: 56px; height: 56px; background: var(--bg3); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; }
+  .dl-title { font-size: 20px; font-weight: 700; }
+  .dl-tag { color: var(--text3); font-size: 13px; }
+  .dl-desc { color: var(--text2); font-size: 14px; margin-bottom: 20px; min-height: 60px; }
+  .dl-meta { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; font-size: 13px; color: var(--text3); }
+  .dl-meta span { display: inline-flex; align-items: center; gap: 4px; }
+  .dl-actions { display: flex; gap: 8px; }
+  .dl-btn { flex: 1; background: var(--gradient); color: white; padding: 12px 16px; border-radius: 8px; font-weight: 600; text-align: center; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+  .dl-btn:hover { color: white; transform: translateY(-1px); }
+  .dl-btn.alt { background: var(--bg3); border: 1px solid var(--bg4); }
+  .dl-btn.alt:hover { background: var(--bg4); color: var(--text); }
+
+  .system-detect { background: var(--bg2); border: 1px solid var(--bg4); border-radius: 14px; padding: 24px; margin-bottom: 32px; display: flex; align-items: center; gap: 20px; }
+  .detect-icon { font-size: 36px; }
+  .detect-text h3 { margin-bottom: 4px; }
+  .detect-text p { color: var(--text2); font-size: 14px; }
+  .detect-btn { background: var(--gradient); color: white; padding: 12px 24px; border-radius: 8px; font-weight: 600; white-space: nowrap; }
+  .detect-btn:hover { color: white; }
+
+  .verify { padding: 40px 0; background: var(--bg2); border-top: 1px solid var(--bg4); }
+  .verify h2 { text-align: center; margin-bottom: 20px; }
+  .verify p { text-align: center; color: var(--text2); max-width: 600px; margin: 0 auto 24px; }
+  .verify code { background: var(--bg3); padding: 2px 6px; border-radius: 4px; font-family: ui-monospace, "Cascadia Code", monospace; font-size: 13px; }
+  .checksum { background: var(--bg); border: 1px solid var(--bg4); border-radius: 8px; padding: 16px; max-width: 700px; margin: 0 auto 12px; font-family: ui-monospace, "Cascadia Code", monospace; font-size: 13px; word-break: break-all; }
+  .checksum-label { display: flex; justify-content: space-between; margin-bottom: 6px; color: var(--text2); font-family: inherit; }
+
+  .requirements { padding: 60px 0; }
+  .req-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; max-width: 900px; margin: 0 auto; }
+  .req { background: var(--bg2); border: 1px solid var(--bg4); border-radius: 10px; padding: 20px; }
+  .req h4 { margin-bottom: 8px; font-size: 15px; }
+  .req p { color: var(--text2); font-size: 13px; }
+  .req strong { color: var(--text); }
+
+  footer { background: var(--bg2); border-top: 1px solid var(--bg4); padding: 24px 0; text-align: center; color: var(--text3); font-size: 14px; }
+  footer a { color: var(--text2); }
+</style>
 </head>
 <body>
-  <h1>Seele Downloads</h1>
-  
-  <div class="product">
-    <h2>TabMind (XKG Desktop)</h2>
-    <p>AI-powered knowledge graph - Windows desktop app</p>
-    <a class="download" href="https://github.com/griptoad26/xkg-stripe/releases/download/xkg-desktop-v1.0/XKnowledgeGraph.exe">Download</a>
+
+<nav>
+  <div class="container">
+    <a href="/" class="logo"><span class="logo-mark">X</span> XKG Desktop</a>
+    <div class="nav-links">
+      <a href="/#features">Features</a>
+      <a href="/downloads.html">Download</a>
+      <a href="/#pricing">Pricing</a>
+      <a href="/support.html">Support</a>
+      <a href="/#downloads" class="nav-cta">Get XKG</a>
+    </div>
   </div>
-  
-  <div class="product">
-    <h2>Other Tools</h2>
-    <p>More downloads coming soon. Visit <a href="https://github.com/griptoad26" style="color:#8b5cf6;">GitHub</a> for all projects.</p>
+</nav>
+
+<section class="page-head">
+  <div class="container">
+    <h1>Download XKG Desktop</h1>
+    <p>Free forever, no account needed. Pick your platform and start keeping your AI history local.</p>
   </div>
+</section>
+
+<section class="downloads">
+  <div class="container">
+
+    <!-- Auto-detect card -->
+    <div class="system-detect" id="detect-card">
+      <div class="detect-icon" id="detect-icon">💻</div>
+      <div class="detect-text">
+        <h3 id="detect-title">Detecting your system…</h3>
+        <p id="detect-desc">Checking your browser's user agent for the right installer.</p>
+      </div>
+      <a href="#windows" class="detect-btn" id="detect-btn">↓ Download</a>
+    </div>
+
+    <div class="filter">
+      <button class="active" onclick="filterPlat('all', this)">All platforms</button>
+      <button onclick="filterPlat('desktop', this)">Desktop</button>
+      <button onclick="filterPlat('mobile', this)">Mobile</button>
+      <button onclick="filterPlat('source', this)">Source code</button>
+    </div>
+
+    <div class="grid">
+
+      <!-- Windows -->
+      <div class="dl-card recommended" data-plat="desktop">
+        <div class="dl-top">
+          <div class="dl-icon">🪟</div>
+          <div>
+            <div class="dl-title">Windows 10/11</div>
+            <div class="dl-tag">x64 · .msi + .exe installer</div>
+          </div>
+        </div>
+        <div class="dl-desc">Native Windows installer. No admin rights required for the per-user install. Includes auto-update support.</div>
+        <div class="dl-meta">
+          <span>📦 44 MB</span>
+          <span>🏷️ v0.1.0</span>
+          <span>🕐 Updated Jun 2026</span>
+        </div>
+        <div class="dl-actions">
+          <a class="dl-btn" href="https://github.com/griptoad26/xkg-desktop/releases/latest/download/XKG-Desktop_0.1.0_x64-setup.exe">↓ .exe installer</a>
+          <a class="dl-btn alt" href="https://github.com/griptoad26/xkg-desktop/releases/latest/download/XKG-Desktop_0.1.0_x64_en-US.msi">.msi</a>
+        </div>
+      </div>
+
+      <!-- macOS Intel -->
+      <div class="dl-card" data-plat="desktop">
+        <div class="dl-top">
+          <div class="dl-icon">🍎</div>
+          <div>
+            <div class="dl-title">macOS (Intel)</div>
+            <div class="dl-tag">x86_64 · .dmg</div>
+          </div>
+        </div>
+        <div class="dl-desc">For Intel-based Macs (2017 and earlier, or older Mac Pros). Drag-and-drop install.</div>
+        <div class="dl-meta">
+          <span>📦 38 MB</span>
+          <span>🏷️ v0.1.0</span>
+          <span>🍎 macOS 10.13+</span>
+        </div>
+        <div class="dl-actions">
+          <a class="dl-btn" href="https://github.com/griptoad26/xkg-desktop/releases/latest/download/XKG-Desktop_0.1.0_x64.dmg">↓ Intel .dmg</a>
+        </div>
+      </div>
+
+      <!-- macOS Apple Silicon -->
+      <div class="dl-card" data-plat="desktop">
+        <div class="dl-top">
+          <div class="dl-icon">🍎</div>
+          <div>
+            <div class="dl-title">macOS (Apple Silicon)</div>
+            <div class="dl-tag">arm64 · .dmg · M1/M2/M3/M4</div>
+          </div>
+        </div>
+        <div class="dl-desc">Native ARM64 build for the fastest possible performance on M-series Macs. Universal binary included.</div>
+        <div class="dl-meta">
+          <span>📦 36 MB</span>
+          <span>🏷️ v0.1.0</span>
+          <span>🍎 macOS 11+</span>
+        </div>
+        <div class="dl-actions">
+          <a class="dl-btn" href="https://github.com/griptoad26/xkg-desktop/releases/latest/download/XKG-Desktop_0.1.0_aarch64.dmg">↓ Apple Silicon .dmg</a>
+        </div>
+      </div>
+
+      <!-- Ubuntu / Debian -->
+      <div class="dl-card" data-plat="desktop">
+        <div class="dl-top">
+          <div class="dl-icon">🐧</div>
+          <div>
+            <div class="dl-title">Ubuntu / Debian</div>
+            <div class="dl-tag">x86_64 · .deb + AppImage</div>
+          </div>
+        </div>
+        <div class="dl-desc">Works on Ubuntu 22.04+, Debian 12+, Mint 21+, Pop!_OS, Elementary OS. Includes auto-update.</div>
+        <div class="dl-meta">
+          <span>📦 32 MB</span>
+          <span>🏷️ v0.1.0</span>
+          <span>🐧 Linux x64</span>
+        </div>
+        <div class="dl-actions">
+          <a class="dl-btn" href="https://github.com/griptoad26/xkg-desktop/releases/latest/download/xkg-desktop_0.1.0_amd64.deb">↓ .deb</a>
+          <a class="dl-btn alt" href="https://github.com/griptoad26/xkg-desktop/releases/latest/download/xkg-desktop_0.1.0_amd64.AppImage">AppImage</a>
+        </div>
+      </div>
+
+      <!-- Fedora / RHEL -->
+      <div class="dl-card" data-plat="desktop">
+        <div class="dl-top">
+          <div class="dl-icon">🎩</div>
+          <div>
+            <div class="dl-title">Fedora / RHEL</div>
+            <div class="dl-tag">x86_64 · .rpm</div>
+          </div>
+        </div>
+        <div class="dl-desc">For Fedora 38+, RHEL 9+, Rocky, AlmaLinux, openSUSE Leap, Nobara.</div>
+        <div class="dl-meta">
+          <span>📦 32 MB</span>
+          <span>🏷️ v0.1.0</span>
+          <span>🎩 RPM-based</span>
+        </div>
+        <div class="dl-actions">
+          <a class="dl-btn" href="https://github.com/griptoad26/xkg-desktop/releases/latest/download/xkg-desktop-0.1.0-1.x86_64.rpm">↓ .rpm</a>
+        </div>
+      </div>
+
+      <!-- Arch -->
+      <div class="dl-card" data-plat="desktop">
+        <div class="dl-top">
+          <div class="dl-icon">🏛️</div>
+          <div>
+            <div class="dl-title">Arch / Manjaro</div>
+            <div class="dl-tag">AUR package</div>
+          </div>
+        </div>
+        <div class="dl-desc">Available on the AUR. Maintained by the community; build from source in ~3 minutes.</div>
+        <div class="dl-meta">
+          <span>📦 ~30 MB</span>
+          <span>🏷️ v0.1.0</span>
+          <span>🏛️ AUR</span>
+        </div>
+        <div class="dl-actions">
+          <a class="dl-btn" href="https://aur.archlinux.org/packages/xkg-desktop">View on AUR →</a>
+        </div>
+      </div>
+
+      <!-- Android -->
+      <div class="dl-card recommended" data-plat="mobile" id="mobile">
+        <div class="dl-top">
+          <div class="dl-icon">📱</div>
+          <div>
+            <div class="dl-title">Android</div>
+            <div class="dl-tag">8.0+ · APK · ARM64 + ARMv7 + x86_64</div>
+          </div>
+        </div>
+        <div class="dl-desc">Native Android app. Syncs to your desktop over local network. No Play Services required.</div>
+        <div class="dl-meta">
+          <span>📦 22 MB</span>
+          <span>🏷️ v0.1.0</span>
+          <span>🤖 Android 8.0+</span>
+        </div>
+        <div class="dl-actions">
+          <a class="dl-btn" href="https://github.com/griptoad26/xkg-mobile/releases/latest/download/app-release.apk">↓ APK (sideload)</a>
+          <a class="dl-btn alt" href="https://play.google.com/store/apps/details?id=ai.xkg.mobile">Google Play</a>
+        </div>
+      </div>
+
+      <!-- iOS -->
+      <div class="dl-card" data-plat="mobile">
+        <div class="dl-top">
+          <div class="dl-icon">📲</div>
+          <div>
+            <div class="dl-title">iOS / iPadOS</div>
+            <div class="dl-tag">13.0+ · iPhone &amp; iPad</div>
+          </div>
+        </div>
+        <div class="dl-desc">Universal binary. Available on the App Store. TestFlight beta for pre-release builds.</div>
+        <div class="dl-meta">
+          <span>📦 28 MB</span>
+          <span>🏷️ v0.1.0</span>
+          <span>📲 iOS 13+</span>
+        </div>
+        <div class="dl-actions">
+          <a class="dl-btn" href="https://apps.apple.com/app/xkg-desktop/id000000000">App Store</a>
+          <a class="dl-btn alt" href="https://testflight.apple.com/join/xxxxxx">TestFlight beta</a>
+        </div>
+      </div>
+
+      <!-- Source -->
+      <div class="dl-card" data-plat="source">
+        <div class="dl-top">
+          <div class="dl-icon">🐙</div>
+          <div>
+            <div class="dl-title">Source code (GitHub)</div>
+            <div class="dl-tag">Tauri 2 · Rust + vanilla JS</div>
+          </div>
+        </div>
+        <div class="dl-desc">Build from source. Requires Rust 1.74+, Node 18+, and (for Windows) WebView2.</div>
+        <div class="dl-meta">
+          <span>📜 MIT license</span>
+          <span>🏷️ v0.1.0</span>
+          <span>⭐ Star on GitHub</span>
+        </div>
+        <div class="dl-actions">
+          <a class="dl-btn" href="https://github.com/griptoad26/xkg-desktop">View repo →</a>
+        </div>
+      </div>
+
+      <!-- Docker -->
+      <div class="dl-card" data-plat="source">
+        <div class="dl-top">
+          <div class="dl-icon">🐳</div>
+          <div>
+            <div class="dl-title">Docker (headless server)</div>
+            <div class="dl-tag">Self-host the sync service</div>
+          </div>
+        </div>
+        <div class="dl-desc">Run the optional sync relay in a container. Useful for headless servers or NAS boxes.</div>
+        <div class="dl-meta">
+          <span>📦 ~120 MB image</span>
+          <span>🏷️ v0.1.0</span>
+          <span>🐳 Docker</span>
+        </div>
+        <div class="dl-actions">
+          <a class="dl-btn" href="https://github.com/griptoad26/xkg-desktop/pkgs/container/xkg-relay">↓ docker pull</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Checksums -->
+<section class="verify">
+  <div class="container">
+    <h2>Verify your download</h2>
+    <p>Every release is signed and the checksums are published. We recommend verifying, especially on Windows.</p>
+    <div class="checksum">
+      <div class="checksum-label"><span>SHA-256 (Windows installer)</span><span>copy</span></div>
+      a1b2c3d4e5f6789... (auto-generated per release)
+    </div>
+    <div class="checksum">
+      <div class="checksum-label"><span>SHA-256 (macOS dmg)</span><span>copy</span></div>
+      f0e9d8c7b6a5432... (auto-generated per release)
+    </div>
+    <p style="margin-top: 16px; font-size: 13px;">Full list at <a href="https://github.com/griptoad26/xkg-desktop/releases">github.com/griptoad26/xkg-desktop/releases</a></p>
+  </div>
+</section>
+
+<!-- Requirements -->
+<section class="requirements">
+  <div class="container">
+    <h2 style="text-align:center; margin-bottom: 32px;">System requirements</h2>
+    <div class="req-grid">
+      <div class="req">
+        <h4>🪟 Windows</h4>
+        <p><strong>OS:</strong> Windows 10 (1809+) or 11<br><strong>RAM:</strong> 4 GB<br><strong>Disk:</strong> 200 MB + your chat history</p>
+      </div>
+      <div class="req">
+        <h4>🍎 macOS</h4>
+        <p><strong>OS:</strong> 10.13 High Sierra or newer<br><strong>Chip:</strong> Intel or Apple Silicon<br><strong>RAM:</strong> 4 GB</p>
+      </div>
+      <div class="req">
+        <h4>🐧 Linux</h4>
+        <p><strong>OS:</strong> glibc 2.31+ (Ubuntu 20.04+)<br><strong>Display:</strong> X11 or Wayland<br><strong>Disk:</strong> 200 MB</p>
+      </div>
+      <div class="req">
+        <h4>📱 Mobile</h4>
+        <p><strong>iOS:</strong> 13.0+ (iPhone 6s+)<br><strong>Android:</strong> 8.0+ (API 24+)<br><strong>RAM:</strong> 2 GB</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>© 2026 Seele Agency · <a href="/">Home</a> · <a href="/support.html">Support</a> · <a href="/#pricing">Pricing</a> · <a href="https://github.com/griptoad26/xkg-desktop">GitHub</a></p>
+  </div>
+</footer>
+
+<script>
+  // ===== Auto-detect platform =====
+  (function detect() {
+    const ua = navigator.userAgent;
+    const plat = navigator.platform || '';
+    let os = 'unknown', icon = '💻', title = 'Manual download', btn = '#windows', desc = 'Pick your installer from the list below.';
+
+    if (/Windows/i.test(ua) || /Win/i.test(plat)) {
+      os = 'windows'; icon = '🪟';
+      title = 'Detected: Windows'; desc = 'We picked the Windows installer for you.';
+      btn = 'https://github.com/griptoad26/xkg-desktop/releases/latest/download/XKG-Desktop_0.1.0_x64-setup.exe';
+    } else if (/Mac/i.test(plat) || /Macintosh/i.test(ua)) {
+      os = 'mac'; icon = '🍎';
+      const isARM = /arm|aarch/i.test(ua) || (navigator.userAgentData && navigator.userAgentData.platform === 'macOS');
+      title = isARM ? 'Detected: macOS (Apple Silicon)' : 'Detected: macOS (Intel)';
+      desc = isARM ? 'Download the M-series native build.' : 'Download the Intel build.';
+      btn = isARM
+        ? 'https://github.com/griptoad26/xkg-desktop/releases/latest/download/XKG-Desktop_0.1.0_aarch64.dmg'
+        : 'https://github.com/griptoad26/xkg-desktop/releases/latest/download/XKG-Desktop_0.1.0_x64.dmg';
+    } else if (/Linux/i.test(plat) || /Linux/i.test(ua)) {
+      os = 'linux'; icon = '🐧';
+      title = 'Detected: Linux'; desc = 'Download the AppImage (works on any distro) or the .deb for Debian/Ubuntu.';
+      btn = 'https://github.com/griptoad26/xkg-desktop/releases/latest/download/xkg-desktop_0.1.0_amd64.AppImage';
+    } else if (/Android/i.test(ua)) {
+      os = 'android'; icon = '📱';
+      title = 'Detected: Android'; desc = 'Download the APK to install on your phone.';
+      btn = 'https://github.com/griptoad26/xkg-mobile/releases/latest/download/app-release.apk';
+      document.getElementById('detect-card').scrollIntoView({ behavior: 'smooth' });
+    } else if (/iPhone|iPad|iOS/i.test(ua)) {
+      os = 'ios'; icon = '📲';
+      title = 'Detected: iOS'; desc = 'Open the App Store link below to install.';
+      btn = 'https://apps.apple.com/app/xkg-desktop/id000000000';
+    }
+
+    document.getElementById('detect-icon').textContent = icon;
+    document.getElementById('detect-title').textContent = title;
+    document.getElementById('detect-desc').textContent = desc;
+    document.getElementById('detect-btn').href = btn;
+    document.getElementById('detect-btn').textContent = os === 'unknown' ? '↓ Download' : '↓ Download for ' + (os === 'mac' ? 'macOS' : os.charAt(0).toUpperCase() + os.slice(1));
+  })();
+
+  // ===== Filter =====
+  function filterPlat(p, btn) {
+    document.querySelectorAll('.filter button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.dl-card').forEach(card => {
+      const matches = p === 'all' || card.dataset.plat === p;
+      card.style.display = matches ? '' : 'none';
+    });
+  }
+</script>
+
 </body>
 </html>
