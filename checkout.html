@@ -120,10 +120,10 @@
         <div class="panel">
           <h2><span class="num">2</span> Payment</h2>
           <div class="alt-pay">
-            <button>💳 Card</button>
-            <button>🪙 Crypto</button>
-            <button>🏦 Bank</button>
-            <button>🍎 Pay</button>
+            <button class="active" id="pay-method-card" onclick="setPayMethod('card', this)">💳 Card</button>
+            <button id="pay-method-crypto" onclick="setPayMethod('crypto', this)">🪙 Crypto (USDC)</button>
+            <button disabled title="Coming soon">🏦 Bank</button>
+            <button disabled title="Coming soon">🍎 Pay</button>
           </div>
           <div style="margin-top: 16px;">
             <div class="field">
@@ -163,6 +163,34 @@
           <h2><span class="num">3</span> Confirm &amp; pay</h2>
           <p style="color: var(--text2); font-size: 14px;">By clicking <strong>Pay</strong> you agree to our <a href="/terms.html">Terms of Service</a> and <a href="/privacy.html">Privacy Policy</a>. You can request a refund within 30 days, no questions asked.</p>
           <button class="pay-btn" id="pay-btn" onclick="payNow()">Pay $29.00 →</button>
+          <div id="crypto-panel" style="display:none; margin-top:16px; padding:16px; background:var(--bg3); border:1px solid var(--bg4); border-radius:10px;">
+            <h3 style="margin:0 0 8px 0; font-size:16px;">🪙 Pay with USDC on Base</h3>
+            <p style="margin:0 0 12px 0; font-size:13px; color:var(--text2);">
+              Use Coinbase Wallet, MetaMask, Rabby, or any EVM wallet. We use the <a href="https://x402.org" target="_blank">x402</a> protocol.
+            </p>
+            <ol style="margin:0 0 12px 0; padding-left:20px; font-size:13px; color:var(--text2); line-height:1.7;">
+              <li>Click <strong>Generate payment challenge</strong> below</li>
+              <li>Scan the QR code or copy the wallet address</li>
+              <li>Send exactly <span id="crypto-amount">$29.00</span> USDC on Base to that address</li>
+              <li>Paste your transaction hash below and click <strong>Verify &amp; activate</strong></li>
+            </ol>
+            <button type="button" onclick="cryptoChallenge()" style="width:100%; padding:12px; background:var(--bg4); color:var(--text); border:1px solid var(--accent); border-radius:8px; cursor:pointer; font-weight:600; font-size:14px;">
+              Generate payment challenge
+            </button>
+            <div id="crypto-challenge" style="display:none; margin-top:12px;">
+              <pre id="crypto-json" style="font-size:11px; background:var(--bg); padding:10px; border-radius:6px; overflow:auto; max-height:140px; color:var(--text2);"></pre>
+              <div style="margin-top:8px; font-size:12px; color:var(--text2);">
+                Send USDC to: <code id="crypto-address" style="background:var(--bg); padding:2px 6px; border-radius:4px;"></code>
+              </div>
+            </div>
+            <div style="margin-top:12px;">
+              <input type="text" id="crypto-tx" placeholder="0x... transaction hash" style="width:100%; padding:10px; background:var(--bg); border:1px solid var(--bg4); color:var(--text); border-radius:6px; font-family:monospace; font-size:12px;">
+              <button type="button" onclick="cryptoSettle()" style="width:100%; margin-top:8px; padding:12px; background:var(--gradient); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-size:14px;">
+                Verify &amp; activate
+              </button>
+            </div>
+            <div id="crypto-result" style="margin-top:12px; font-size:13px;"></div>
+          </div>
           <div class="trust">
             <span>256-bit SSL</span>
             <span>Stripe-secured</span>
@@ -241,18 +269,83 @@
     `;
     document.querySelector('#total').textContent = '$' + cfg.price.toFixed(2);
     document.querySelector('#pay-btn').textContent = `Pay $${cfg.price.toFixed(2)} →`;
+    document.getElementById('crypto-amount').textContent = '$' + cfg.price.toFixed(2);
+  }
+
+  // Payment method toggle
+  let currentPayMethod = 'card';
+  function setPayMethod(m, btn) {
+    document.querySelectorAll('.alt-pay button').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    currentPayMethod = m;
+    document.getElementById('pay-btn').style.display = m === 'card' ? 'block' : 'none';
+    document.getElementById('crypto-panel').style.display = m === 'crypto' ? 'block' : 'none';
+  }
+
+  // x402 crypto payment flow
+  let currentChallenge = null;
+  async function cryptoChallenge() {
+    const result = document.getElementById('crypto-result');
+    result.textContent = '';
+    try {
+      const res = await fetch(STRIPE_API + '/api/x402/challenge/' + plan);
+      const data = await res.json();
+      if (res.status !== 402) {
+        result.innerHTML = '<span style="color:var(--error);">Challenge failed: ' + (data.error || res.status) + '</span>';
+        return;
+      }
+      currentChallenge = data;
+      document.getElementById('crypto-challenge').style.display = 'block';
+      document.getElementById('crypto-json').textContent = JSON.stringify(data, null, 2);
+      document.getElementById('crypto-address').textContent = data.accepts[0].payTo;
+      result.innerHTML = '<span style="color:var(--success);">Challenge issued! Send exactly <strong>' + (data.accepts[0].maxAmountRequired / 1e6).toFixed(2) + ' USDC</strong> on ' + data.network + '.</span>';
+    } catch (e) {
+      result.innerHTML = '<span style="color:var(--error);">Error: ' + e.message + '</span>';
+    }
+  }
+
+  async function cryptoSettle() {
+    const result = document.getElementById('crypto-result');
+    const tx = document.getElementById('crypto-tx').value.trim();
+    if (!tx) { result.innerHTML = '<span style="color:var(--error);">Enter your transaction hash</span>'; return; }
+    if (!currentChallenge) { result.innerHTML = '<span style="color:var(--error);">Click "Generate payment challenge" first</span>'; return; }
+    result.textContent = 'Verifying on-chain...';
+    try {
+      const res = await fetch(STRIPE_API + '/api/x402/settle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          payment_id: currentChallenge.payment_id,
+          tx_hash: tx,
+        }),
+      });
+      const data = await res.json();
+      if (data.settled) {
+        result.innerHTML = '<div style="background:var(--bg); padding:12px; border-radius:6px; border:1px solid var(--success);">' +
+          '<strong style="color:var(--success);">✓ Payment verified!</strong><br>' +
+          '<strong>License key:</strong> <code style="background:var(--bg3); padding:2px 6px; border-radius:4px;">' + data.license_key + '</code><br>' +
+          '<small style="color:var(--text2);">Confirmations: ' + data.confirmations + ' · Network: ' + data.network + '</small>' +
+          '</div>';
+      } else {
+        result.innerHTML = '<span style="color:var(--error);">Verification failed: ' + (data.error || 'unknown') + '</span>';
+      }
+    } catch (e) {
+      result.innerHTML = '<span style="color:var(--error);">Error: ' + e.message + '</span>';
+    }
   }
 
   // Load plan from URL
   if (PRICES[plan]) setPlan(plan, null);
 
   // Real (or demo-mode) payment via xkg-stripe backend
-  // When served over HTTPS, prefer same-origin /api/* so it works through any reverse proxy.
-  const STRIPE_API = (location.protocol === 'https:' || location.hostname.endsWith('.ts.net'))
+  // seele.agency is a static Pages site (no /api). The Tailscale Funnel serves the live API
+  // at https://x2-nuc.tailb0d54b.ts.net/api/*. On hub.seele.agency (which is also Pages) we
+  // could use the funnel too, but the cleanest is to detect the static domain.
+  const STRIPE_API = (location.protocol === 'https:' && !location.hostname.includes('seele.agency'))
     ? ''                                       // same-origin (proxied by Tailscale/Cloudflare)
     : (location.hostname === 'localhost' || /^10\.0\.|^192\.168\.|^100\./.test(location.hostname))
       ? 'http://' + location.hostname + ':8095' // local network direct
-      : 'https://api.seele.agency';             // production (when deployed)
+      : 'https://x2-nuc.tailb0d54b.ts.net';    // public funnel (serves the live xkg-stripe API)
 
   async function payNow() {
     const btn = document.getElementById('pay-btn');
