@@ -242,9 +242,11 @@
 
 <script>
   // Form submission — POST to xkg-stripe backend (which logs the ticket and (TODO) emails you)
-  const SUPPORT_API = (location.hostname === 'localhost' || /^10\.0\.|^192\.168\.|^100\./.test(location.hostname))
-    ? 'http://' + location.hostname + ':8095'
-    : 'https://api.seele.agency';
+  const SUPPORT_API = (location.protocol === 'https:' || location.hostname.endsWith('.ts.net'))
+    ? ''                                       // same-origin (proxied by Tailscale/Cloudflare)
+    : (location.hostname === 'localhost' || /^10\.0\.|^192\.168\.|^100\./.test(location.hostname))
+      ? 'http://' + location.hostname + ':8095'
+      : 'https://api.seele.agency';
 
   async function submitForm(e) {
     e.preventDefault();

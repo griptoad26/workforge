@@ -247,9 +247,12 @@
   if (PRICES[plan]) setPlan(plan, null);
 
   // Real (or demo-mode) payment via xkg-stripe backend
-  const STRIPE_API = (location.hostname === 'localhost' || /^10\.0\.|^192\.168\.|^100\./.test(location.hostname))
-    ? 'http://' + location.hostname + ':8095'  // local network
-    : 'https://api.seele.agency';              // production (when deployed)
+  // When served over HTTPS, prefer same-origin /api/* so it works through any reverse proxy.
+  const STRIPE_API = (location.protocol === 'https:' || location.hostname.endsWith('.ts.net'))
+    ? ''                                       // same-origin (proxied by Tailscale/Cloudflare)
+    : (location.hostname === 'localhost' || /^10\.0\.|^192\.168\.|^100\./.test(location.hostname))
+      ? 'http://' + location.hostname + ':8095' // local network direct
+      : 'https://api.seele.agency';             // production (when deployed)
 
   async function payNow() {
     const btn = document.getElementById('pay-btn');
