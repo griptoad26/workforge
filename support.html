@@ -241,22 +241,50 @@
 </footer>
 
 <script>
-  // Form submission — POST to a Formspree/Netlify endpoint (replace with your real endpoint)
-  function submitForm(e) {
+  // Form submission — POST to xkg-stripe backend (which logs the ticket and (TODO) emails you)
+  const SUPPORT_API = (location.hostname === 'localhost' || /^10\.0\.|^192\.168\.|^100\./.test(location.hostname))
+    ? 'http://' + location.hostname + ':8095'
+    : 'https://api.seele.agency';
+
+  async function submitForm(e) {
     e.preventDefault();
     const form = e.target;
     const data = Object.fromEntries(new FormData(form).entries());
     const status = document.getElementById('form-status');
+    const submitBtn = form.querySelector('button[type=submit]');
 
-    // Demo: simulate a successful submit
-    // In production, replace with: fetch('https://formspree.io/f/YOUR_ID', { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' }})
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
     status.style.display = 'block';
-    status.style.background = 'rgba(63, 185, 80, 0.15)';
-    status.style.color = '#3fb950';
-    status.style.border = '1px solid rgba(63, 185, 80, 0.3)';
-    status.innerHTML = '✓ Thanks ' + data.name + '! Your message has been received. We\'ll respond within 1 business day at <strong>' + data.email + '</strong>.';
-    form.reset();
-    setTimeout(() => status.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+    status.style.background = 'rgba(139, 92, 246, 0.1)';
+    status.style.color = 'var(--text)';
+    status.style.border = '1px solid rgba(139, 92, 246, 0.3)';
+    status.innerHTML = 'Sending your message to the ' + (data.topic || 'support') + ' queue…';
+
+    try {
+      const res = await fetch(SUPPORT_API + '/api/support/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error('API ' + res.status);
+      const json = await res.json();
+
+      status.style.background = 'rgba(63, 185, 80, 0.15)';
+      status.style.color = '#3fb950';
+      status.style.border = '1px solid rgba(63, 185, 80, 0.3)';
+      status.innerHTML = '✓ Thanks <strong>' + (data.name || 'there') + '</strong>! Your ticket <code>' + json.ticket_ref + '</code> has been received. We\'ll respond within 1 business day at <strong>' + data.email + '</strong>.';
+      form.reset();
+    } catch (err) {
+      status.style.background = 'rgba(248, 81, 73, 0.15)';
+      status.style.color = '#f85149';
+      status.style.border = '1px solid rgba(248, 81, 73, 0.3)';
+      status.innerHTML = '✗ Could not reach the support server (' + err.message + '). Email us directly at <a href="mailto:support@seele.agency">support@seele.agency</a>.';
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send message →';
+      setTimeout(() => status.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+    }
   }
 </script>
 

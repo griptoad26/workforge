@@ -246,19 +246,65 @@
   // Load plan from URL
   if (PRICES[plan]) setPlan(plan, null);
 
-  // Simulated payment
-  function payNow() {
+  // Real (or demo-mode) payment via xkg-stripe backend
+  const STRIPE_API = (location.hostname === 'localhost' || /^10\.0\.|^192\.168\.|^100\./.test(location.hostname))
+    ? 'http://' + location.hostname + ':8095'  // local network
+    : 'https://api.seele.agency';              // production (when deployed)
+
+  async function payNow() {
     const btn = document.getElementById('pay-btn');
+    const form = document.querySelector('form');
+    if (!form.reportValidity()) return;
+    const email = form.querySelector('[name=email]').value;
+    const first = form.querySelector('[name=firstname]').value;
+    const last = form.querySelector('[name=lastname]').value;
+    const customerEmail = email || (first + '.' + last + '@customer.local');
+    const selectedPlan = plan;
+
     btn.disabled = true;
-    btn.textContent = 'Processing…';
-    setTimeout(() => {
-      btn.textContent = '✓ Payment successful!';
-      btn.style.background = 'linear-gradient(135deg, #3fb950, #2ea043)';
-      setTimeout(() => {
-        alert('Welcome to XKG Pro! Check your email for the license key and download link. Redirecting to the dashboard…');
-        location.href = '/dashboard.html?license=new';
-      }, 800);
-    }, 1500);
+    btn.textContent = 'Connecting…';
+
+    try {
+      const res = await fetch(STRIPE_API + '/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          plan: selectedPlan,
+          email: customerEmail,
+          success_url: location.origin + '/dashboard.html?session={CHECKOUT_SESSION_ID}',
+          cancel_url: location.origin + '/checkout.html?cancelled=1',
+        }),
+      });
+
+      if (!res.ok) throw new Error('Checkout API error: ' + res.status);
+      const data = await res.json();
+
+      if (data.mode === 'demo') {
+        // Demo mode — simulate webhook, then show success
+        btn.textContent = 'Issuing license…';
+        const wh = await fetch(STRIPE_API + '/api/webhook', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'checkout.session.completed',
+            data: { object: { id: data.session_id, customer_email: customerEmail, metadata: { plan: selectedPlan, email: customerEmail } } },
+          }),
+        });
+        btn.textContent = '✓ Payment successful!';
+        btn.style.background = 'linear-gradient(135deg, #3fb950, #2ea043)';
+        setTimeout(() => {
+          alert('Welcome to XKG Pro (demo mode)! Your license has been issued to ' + customerEmail + '.\\n\\nIn production, you would be redirected to Stripe Checkout. Redirecting to the dashboard…');
+          location.href = '/dashboard.html?session=' + data.session_id + '&demo=1';
+        }, 600);
+      } else {
+        // Live Stripe — redirect to hosted checkout
+        window.location.href = data.checkout_url;
+      }
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = 'Pay ' + (document.querySelector('#total')?.textContent || '$29.00') + ' →';
+      alert('Payment failed: ' + err.message + '\\n\\nYou can still test the site — try the contact form or downloads page.');
+    }
   }
 </script>
 
