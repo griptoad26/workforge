@@ -241,7 +241,7 @@
 </footer>
 
 <script>
-  // Form submission — POST to xkg-stripe backend (which logs the ticket and (TODO) emails you)
+  // Form submission — POST to xkg-stripe backend (logs the ticket; auto-reply email is wired up)
   const SUPPORT_API = (location.protocol === 'https:' && !location.hostname.includes('seele.agency'))
     ? ''                                       // same-origin (proxied by Tailscale/Cloudflare)
     : (location.hostname === 'localhost' || /^10\.0\.|^192\.168\.|^100\./.test(location.hostname))
