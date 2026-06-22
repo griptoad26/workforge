@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Service — XKG Desktop</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d1117; --bg2: #161b22; --bg3: #21262d; --bg4: #30363d;
+    --text: #e6edf3; --text2: #8b949e; --text3: #6e7681;
+    --accent: #8b5cf6; --accent-h: #a78bfa;
+    --success: #3fb950; --gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%);
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; line-height: 1.6; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-h); }
+  .container { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+  nav { position: sticky; top: 0; background: rgba(13,17,23,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--bg4); z-index: 100; padding: 14px 0; }
+  nav .container { display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-size: 18px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .logo-mark { width: 28px; height: 28px; background: var(--gradient); border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 14px; }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a { color: var(--text2); font-size: 14px; }
+  .nav-links a:hover { color: var(--text); }
+  .page-head { padding: 60px 0 40px; text-align: center; }
+  .page-head h1 { font-size: 44px; font-weight: 800; margin-bottom: 12px; }
+  .content { padding: 0 0 80px; }
+  .content h2 { font-size: 22px; margin: 28px 0 10px; }
+  .content p { color: var(--text2); margin-bottom: 14px; }
+  .content strong { color: var(--text); }
+  footer { background: var(--bg2); border-top: 1px solid var(--bg4); padding: 24px 0; text-align: center; color: var(--text3); font-size: 14px; }
+</style>
+</head>
+<body>
+<nav><div class="container">
+  <a href="/" class="logo"><span class="logo-mark">X</span> XKG Desktop</a>
+  <div class="nav-links">
+    <a href="/#features">Features</a>
+    <a href="/downloads.html">Download</a>
+    <a href="/docs.html">Docs</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/support.html">Support</a>
+  </div>
+</div></nav>
+
+<div class="page-head"><h1>Terms of Service</h1><p>Last updated: 2026-06-21</p></div>
+
+<div class="container content">
+  <h2>1. The deal in one sentence</h2>
+  <p>You can use XKG Desktop (Free tier) for any purpose, commercial or non-commercial, with no strings attached. Pay for Pro/Team to unlock extra features. Don't use it to do anything illegal, don't try to break the license server, and don't sue us if your hard drive dies.</p>
+
+  <h2>2. License grants</h2>
+  <p><strong>Open-source code (MIT):</strong> All code in the <a href="https://github.com/griptoad26/xkg-desktop">xkg-desktop</a> and <a href="https://github.com/griptoad26/xkg-mobile">xkg-mobile</a> repositories is MIT-licensed. You can read it, modify it, fork it, ship it, even sell a competing product based on it. We just ask for attribution.</p>
+  <p><strong>Binaries:</strong> The compiled binaries (the downloads on this site) are also MIT. You can redistribute them, include them in a larger product, whatever.</p>
+  <p><strong>Pro license key:</strong> Unlocks the multi-device sync and the additional providers. One key per person (or per seat, for Team). Non-transferable, but if you lose it, just email support and we'll reissue.</p>
+
+  <h2>3. Refunds</h2>
+  <p>30-day money-back, no questions asked. Email <code>support@seele.agency</code> with your Stripe receipt.</p>
+
+  <h2>4. Acceptable use</h2>
+  <p>Don't use XKG Desktop to:</p>
+  <ul style="color: var(--text2); padding-left: 24px; margin-bottom: 16px;">
+    <li>Break any law (copyright, harassment, fraud, etc.)</li>
+    <li>Reverse-engineer or attack the license server</li>
+    <li>Resell the Pro features as part of a competing product without a written agreement</li>
+  </ul>
+
+  <h2>5. Provider relationships</h2>
+  <p>When you use XKG Desktop to chat with Grok, Claude, ChatGPT, or Gemini, your data goes to those providers under their terms of service, not ours. We are not responsible for what they do with it. Read their policies.</p>
+
+  <h2>6. No warranty</h2>
+  <p>The software is provided "as is", without warranty of any kind. We do our best to make it work, but we can't guarantee it will never crash, lose data, or eat your homework. <strong>Back up your <code>xkg-desktop.db</code> file.</strong></p>
+
+  <h2>7. Limitation of liability</h2>
+  <p>If something goes wrong, our liability is capped at the amount you paid us in the last 12 months (which is $0 for the Free tier, $29 for Pro, $99 for Team).</p>
+
+  <h2>8. Termination</h2>
+  <p>You can stop using the software at any time. We can stop offering Pro/Team at any time (but the Free tier stays open-source forever, regardless). If we terminate Pro, you keep whatever features you already paid for in whatever version was current at the time of purchase.</p>
+
+  <h2>9. Changes</h2>
+  <p>If we change these terms, we'll bump the date at the top and notify Pro/Team customers by email. Continued use after 30 days = acceptance.</p>
+
+  <h2>10. Contact</h2>
+  <p>Seele Agency · <a href="/support.html">support form</a> · <a href="https://github.com/griptoad26/xkg-desktop/issues">GitHub issues</a></p>
+</div>
+
+<footer>© 2026 Seele Agency · <a href="/">Home</a> · <a href="/docs.html">Docs</a> · <a href="/support.html">Support</a> · <a href="/privacy.html">Privacy</a></footer>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy — XKG Desktop</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d1117; --bg2: #161b22; --bg3: #21262d; --bg4: #30363d;
+    --text: #e6edf3; --text2: #8b949e; --text3: #6e7681;
+    --accent: #8b5cf6; --accent-h: #a78bfa;
+    --success: #3fb950; --gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%);
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; line-height: 1.6; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-h); }
+  .container { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+  nav { position: sticky; top: 0; background: rgba(13,17,23,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--bg4); z-index: 100; padding: 14px 0; }
+  nav .container { display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-size: 18px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .logo-mark { width: 28px; height: 28px; background: var(--gradient); border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 14px; }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a { color: var(--text2); font-size: 14px; }
+  .nav-links a:hover { color: var(--text); }
+  .page-head { padding: 60px 0 40px; text-align: center; }
+  .page-head h1 { font-size: 44px; font-weight: 800; margin-bottom: 12px; }
+  .content { padding: 0 0 80px; }
+  .content h2 { font-size: 22px; margin: 28px 0 10px; }
+  .content p { color: var(--text2); margin-bottom: 14px; }
+  .content strong { color: var(--text); }
+  .principle { background: var(--bg2); border: 1px solid var(--bg4); border-radius: 12px; padding: 20px; margin: 16px 0; }
+  .principle h3 { font-size: 16px; margin-bottom: 8px; color: var(--success); }
+  .principle p { font-size: 14px; }
+  footer { background: var(--bg2); border-top: 1px solid var(--bg4); padding: 24px 0; text-align: center; color: var(--text3); font-size: 14px; }
+</style>
+</head>
+<body>
+<nav><div class="container">
+  <a href="/" class="logo"><span class="logo-mark">X</span> XKG Desktop</a>
+  <div class="nav-links">
+    <a href="/#features">Features</a>
+    <a href="/downloads.html">Download</a>
+    <a href="/docs.html">Docs</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/support.html">Support</a>
+  </div>
+</div></nav>
+
+<div class="page-head"><h1>Privacy</h1><p>Last updated: 2026-06-21</p></div>
+
+<div class="container content">
+  <p>XKG Desktop is local-first software. We have no servers, no cloud, no telemetry, no analytics, no cookies, no third-party trackers, and no account system. This page explains exactly what data the app handles and where it goes.</p>
+
+  <h2>The five principles</h2>
+  <div class="principle"><h3>1. Your data lives on your device</h3><p>All conversations, captures, and settings are stored in a SQLite database at <code>~/.local/share/xkg-desktop/xkg-desktop.db</code> (Linux/macOS) or <code>%APPDATA%\xkg-desktop\xkg-desktop.db</code> (Windows). You can open it, back it up, or delete it with standard tools.</p></div>
+  <div class="principle"><h3>2. The only network calls are the ones you make</h3><p>The app calls out to a provider (Grok/Claude/ChatGPT/Gemini) only when you explicitly trigger a chat. Capture-and-sync calls go to <code>XKG_HUB_URL</code> (default <code>http://127.0.0.1:8090</code>) — that's your local cluster-hub, not a third-party server.</p></div>
+  <div class="principle"><h3>3. No analytics, ever</h3><p>There are no Google Analytics, Sentry, Mixpanel, PostHog, or any other tracking SDKs in the binary. We don't even know how many people are using the app.</p></div>
+  <div class="principle"><h3>4. No account required</h3><p>The Free tier requires nothing. Pro/Team are paid once and tied to a license key, not to your email or identity. We don't store customer records beyond the bare minimum to deliver the license.</p></div>
+  <div class="principle"><h3>5. You can verify everything</h3><p>The entire codebase is open source (MIT) on GitHub. You can read every line of Rust, Dart, Python, and HTML. Build the binary yourself if you don't trust our releases.</p></div>
+
+  <h2>What data is in the SQLite database?</h2>
+  <p>Tables: <code>providers</code>, <code>conversations</code>, <code>messages</code>, <code>sync_log</code>. Provider API keys are stored encrypted (AES-256-GCM, key derived from a passphrase you set in the settings panel). All other fields are plaintext — they're your data.</p>
+
+  <h2>What goes to the AI provider?</h2>
+  <p>When you send a message, the message text and conversation history are sent to the provider you selected. This is the same as using the provider's web UI directly. The provider's own privacy policy applies once the data leaves your machine.</p>
+
+  <h2>What goes to the cluster-hub?</h2>
+  <p>When you capture via the global shortcut, the capture <code>{text, title, tags, source: "xkg-desktop"}</code> is POSTed to <code>XKG_HUB_URL</code>. The hub is a Python script you run on your own machine or a server you control. It writes the capture to <code>xkg-user-imports.json</code> and appends a line to <code>from_desktop.jsonl</code> for the mobile app to pick up.</p>
+
+  <h2>What happens when you pay for Pro?</h2>
+  <p>Stripe processes the payment. We receive your email and a license key. We don't receive your credit card number, billing address beyond what's required for tax, or any of your conversation data. The license key unlocks the Pro features in the app via an online check against the Stripe customer portal.</p>
+
+  <h2>Cookie usage on this website</h2>
+  <p>This site (seele.agency) sets one cookie: <code>xkg_download_token</code>, which is set when you enter the <code>freeXKG</code> coupon code on the downloads page. It contains an HMAC-signed token that authorises your browser to fetch the release files. It expires in 30 days and is deleted when you clear cookies.</p>
+
+  <h2>Children's privacy</h2>
+  <p>XKG Desktop is not directed at children under 13. We don't knowingly collect data from children.</p>
+
+  <h2>Changes to this policy</h2>
+  <p>If we change anything material, we'll bump the version date at the top of this page and post a note on the GitHub releases page.</p>
+
+  <h2>Contact</h2>
+  <p>Questions? <a href="/support.html">Open a support ticket</a> or <a href="https://github.com/griptoad26/xkg-desktop/issues/new">file an issue on GitHub</a>.</p>
+</div>
+
+<footer>© 2026 Seele Agency · <a href="/">Home</a> · <a href="/docs.html">Docs</a> · <a href="/support.html">Support</a> · <a href="/terms.html">Terms</a></footer>
+</body>
+</html>
