@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Download XKG Desktop — the local-first AI conversation knowledge graph. Free for Windows, Mac, Ubuntu, iOS, and Android.">
+<meta name="description" content="Download XKG Desktop — the local-first AI conversation knowledge graph. Free for Windows, Mac, Linux, and Android.">
 <title>Download XKG Desktop — Free for All Platforms | Seele Agency</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,13 +27,20 @@
   .nav-links a:hover { color: var(--text); }
   .nav-cta { background: var(--accent); color: white !important; padding: 8px 16px; border-radius: 8px; font-weight: 600; }
 
-  .page-head { padding: 60px 0 40px; text-align: center; }
+  .page-head { padding: 60px 0 30px; text-align: center; }
   .page-head h1 { font-size: 44px; font-weight: 800; margin-bottom: 12px; }
   .page-head p { color: var(--text2); font-size: 18px; max-width: 600px; margin: 0 auto; }
 
-  .downloads { padding: 40px 0 80px; }
+  .gate-banner { background: var(--bg2); border: 1px solid var(--bg4); border-radius: 14px; padding: 20px 24px; margin: 20px auto 30px; max-width: 800px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .gate-banner.unlocked { border-color: var(--success); background: rgba(63,185,80,0.08); }
+  .gate-banner .ico { font-size: 28px; }
+  .gate-banner .body { flex: 1; min-width: 200px; }
+  .gate-banner .body strong { display: block; margin-bottom: 2px; }
+  .gate-banner .body span { color: var(--text2); font-size: 14px; }
+  .gate-banner button { background: var(--gradient); color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; }
+  .gate-banner.unlocked button { background: var(--bg3); color: var(--text2); }
 
-  .filter { display: flex; gap: 8px; justify-content: center; margin-bottom: 40px; flex-wrap: wrap; }
+  .filter { display: flex; gap: 8px; justify-content: center; margin-bottom: 30px; flex-wrap: wrap; }
   .filter button { background: var(--bg2); color: var(--text2); border: 1px solid var(--bg4); padding: 8px 18px; border-radius: 100px; font-size: 14px; cursor: pointer; transition: all 0.2s; }
   .filter button:hover { color: var(--text); }
   .filter button.active { background: var(--accent); color: white; border-color: var(--accent); }
@@ -49,21 +56,41 @@
   .dl-tag { color: var(--text3); font-size: 13px; }
   .dl-desc { color: var(--text2); font-size: 14px; margin-bottom: 20px; min-height: 60px; }
   .dl-meta { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; font-size: 13px; color: var(--text3); }
-  .dl-meta span { display: inline-flex; align-items: center; gap: 4px; }
   .dl-actions { display: flex; gap: 8px; }
-  .dl-btn { flex: 1; background: var(--gradient); color: white; padding: 12px 16px; border-radius: 8px; font-weight: 600; text-align: center; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+  .dl-btn { flex: 1; background: var(--gradient); color: white; padding: 12px 16px; border-radius: 8px; font-weight: 600; text-align: center; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; border: none; text-decoration: none; }
   .dl-btn:hover { color: white; transform: translateY(-1px); }
-  .dl-btn.alt { background: var(--bg3); border: 1px solid var(--bg4); }
-  .dl-btn.alt:hover { background: var(--bg4); color: var(--text); }
+  .dl-btn.alt { background: var(--bg3); border: 1px solid var(--bg4); color: var(--text); }
+  .dl-btn.alt:hover { color: var(--text); }
+  .dl-btn.locked { background: var(--bg3); color: var(--text2); border: 1px dashed var(--bg4); }
+  .dl-btn.locked:hover { color: var(--text); }
+  .dl-btn.disabled, .dl-btn.alt.disabled { background: var(--bg3); color: var(--text2); border: 1px dashed var(--bg4); cursor: not-allowed; pointer-events: none; opacity: 0.6; }
+  .dl-btn.disabled:hover, .dl-btn.alt.disabled:hover { color: var(--text2); transform: none; }
 
-  .system-detect { background: var(--bg2); border: 1px solid var(--bg4); border-radius: 14px; padding: 24px; margin-bottom: 32px; display: flex; align-items: center; gap: 20px; }
-  .detect-icon { font-size: 36px; }
-  .detect-text h3 { margin-bottom: 4px; }
-  .detect-text p { color: var(--text2); font-size: 14px; }
-  .detect-btn { background: var(--gradient); color: white; padding: 12px 24px; border-radius: 8px; font-weight: 600; white-space: nowrap; }
-  .detect-btn:hover { color: white; }
+  /* Modal */
+  .modal-back { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
+  .modal-back.open { display: flex; }
+  .modal { background: var(--bg); border: 1px solid var(--bg4); border-radius: 18px; padding: 32px; max-width: 480px; width: 100%; position: relative; }
+  .modal h2 { font-size: 22px; margin-bottom: 8px; }
+  .modal .file-name { color: var(--text2); font-size: 13px; margin-bottom: 20px; word-break: break-all; }
+  .modal .close { position: absolute; top: 12px; right: 16px; background: none; border: none; color: var(--text3); font-size: 24px; cursor: pointer; }
+  .tabs { display: flex; background: var(--bg2); border-radius: 10px; padding: 4px; margin-bottom: 20px; }
+  .tabs button { flex: 1; background: transparent; color: var(--text2); border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; }
+  .tabs button.active { background: var(--bg3); color: var(--text); }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+  .tab-pane p { color: var(--text2); font-size: 14px; margin-bottom: 16px; }
+  .coupon-input { display: flex; gap: 8px; margin-bottom: 12px; }
+  .coupon-input input { flex: 1; padding: 12px 14px; background: var(--bg2); border: 1px solid var(--bg4); border-radius: 8px; color: var(--text); font-size: 14px; font-family: ui-monospace, "Cascadia Code", monospace; }
+  .coupon-input input:focus { outline: none; border-color: var(--accent); }
+  .coupon-input button { background: var(--gradient); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+  .coupon-error { color: #f85149; font-size: 13px; min-height: 18px; }
+  .coupon-hint { color: var(--text3); font-size: 12px; margin-top: 8px; }
+  .pay-btn { background: var(--gradient); color: white; border: none; padding: 14px 20px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 15px; width: 100%; text-decoration: none; display: block; text-align: center; }
+  .pay-btn:hover { color: white; transform: translateY(-1px); }
+  .modal-divider { display: flex; align-items: center; gap: 12px; margin: 18px 0; color: var(--text3); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+  .modal-divider::before, .modal-divider::after { content: ''; flex: 1; height: 1px; background: var(--bg4); }
 
-  .verify { padding: 40px 0; background: var(--bg2); border-top: 1px solid var(--bg4); }
+  .verify { padding: 40px 0; background: var(--bg2); border-top: 1px solid var(--bg4); margin-top: 60px; }
   .verify h2 { text-align: center; margin-bottom: 20px; }
   .verify p { text-align: center; color: var(--text2); max-width: 600px; margin: 0 auto 24px; }
   .verify code { background: var(--bg3); padding: 2px 6px; border-radius: 4px; font-family: ui-monospace, "Cascadia Code", monospace; font-size: 13px; }
@@ -76,9 +103,15 @@
   .req h4 { margin-bottom: 8px; font-size: 15px; }
   .req p { color: var(--text2); font-size: 13px; }
   .req strong { color: var(--text); }
+  .v01-notice { background: rgba(210,153,34,0.08); border: 1px solid rgba(210,153,34,0.4); border-radius: 12px; padding: 16px 20px; margin: 16px 0 24px; display: flex; gap: 14px; align-items: flex-start; font-size: 14px; }
+  .v01-notice .ico { font-size: 22px; flex-shrink: 0; }
+  .v01-notice .body { flex: 1; }
+  .v01-notice .body strong { color: #d29922; display: block; margin-bottom: 6px; font-size: 15px; }
+  .v01-notice .body p { margin: 4px 0; color: var(--text2); line-height: 1.5; }
+  .v01-notice .body p b { color: var(--text); }
+  .v01-notice .body a { color: var(--accent-h); }
 
   footer { background: var(--bg2); border-top: 1px solid var(--bg4); padding: 24px 0; text-align: center; color: var(--text3); font-size: 14px; }
-  footer a { color: var(--text2); }
 </style>
 </head>
 <body>
@@ -89,349 +122,408 @@
     <div class="nav-links">
       <a href="/#features">Features</a>
       <a href="/downloads.html">Download</a>
+      <a href="/docs.html">Docs</a>
       <a href="/#pricing">Pricing</a>
       <a href="/support.html">Support</a>
-      <a href="/#downloads" class="nav-cta">Get XKG</a>
     </div>
   </div>
 </nav>
 
-<section class="page-head">
-  <div class="container">
-    <h1>Download XKG Desktop</h1>
-    <p>Free forever, no account needed. Pick your platform and start keeping your AI history local.</p>
-  </div>
-</section>
+<div class="page-head">
+  <h1>Download XKG Desktop</h1>
+  <p>Local-first AI knowledge graph. Free for all platforms.</p>
+</div>
 
-<section class="downloads">
-  <div class="container">
+<div class="container">
 
-    <!-- Auto-detect card -->
-    <div class="system-detect" id="detect-card">
-      <div class="detect-icon" id="detect-icon">💻</div>
-      <div class="detect-text">
-        <h3 id="detect-title">Detecting your system…</h3>
-        <p id="detect-desc">Checking your browser's user agent for the right installer.</p>
-      </div>
-      <a href="#windows" class="detect-btn" id="detect-btn">↓ Download</a>
-    </div>
-
-    <div class="filter">
-      <button class="active" onclick="filterPlat('all', this)">All platforms</button>
-      <button onclick="filterPlat('desktop', this)">Desktop</button>
-      <button onclick="filterPlat('mobile', this)">Mobile</button>
-      <button onclick="filterPlat('source', this)">Source code</button>
-    </div>
-
-    <div class="grid">
-
-      <!-- Windows -->
-      <div class="dl-card recommended" data-plat="desktop">
-        <div class="dl-top">
-          <div class="dl-icon">🪟</div>
-          <div>
-            <div class="dl-title">Windows 10/11</div>
-            <div class="dl-tag">x64 · .msi + .exe installer</div>
-          </div>
-        </div>
-        <div class="dl-desc">Native Windows installer. No admin rights required for the per-user install. Includes auto-update support.</div>
-        <div class="dl-meta">
-          <span>📦 44 MB</span>
-          <span>🏷️ v0.1.0</span>
-          <span>🕐 Updated Jun 2026</span>
-        </div>
-        <div class="dl-actions">
-          <a class="dl-btn" href="https://github.com/griptoad26/xkg-desktop/releases/latest/download/XKG-Desktop_0.1.0_x64-setup.exe">↓ .exe installer</a>
-          <a class="dl-btn alt" href="https://github.com/griptoad26/xkg-desktop/releases/latest/download/XKG-Desktop_0.1.0_x64_en-US.msi">.msi</a>
-        </div>
-      </div>
-
-      <!-- macOS Intel -->
-      <div class="dl-card" data-plat="desktop">
-        <div class="dl-top">
-          <div class="dl-icon">🍎</div>
-          <div>
-            <div class="dl-title">macOS (Intel)</div>
-            <div class="dl-tag">x86_64 · .dmg</div>
-          </div>
-        </div>
-        <div class="dl-desc">For Intel-based Macs (2017 and earlier, or older Mac Pros). Drag-and-drop install.</div>
-        <div class="dl-meta">
-          <span>📦 38 MB</span>
-          <span>🏷️ v0.1.0</span>
-          <span>🍎 macOS 10.13+</span>
-        </div>
-        <div class="dl-actions">
-          <a class="dl-btn" href="https://github.com/griptoad26/xkg-desktop/releases/latest/download/XKG-Desktop_0.1.0_x64.dmg">↓ Intel .dmg</a>
-        </div>
-      </div>
-
-      <!-- macOS Apple Silicon -->
-      <div class="dl-card" data-plat="desktop">
-        <div class="dl-top">
-          <div class="dl-icon">🍎</div>
-          <div>
-            <div class="dl-title">macOS (Apple Silicon)</div>
-            <div class="dl-tag">arm64 · .dmg · M1/M2/M3/M4</div>
-          </div>
-        </div>
-        <div class="dl-desc">Native ARM64 build for the fastest possible performance on M-series Macs. Universal binary included.</div>
-        <div class="dl-meta">
-          <span>📦 36 MB</span>
-          <span>🏷️ v0.1.0</span>
-          <span>🍎 macOS 11+</span>
-        </div>
-        <div class="dl-actions">
-          <a class="dl-btn" href="https://github.com/griptoad26/xkg-desktop/releases/latest/download/XKG-Desktop_0.1.0_aarch64.dmg">↓ Apple Silicon .dmg</a>
-        </div>
-      </div>
-
-      <!-- Ubuntu / Debian -->
-      <div class="dl-card" data-plat="desktop">
-        <div class="dl-top">
-          <div class="dl-icon">🐧</div>
-          <div>
-            <div class="dl-title">Ubuntu / Debian</div>
-            <div class="dl-tag">x86_64 · .deb + AppImage</div>
-          </div>
-        </div>
-        <div class="dl-desc">Works on Ubuntu 22.04+, Debian 12+, Mint 21+, Pop!_OS, Elementary OS. Includes auto-update.</div>
-        <div class="dl-meta">
-          <span>📦 32 MB</span>
-          <span>🏷️ v0.1.0</span>
-          <span>🐧 Linux x64</span>
-        </div>
-        <div class="dl-actions">
-          <a class="dl-btn" href="https://github.com/griptoad26/xkg-desktop/releases/latest/download/xkg-desktop_0.1.0_amd64.deb">↓ .deb</a>
-          <a class="dl-btn alt" href="https://github.com/griptoad26/xkg-desktop/releases/latest/download/xkg-desktop_0.1.0_amd64.AppImage">AppImage</a>
-        </div>
-      </div>
-
-      <!-- Fedora / RHEL -->
-      <div class="dl-card" data-plat="desktop">
-        <div class="dl-top">
-          <div class="dl-icon">🎩</div>
-          <div>
-            <div class="dl-title">Fedora / RHEL</div>
-            <div class="dl-tag">x86_64 · .rpm</div>
-          </div>
-        </div>
-        <div class="dl-desc">For Fedora 38+, RHEL 9+, Rocky, AlmaLinux, openSUSE Leap, Nobara.</div>
-        <div class="dl-meta">
-          <span>📦 32 MB</span>
-          <span>🏷️ v0.1.0</span>
-          <span>🎩 RPM-based</span>
-        </div>
-        <div class="dl-actions">
-          <a class="dl-btn" href="https://github.com/griptoad26/xkg-desktop/releases/latest/download/xkg-desktop-0.1.0-1.x86_64.rpm">↓ .rpm</a>
-        </div>
-      </div>
-
-      <!-- Arch -->
-      <div class="dl-card" data-plat="desktop">
-        <div class="dl-top">
-          <div class="dl-icon">🏛️</div>
-          <div>
-            <div class="dl-title">Arch / Manjaro</div>
-            <div class="dl-tag">AUR package</div>
-          </div>
-        </div>
-        <div class="dl-desc">Available on the AUR. Maintained by the community; build from source in ~3 minutes.</div>
-        <div class="dl-meta">
-          <span>📦 ~30 MB</span>
-          <span>🏷️ v0.1.0</span>
-          <span>🏛️ AUR</span>
-        </div>
-        <div class="dl-actions">
-          <a class="dl-btn" href="https://aur.archlinux.org/packages/xkg-desktop">View on AUR →</a>
-        </div>
-      </div>
-
-      <!-- Android -->
-      <div class="dl-card recommended" data-plat="mobile" id="mobile">
-        <div class="dl-top">
-          <div class="dl-icon">📱</div>
-          <div>
-            <div class="dl-title">Android</div>
-            <div class="dl-tag">8.0+ · APK · ARM64 + ARMv7 + x86_64</div>
-          </div>
-        </div>
-        <div class="dl-desc">Native Android app. Syncs to your desktop over local network. No Play Services required.</div>
-        <div class="dl-meta">
-          <span>📦 22 MB</span>
-          <span>🏷️ v0.1.0</span>
-          <span>🤖 Android 8.0+</span>
-        </div>
-        <div class="dl-actions">
-          <a class="dl-btn" href="https://github.com/griptoad26/xkg-mobile/releases/latest/download/app-release.apk">↓ APK (sideload)</a>
-          <a class="dl-btn alt" href="https://play.google.com/store/apps/details?id=ai.xkg.mobile">Google Play</a>
-        </div>
-      </div>
-
-      <!-- iOS -->
-      <div class="dl-card" data-plat="mobile">
-        <div class="dl-top">
-          <div class="dl-icon">📲</div>
-          <div>
-            <div class="dl-title">iOS / iPadOS</div>
-            <div class="dl-tag">13.0+ · iPhone &amp; iPad</div>
-          </div>
-        </div>
-        <div class="dl-desc">Universal binary. Available on the App Store. TestFlight beta for pre-release builds.</div>
-        <div class="dl-meta">
-          <span>📦 28 MB</span>
-          <span>🏷️ v0.1.0</span>
-          <span>📲 iOS 13+</span>
-        </div>
-        <div class="dl-actions">
-          <a class="dl-btn" href="https://apps.apple.com/app/xkg-desktop/id000000000">App Store</a>
-          <a class="dl-btn alt" href="https://testflight.apple.com/join/xxxxxx">TestFlight beta</a>
-        </div>
-      </div>
-
-      <!-- Source -->
-      <div class="dl-card" data-plat="source">
-        <div class="dl-top">
-          <div class="dl-icon">🐙</div>
-          <div>
-            <div class="dl-title">Source code (GitHub)</div>
-            <div class="dl-tag">Tauri 2 · Rust + vanilla JS</div>
-          </div>
-        </div>
-        <div class="dl-desc">Build from source. Requires Rust 1.74+, Node 18+, and (for Windows) WebView2.</div>
-        <div class="dl-meta">
-          <span>📜 MIT license</span>
-          <span>🏷️ v0.1.0</span>
-          <span>⭐ Star on GitHub</span>
-        </div>
-        <div class="dl-actions">
-          <a class="dl-btn" href="https://github.com/griptoad26/xkg-desktop">View repo →</a>
-        </div>
-      </div>
-
-      <!-- Docker -->
-      <div class="dl-card" data-plat="source">
-        <div class="dl-top">
-          <div class="dl-icon">🐳</div>
-          <div>
-            <div class="dl-title">Docker (headless server)</div>
-            <div class="dl-tag">Self-host the sync service</div>
-          </div>
-        </div>
-        <div class="dl-desc">Run the optional sync relay in a container. Useful for headless servers or NAS boxes.</div>
-        <div class="dl-meta">
-          <span>📦 ~120 MB image</span>
-          <span>🏷️ v0.1.0</span>
-          <span>🐳 Docker</span>
-        </div>
-        <div class="dl-actions">
-          <a class="dl-btn" href="https://github.com/griptoad26/xkg-desktop/pkgs/container/xkg-relay">↓ docker pull</a>
-        </div>
-      </div>
-
+  <!-- Honest v0.1.0 notice -->
+  <div class="v01-notice">
+    <div class="ico">⚠️</div>
+    <div class="body">
+      <strong>v0.1.0 prototype — what works today vs. what's coming</strong>
+      <p>
+        <b>Works now:</b> Local capture app shell, opens ChatGPT/Claude/Grok/Gemini in a secure in-app browser,
+        saves messages to a local SQLite store, exports to JSON.
+      </p>
+      <p>
+        <b>Coming in v0.2.0 (Aug 2026):</b> Full DOM capture from LLM web UIs, knowledge-graph linker,
+        cluster-hub sync, cross-device history.
+      </p>
+      <p>
+        <a href="/changelog.html#v010">Read the full v0.1.0 changelog →</a>
+      </p>
     </div>
   </div>
-</section>
 
-<!-- Checksums -->
-<section class="verify">
+  <!-- Gate banner — shows current state -->
+  <div id="gateBanner" class="gate-banner">
+    <div class="ico" id="gateIco">🔒</div>
+    <div class="body">
+      <strong id="gateTitle">Downloads are gated</strong>
+      <span id="gateSub">Enter the <code>freeXKG</code> coupon code or purchase a license to unlock the binaries.</span>
+    </div>
+    <button id="gateBtn" onclick="openGateModal()">Enter coupon</button>
+  </div>
+
+<div class="filter">
+  <button onclick="filterPlat('all', this)" class="active">All</button>
+  <button onclick="filterPlat('desktop', this)">Desktop</button>
+  <button onclick="filterPlat('mobile', this)">Mobile</button>
+  <button onclick="filterPlat('source', this)">Source</button>
+</div>
+
+<div class="grid">
+
+  <!-- Windows -->
+  <div class="dl-card recommended" data-platform="desktop">
+    <div class="dl-top">
+      <div class="dl-icon">🪟</div>
+      <div><div class="dl-title">Windows</div><div class="dl-tag">Windows 10, 11 · real NSIS installer</div></div>
+    </div>
+    <div class="dl-desc">NSIS installer is recommended for most users. MSI is on the roadmap for enterprise deployment — not bundled in v0.1.0.</div>
+    <div class="dl-meta"><span>📦 5.4 MB</span><span>🆔 v0.1.0</span><span>🔧 x86_64</span><span>🔓 SHA256 verified</span></div>
+    <div class="dl-actions">
+      <a class="dl-btn" data-file="XKG-Desktop_0.1.0_x64-setup.exe" onclick="dlClick(event, this)">↓ .exe installer (NSIS)</a>
+      <a class="dl-btn alt disabled" title="Not in v0.1.0 — WiX MSI ships with v0.1.1">.msi (coming v0.1.1)</a>
+    </div>
+  </div>
+
+  <!-- macOS -->
+  <div class="dl-card" data-platform="desktop">
+    <div class="dl-top">
+      <div class="dl-icon">🍎</div>
+      <div><div class="dl-title">macOS</div><div class="dl-tag">DMG ships with v0.1.1 — no runner in v0.1.0</div></div>
+    </div>
+    <div class="dl-desc"><strong>v0.1.0 has no macOS build.</strong> The pipeline slot is wired up so v0.1.1 will appear here automatically once we have a macOS runner in the matrix. Don't click — gate returns 404 right now.</div>
+    <div class="dl-meta"><span>🆔 v0.1.0</span><span>⚠ Not yet built</span></div>
+    <div class="dl-actions">
+      <a class="dl-btn disabled" title="Not in v0.1.0 — macOS runner pending">Apple Silicon .dmg (coming v0.1.1)</a>
+      <a class="dl-btn alt disabled" title="Not in v0.1.0">Intel .dmg (coming v0.1.1)</a>
+    </div>
+  </div>
+
+  <!-- Linux -->
+  <div class="dl-card" data-platform="desktop">
+    <div class="dl-top">
+      <div class="dl-icon">🐧</div>
+      <div><div class="dl-title">Linux</div><div class="dl-tag">Ubuntu 22.04+, Fedora 38+, Arch</div></div>
+    </div>
+    <div class="dl-desc">Pick .deb for Debian/Ubuntu, .rpm for Fedora/RHEL, AppImage for "no install" portability.</div>
+    <div class="dl-meta"><span>📦 4.4 MB</span><span>🆔 v0.1.0</span><span>🔧 x86_64</span></div>
+    <div class="dl-actions">
+      <a class="dl-btn" data-file="XKG-Desktop_0.1.0_amd64.deb" onclick="dlClick(event, this)">↓ .deb</a>
+      <a class="dl-btn alt" data-file="XKG-Desktop_0.1.0_amd64.AppImage" onclick="dlClick(event, this)">AppImage</a>
+      <a class="dl-btn alt" data-file="XKG-Desktop-0.1.0-1.x86_64.rpm" onclick="dlClick(event, this)">.rpm</a>
+    </div>
+  </div>
+
+  <!-- Android -->
+  <div class="dl-card" data-platform="mobile">
+    <div class="dl-top">
+      <div class="dl-icon">📱</div>
+      <div><div class="dl-title">Android</div><div class="dl-tag">Android 5.0+ · API 21+ · real Flutter build</div></div>
+    </div>
+    <div class="dl-desc">Sideload the signed release APK (the official channel for v0.1.0). Play Store version is coming Q4 2026. SHA256 + signing cert verified on the install page.</div>
+    <div class="dl-meta"><span>📦 22.4 MB</span><span>🆔 v0.1.0</span><span>🔒 SHA256 verified</span></div>
+    <div class="dl-actions">
+      <a class="dl-btn" data-file="xkg-mobile-0.1.0-release.apk" onclick="dlClick(event, this)">↓ APK (sideload)</a>
+      <a class="dl-btn alt disabled" title="Not in v0.1.0 — iOS build needs macOS runner">iOS / TestFlight (coming v0.1.1)</a>
+    </div>
+  </div>
+
+  <!-- iOS -->
+  <div class="dl-card" data-platform="mobile">
+    <div class="dl-top">
+      <div class="dl-icon">📱</div>
+      <div><div class="dl-title">iOS</div><div class="dl-tag">Not in v0.1.0 — needs macOS runner in CI</div></div>
+    </div>
+    <div class="dl-desc"><strong>v0.1.0 has no iOS build.</strong> The Flutter source compiles for iOS but the release pipeline needs a macOS runner to produce a signed IPA, and we haven't wired one in yet. TestFlight link above is aspirational until v0.1.1 lands.</div>
+    <div class="dl-meta"><span>🆔 v0.1.0</span><span>⚠ Not yet built</span></div>
+    <div class="dl-actions">
+      <a class="dl-btn disabled" title="Not in v0.1.0 — macOS runner pending">iOS .ipa (coming v0.1.1)</a>
+      <a class="dl-btn alt" href="/ios.html">iOS roadmap →</a>
+    </div>
+  </div>
+
+  <!-- Source -->
+  <div class="dl-card" data-platform="source">
+    <div class="dl-top">
+      <div class="dl-icon">💻</div>
+      <div><div class="dl-title">Source code</div><div class="dl-tag">MIT licensed</div></div>
+    </div>
+    <div class="dl-desc">Read every line of Rust, Dart, and JavaScript. Build it yourself if you don't trust the binaries.</div>
+    <div class="dl-meta"><span>🔓 Public repos</span><span>🛠 Build from source</span></div>
+    <div class="dl-actions">
+      <a class="dl-btn" href="https://github.com/griptoad26/xkg-desktop">View xkg-desktop →</a>
+      <a class="dl-btn alt" href="https://github.com/griptoad26/xkg-mobile">View xkg-mobile →</a>
+    </div>
+  </div>
+
+  <!-- Arch / AUR (real PKGBUILD) -->
+  <div class="dl-card" data-platform="desktop">
+    <div class="dl-top">
+      <div class="dl-icon">🏔️</div>
+      <div><div class="dl-title">Arch (AUR)</div><div class="dl-tag">PKGBUILD ready · awaiting AUR submission</div></div>
+    </div>
+    <div class="dl-desc">A PKGBUILD is ready at <code>/home/x2/xkg-aur/</code>. We need a maintainer account on the AUR to push it; until then, install from the local PKGBUILD or use the AppImage.</div>
+    <div class="dl-meta"><span>📦 77 MB</span><span>🆔 v0.1.0-1</span><span>🔧 x86_64</span></div>
+    <div class="dl-actions">
+      <a class="dl-btn" href="/aur-install.html">Install from PKGBUILD →</a>
+      <a class="dl-btn alt" href="https://github.com/griptoad26/xkg-aur">View on GitHub →</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============ Modal ============ -->
+<div class="modal-back" id="gateModal">
+  <div class="modal">
+    <button class="close" onclick="closeGateModal()">×</button>
+    <h2>Unlock downloads</h2>
+    <div class="file-name" id="modalFile">—</div>
+    <div class="tabs">
+      <button class="active" id="tabCouponBtn" onclick="switchTab('coupon')">Have a coupon?</button>
+      <button id="tabPayBtn" onclick="switchTab('pay')">Buy a license</button>
+    </div>
+    <div class="tab-pane active" id="tabCoupon">
+      <p>Enter your coupon code to unlock the binary downloads for 30 days.</p>
+      <div class="coupon-input">
+        <input type="text" id="couponField" placeholder="freeXKG" autocomplete="off" spellcheck="false">
+        <button onclick="submitCoupon()">Unlock</button>
+      </div>
+      <div class="coupon-error" id="couponError"></div>
+      <div class="coupon-hint">Don't have a code? <a href="#" onclick="switchTab('pay'); return false;">Buy a license →</a></div>
+    </div>
+    <div class="tab-pane" id="tabPay">
+      <p>XKG Pro is a one-time purchase that unlocks the multi-device sync and all four providers.</p>
+      <a class="pay-btn" id="modalPayBtn" href="/checkout.html?plan=pro">Buy XKG Pro — $29</a>
+      <div class="modal-divider">or</div>
+      <p style="text-align: center;">Already have a license key? <a href="#" onclick="switchTab('coupon'); return false;">Enter it as a coupon →</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Verify section ============ -->
+<section class="verify" id="verify">
   <div class="container">
     <h2>Verify your download</h2>
-    <p>Every release is signed and the checksums are published. We recommend verifying, especially on Windows.</p>
+    <p>Every binary is signed by GitHub Actions. Compare the SHA256 checksum below with <code>sha256sum filename</code> on your machine.</p>
     <div class="checksum">
-      <div class="checksum-label"><span>SHA-256 (Windows installer)</span><span>copy</span></div>
-      a1b2c3d4e5f6789... (auto-generated per release)
+      <div class="checksum-label"><span>xkg-desktop_0.1.0_amd64.deb</span><span>4.4 MB</span></div>
+      85b57c91600bb47439640eebde6a1521658cdfb3918687f24cf437da31c088ca
     </div>
     <div class="checksum">
-      <div class="checksum-label"><span>SHA-256 (macOS dmg)</span><span>copy</span></div>
-      f0e9d8c7b6a5432... (auto-generated per release)
+      <div class="checksum-label"><span>XKG-Desktop_0.1.0_x64-setup.exe</span><span>5.4 MB</span></div>
+      d626b5768ff0fafdcd93cb7a11c8ae279a0b4df1d2b555302bd90390deea092b
     </div>
-    <p style="margin-top: 16px; font-size: 13px;">Full list at <a href="https://github.com/griptoad26/xkg-desktop/releases">github.com/griptoad26/xkg-desktop/releases</a></p>
+    <div class="checksum">
+      <div class="checksum-label"><span>xkg-mobile-0.1.0-release.apk</span><span>22.4 MB</span></div>
+      3e099f958bc894b32eb49a6012b91b0668689e9c5426b638870b4b3885d85a9d
+    </div>
   </div>
 </section>
 
-<!-- Requirements -->
-<section class="requirements">
+<section class="requirements" id="requirements">
   <div class="container">
-    <h2 style="text-align:center; margin-bottom: 32px;">System requirements</h2>
+    <h2 style="text-align: center; margin-bottom: 32px;">Requirements</h2>
     <div class="req-grid">
-      <div class="req">
-        <h4>🪟 Windows</h4>
-        <p><strong>OS:</strong> Windows 10 (1809+) or 11<br><strong>RAM:</strong> 4 GB<br><strong>Disk:</strong> 200 MB + your chat history</p>
-      </div>
-      <div class="req">
-        <h4>🍎 macOS</h4>
-        <p><strong>OS:</strong> 10.13 High Sierra or newer<br><strong>Chip:</strong> Intel or Apple Silicon<br><strong>RAM:</strong> 4 GB</p>
-      </div>
-      <div class="req">
-        <h4>🐧 Linux</h4>
-        <p><strong>OS:</strong> glibc 2.31+ (Ubuntu 20.04+)<br><strong>Display:</strong> X11 or Wayland<br><strong>Disk:</strong> 200 MB</p>
-      </div>
-      <div class="req">
-        <h4>📱 Mobile</h4>
-        <p><strong>iOS:</strong> 13.0+ (iPhone 6s+)<br><strong>Android:</strong> 8.0+ (API 24+)<br><strong>RAM:</strong> 2 GB</p>
-      </div>
+      <div class="req"><h4>🪟 Windows</h4><p>Windows 10 (1809+) or 11. WebView2 is bundled; auto-installed on first launch.</p></div>
+      <div class="req"><h4>🍎 macOS</h4><p>11.0 Big Sur (Intel) or 12.0 Monterey (Apple Silicon). 100 MB disk.</p></div>
+      <div class="req"><h4>🐧 Linux</h4><p>glibc 2.31+, libwebkit2gtk-4.1-0, libgtk-3-0. X11 or Wayland.</p></div>
+      <div class="req"><h4>📱 Android</h4><p>5.0 Lollipop (API 21) or later. 100 MB storage.</p></div>
     </div>
   </div>
 </section>
 
-<footer>
-  <div class="container">
-    <p>© 2026 Seele Agency · <a href="/">Home</a> · <a href="/support.html">Support</a> · <a href="/#pricing">Pricing</a> · <a href="https://github.com/griptoad26/xkg-desktop">GitHub</a></p>
-  </div>
-</footer>
+</div>
+
+<footer>© 2026 Seele Agency · <a href="/">Home</a> · <a href="/docs.html">Docs</a> · <a href="/support.html">Support</a> · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></footer>
 
 <script>
-  // ===== Auto-detect platform =====
-  (function detect() {
-    const ua = navigator.userAgent;
-    const plat = navigator.platform || '';
-    let os = 'unknown', icon = '💻', title = 'Manual download', btn = '#windows', desc = 'Pick your installer from the list below.';
+/* ============================================================
+   XKG Download Gate — backend-backed
+   ------------------------------------------------------------
+   - POST /api/coupon with the code → server returns a signed token
+   - Click a download button → window.location = /api/download/<file>?token=...
+   - Server validates the HMAC signature (SECRET lives only on the server)
+   - On valid token: 302 to the GitHub release URL
+   - On invalid: 403 + "go enter a coupon"
+   ============================================================ */
 
-    if (/Windows/i.test(ua) || /Win/i.test(plat)) {
-      os = 'windows'; icon = '🪟';
-      title = 'Detected: Windows'; desc = 'We picked the Windows installer for you.';
-      btn = 'https://github.com/griptoad26/xkg-desktop/releases/latest/download/XKG-Desktop_0.1.0_x64-setup.exe';
-    } else if (/Mac/i.test(plat) || /Macintosh/i.test(ua)) {
-      os = 'mac'; icon = '🍎';
-      const isARM = /arm|aarch/i.test(ua) || (navigator.userAgentData && navigator.userAgentData.platform === 'macOS');
-      title = isARM ? 'Detected: macOS (Apple Silicon)' : 'Detected: macOS (Intel)';
-      desc = isARM ? 'Download the M-series native build.' : 'Download the Intel build.';
-      btn = isARM
-        ? 'https://github.com/griptoad26/xkg-desktop/releases/latest/download/XKG-Desktop_0.1.0_aarch64.dmg'
-        : 'https://github.com/griptoad26/xkg-desktop/releases/latest/download/XKG-Desktop_0.1.0_x64.dmg';
-    } else if (/Linux/i.test(plat) || /Linux/i.test(ua)) {
-      os = 'linux'; icon = '🐧';
-      title = 'Detected: Linux'; desc = 'Download the AppImage (works on any distro) or the .deb for Debian/Ubuntu.';
-      btn = 'https://github.com/griptoad26/xkg-desktop/releases/latest/download/xkg-desktop_0.1.0_amd64.AppImage';
-    } else if (/Android/i.test(ua)) {
-      os = 'android'; icon = '📱';
-      title = 'Detected: Android'; desc = 'Download the APK to install on your phone.';
-      btn = 'https://github.com/griptoad26/xkg-mobile/releases/latest/download/app-release.apk';
-      document.getElementById('detect-card').scrollIntoView({ behavior: 'smooth' });
-    } else if (/iPhone|iPad|iOS/i.test(ua)) {
-      os = 'ios'; icon = '📲';
-      title = 'Detected: iOS'; desc = 'Open the App Store link below to install.';
-      btn = 'https://apps.apple.com/app/xkg-desktop/id000000000';
-    }
+const GATE_BASE = (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost')
+  ? 'http://127.0.0.1:9095'
+  : 'https://gate.seele.agency';   // production endpoint (to be set up)
 
-    document.getElementById('detect-icon').textContent = icon;
-    document.getElementById('detect-title').textContent = title;
-    document.getElementById('detect-desc').textContent = desc;
-    document.getElementById('detect-btn').href = btn;
-    document.getElementById('detect-btn').textContent = os === 'unknown' ? '↓ Download' : '↓ Download for ' + (os === 'mac' ? 'macOS' : os.charAt(0).toUpperCase() + os.slice(1));
-  })();
+const COOKIE_NAME = 'xkg_download_token';
+const STORAGE_KEY = 'xkg_download_token';
+const FILE_ROUTING = {
+  'XKG-Desktop_0.1.0_amd64.deb': 'xkg-desktop',
+  'XKG-Desktop-0.1.0-1.x86_64.rpm': 'xkg-desktop',
+  'XKG-Desktop_0.1.0_amd64.AppImage': 'xkg-desktop',
+  'XKG-Desktop_0.1.0_x64-setup.exe': 'xkg-desktop',
+  'XKG-Desktop_0.1.0_x64_en-US.msi': 'xkg-desktop',
+  'XKG-Desktop_0.1.0_x64.dmg': 'xkg-desktop',
+  'XKG-Desktop_0.1.0_aarch64.dmg': 'xkg-desktop',
+  'app-release.apk': 'xkg-mobile',
+};
 
-  // ===== Filter =====
-  function filterPlat(p, btn) {
-    document.querySelectorAll('.filter button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.dl-card').forEach(card => {
-      const matches = p === 'all' || card.dataset.plat === p;
-      card.style.display = matches ? '' : 'none';
-    });
+let isUnlocked = false;
+
+/* ------------ Cookie / storage ------------ */
+
+function setCookie(name, value, days) {
+  const exp = new Date(Date.now() + days * 864e5).toUTCString();
+  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${exp}; path=/; SameSite=Lax`;
+}
+function getCookie(name) {
+  const m = document.cookie.match(new RegExp('(^|;)\\s*' + name + '=([^;]+)'));
+  return m ? decodeURIComponent(m[2]) : null;
+}
+function clearCookie(name) {
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+}
+function loadToken() { return getCookie(COOKIE_NAME) || localStorage.getItem(STORAGE_KEY); }
+function saveToken(token) {
+  setCookie(COOKIE_NAME, token, 30);
+  try { localStorage.setItem(STORAGE_KEY, token); } catch (e) {}
+}
+function clearToken() {
+  clearCookie(COOKIE_NAME);
+  try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+}
+
+/* ------------ Backend calls ------------ */
+
+async function askServerForToken(code) {
+  const resp = await fetch(GATE_BASE + '/api/coupon', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code }),
+  });
+  const data = await resp.json().catch(() => ({}));
+  if (!resp.ok || !data.ok) {
+    return { ok: false, error: data.error || `HTTP ${resp.status}` };
   }
-</script>
+  return { ok: true, token: data.token, exp: data.exp, coupon: data.coupon };
+}
 
+async function pingServer() {
+  try {
+    const r = await fetch(GATE_BASE + '/health', { method: 'GET' });
+    return r.ok;
+  } catch (e) { return false; }
+}
+
+/* ------------ UI ------------ */
+
+function updateGateBanner() {
+  const banner = document.getElementById('gateBanner');
+  const ico = document.getElementById('gateIco');
+  const title = document.getElementById('gateTitle');
+  const sub = document.getElementById('gateSub');
+  const btn = document.getElementById('gateBtn');
+  if (isUnlocked) {
+    banner.classList.add('unlocked');
+    ico.textContent = '✅';
+    title.textContent = 'Downloads unlocked';
+    sub.innerHTML = 'Your browser is authorised. Click any download button.';
+    btn.textContent = 'Lock again';
+    btn.onclick = () => { clearToken(); location.reload(); };
+  } else {
+    banner.classList.remove('unlocked');
+    ico.textContent = '🔒';
+    title.textContent = 'Downloads are gated';
+    sub.innerHTML = 'Enter the <code>freeXKG</code> coupon code or purchase a license to unlock the binaries.';
+    btn.textContent = 'Enter coupon';
+    btn.onclick = openGateModal;
+  }
+}
+
+function openGateModal(file) {
+  document.getElementById('modalFile').textContent = file
+    ? `Unlocking: ${file}`
+    : 'Choose how you want to unlock the downloads';
+  document.getElementById('gateModal').classList.add('open');
+  document.getElementById('couponError').textContent = '';
+  document.getElementById('couponField').value = '';
+  switchTab('coupon');
+}
+function closeGateModal() {
+  document.getElementById('gateModal').classList.remove('open');
+}
+function switchTab(name) {
+  document.getElementById('tabCoupon').classList.toggle('active', name === 'coupon');
+  document.getElementById('tabPay').classList.toggle('active', name === 'pay');
+  document.getElementById('tabCouponBtn').classList.toggle('active', name === 'coupon');
+  document.getElementById('tabPayBtn').classList.toggle('active', name === 'pay');
+}
+
+async function submitCoupon() {
+  const code = document.getElementById('couponField').value.trim();
+  const err = document.getElementById('couponError');
+  const btn = document.querySelector('#tabCoupon button');
+  if (!code) { err.textContent = 'Please enter a coupon code.'; return; }
+  btn.disabled = true;
+  err.textContent = 'Contacting server…';
+  err.style.color = 'var(--text2)';
+  const result = await askServerForToken(code);
+  btn.disabled = false;
+  if (!result.ok) {
+    err.style.color = 'var(--danger, #f85149)';
+    err.textContent = result.error || 'Server rejected the code.';
+    return;
+  }
+  saveToken(result.token);
+  err.style.color = 'var(--success)';
+  err.textContent = `✓ Unlocked! (coupon: ${result.coupon})`;
+  setTimeout(() => { closeGateModal(); isUnlocked = true; updateGateBanner(); }, 600);
+}
+
+async function dlClick(event, el) {
+  event.preventDefault();
+  const file = el.getAttribute('data-file');
+  if (!file) { return; }
+  // Get token (from cookie or fresh)
+  let token = loadToken();
+  if (!token) {
+    // No token saved — open the gate modal
+    openGateModal(file);
+    return;
+  }
+  // Token is just an opaque string now. Server will reject if invalid.
+  const url = `${GATE_BASE}/api/download/${encodeURIComponent(file)}?token=${encodeURIComponent(token)}`;
+  // Trigger download via a hidden iframe so the page stays put
+  const iframe = document.createElement('iframe');
+  iframe.style.display = 'none';
+  iframe.src = url;
+  document.body.appendChild(iframe);
+  setTimeout(() => iframe.remove(), 30000);
+}
+
+function filterPlat(platform, btn) {
+  document.querySelectorAll('.filter button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.dl-card').forEach(card => {
+    if (platform === 'all') { card.style.display = ''; }
+    else { card.style.display = card.dataset.platform === platform ? '' : 'none'; }
+  });
+}
+
+(async function init() {
+  const token = loadToken();
+  isUnlocked = !!token;
+  updateGateBanner();
+
+  document.getElementById('gateModal').addEventListener('click', (e) => {
+    if (e.target.id === 'gateModal') closeGateModal();
+  });
+  document.getElementById('couponField').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); submitCoupon(); }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeGateModal();
+  });
+})();
+</script>
 </body>
 </html>
