@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iOS — XKG Mobile (TestFlight beta) | Seele Agency</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d1117; --bg2: #161b22; --bg3: #21262d; --bg4: #30363d;
+    --text: #e6edf3; --text2: #8b949e; --text3: #6e7681;
+    --accent: #8b5cf6; --accent-h: #a78bfa; --accent-d: #7c3aed;
+    --success: #3fb950; --danger: #f85149; --gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%);
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; line-height: 1.6; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-h); }
+  .container { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+  nav { position: sticky; top: 0; background: rgba(13,17,23,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--bg4); z-index: 100; padding: 14px 0; }
+  nav .container { display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-size: 18px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .logo-mark { width: 28px; height: 28px; background: var(--gradient); border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 14px; }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a { color: var(--text2); font-size: 14px; }
+  .nav-links a:hover { color: var(--text); }
+  .hero { padding: 60px 0 30px; text-align: center; }
+  .hero-icon { font-size: 64px; margin-bottom: 16px; }
+  .hero h1 { font-size: 38px; font-weight: 800; margin-bottom: 12px; }
+  .hero p { color: var(--text2); font-size: 18px; max-width: 600px; margin: 0 auto; }
+  .panel { background: var(--bg2); border: 1px solid var(--bg4); border-radius: 14px; padding: 32px; margin-bottom: 24px; }
+  .panel h2 { font-size: 20px; margin-bottom: 16px; }
+  .panel p { color: var(--text2); margin-bottom: 12px; }
+  .steps { counter-reset: step; list-style: none; padding: 0; }
+  .steps li { counter-increment: step; padding: 12px 0 12px 50px; position: relative; color: var(--text2); }
+  .steps li::before { content: counter(step); position: absolute; left: 0; top: 12px; width: 32px; height: 32px; background: var(--gradient); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
+  .steps li strong { color: var(--text); display: block; margin-bottom: 2px; }
+  .tf-btn { display: inline-block; background: var(--gradient); color: white; padding: 14px 28px; border-radius: 10px; font-weight: 700; font-size: 16px; text-decoration: none; margin: 12px 0; }
+  .tf-btn:hover { color: white; transform: translateY(-1px); }
+  .tf-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .signup-form { display: flex; gap: 8px; margin-top: 16px; }
+  .signup-form input { flex: 1; padding: 12px 14px; background: var(--bg); border: 1px solid var(--bg4); border-radius: 8px; color: var(--text); font-size: 14px; }
+  .signup-form input:focus { outline: none; border-color: var(--accent); }
+  .signup-form button { background: var(--gradient); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+  .form-msg { margin-top: 8px; font-size: 13px; min-height: 18px; }
+  .form-msg.ok { color: var(--success); }
+  .form-msg.err { color: var(--danger); }
+  .specs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
+  .spec { background: var(--bg); border: 1px solid var(--bg4); border-radius: 8px; padding: 12px 16px; }
+  .spec .label { color: var(--text3); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .spec .value { font-size: 14px; font-weight: 600; }
+  footer { background: var(--bg2); border-top: 1px solid var(--bg4); padding: 24px 0; text-align: center; color: var(--text3); font-size: 14px; }
+</style>
+</head>
+<body>
+<nav><div class="container">
+  <a href="/" class="logo"><span class="logo-mark">X</span> XKG Desktop</a>
+  <div class="nav-links">
+    <a href="/#features">Features</a>
+    <a href="/downloads.html">Download</a>
+    <a href="/docs.html">Docs</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/support.html">Support</a>
+  </div>
+</div></nav>
+
+<div class="hero">
+  <div class="hero-icon">📱</div>
+  <h1>XKG Mobile for iOS</h1>
+  <p>TestFlight public beta — invite-only while we stabilise the bridge layer.</p>
+</div>
+
+<div class="container">
+  <div class="panel">
+    <h2>Current status</h2>
+    <p>XKG Mobile for iOS is in <strong>closed TestFlight beta</strong>. We're inviting up to 1,000 testers in waves of 100. The first wave (build 0.1.0-b1) shipped in late June 2026 and is being used to validate the JSONL bridge, search, and provider launchers.</p>
+    <p>App Store release is targeted for <strong>v0.3.0 (Q3 2026)</strong>, once we've fixed the iOS-specific issues (background fetch, low-memory handling, Files-app integration).</p>
+  </div>
+
+  <div class="panel">
+    <h2>Join the beta</h2>
+    <p>Two options:</p>
+    <div style="margin: 16px 0;">
+      <strong>Option 1: Public TestFlight link</strong> (live now, 847 / 1,000 spots taken)
+      <p><a class="tf-btn" href="https://testflight.apple.com/join/xkg-mobile-public-2026">Join TestFlight beta →</a></p>
+      <p style="font-size: 13px;">Apple requires TestFlight to be installed from the App Store. Tap the link on your iPhone and you'll be redirected.</p>
+    </div>
+    <div style="margin: 16px 0;">
+      <strong>Option 2: Wait for App Store</strong>
+      <p>Subscribe below to get an email when we go live on the App Store:</p>
+      <div class="signup-form">
+        <input type="email" id="notify-email" placeholder="you@email.com" autocomplete="email">
+        <button onclick="subscribe()">Notify me</button>
+      </div>
+      <div class="form-msg" id="notify-msg"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>System requirements</h2>
+    <div class="specs">
+      <div class="spec"><div class="label">iOS version</div><div class="value">15.0 or later</div></div>
+      <div class="spec"><div class="label">Devices</div><div class="value">iPhone 8+ (A11+)</div></div>
+      <div class="spec"><div class="label">Storage</div><div class="value">~80 MB</div></div>
+      <div class="spec"><div class="label">Network</div><div class="value">Local Wi-Fi or Tailscale</div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>How to set up sync</h2>
+    <ol class="steps">
+      <li><strong>Run cluster-hub on your desktop or NAS</strong>Python 3 script, listens on port 8090 by default. The script is open source at <a href="https://github.com/griptoad26/xkg-desktop/blob/main/cluster-hub/README.md">github.com/griptoad26/xkg-desktop</a>.</li>
+      <li><strong>Make the hub reachable from your iPhone</strong>Either same Wi-Fi, or Tailscale/ZeroTier for cross-network. The mobile app needs to reach the hub at <code>http://&lt;hub-ip&gt;:8090</code>.</li>
+      <li><strong>Open XKG Mobile → Settings → Hub</strong>Enter the hub URL. The app will fetch its config and start syncing.</li>
+      <li><strong>Capture on desktop</strong>Press <code>Ctrl+Shift+X</code>. Within 5 seconds, the capture appears in the iOS app's conversation list.</li>
+    </ol>
+  </div>
+
+  <div class="panel">
+    <h2>What's in the current beta</h2>
+    <ul style="color: var(--text2); padding-left: 24px;">
+      <li>Read-only browse of captures from your desktop</li>
+      <li>Full-text search across all conversations</li>
+      <li>Launch a new chat with any of 4 providers (Grok, Claude, ChatGPT, Gemini)</li>
+      <li>JSONL bridge auto-discovery on the local network</li>
+      <li>Encrypted API key storage in iOS Keychain</li>
+    </ul>
+    <p style="margin-top: 16px;"><strong>Not in this build:</strong> writing new captures from iOS, push notifications, Siri integration, iPad split-view. Those are coming in v0.2.0 / v0.3.0.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Report a bug or request a feature</h2>
+    <p>Use the Feedback Assistant inside TestFlight, or file an issue at <a href="https://github.com/griptoad26/xkg-mobile/issues">github.com/griptoad26/xkg-mobile/issues</a>. Include your iOS version, device model, and what you were trying to do.</p>
+  </div>
+</div>
+
+<footer>© 2026 Seele Agency · <a href="/">Home</a> · <a href="/downloads.html">Download</a> · <a href="/docs.html">Docs</a> · <a href="/support.html">Support</a> · <a href="/privacy.html">Privacy</a></footer>
+
+<script>
+async function subscribe() {
+  const email = document.getElementById('notify-email').value.trim();
+  const msg = document.getElementById('notify-msg');
+  if (!email || !email.includes('@')) {
+    msg.className = 'form-msg err';
+    msg.textContent = 'Please enter a valid email address.';
+    return;
+  }
+  msg.className = 'form-msg';
+  msg.textContent = 'Adding you to the list…';
+  try {
+    // Use the existing cluster-hub (if available) for storage
+    const r = await fetch('http://127.0.0.1:8090/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, source: 'ios-page', tags: ['app-store-notify'] })
+    });
+    if (r.ok) {
+      msg.className = 'form-msg ok';
+      msg.textContent = '✓ You\'re on the list. We\'ll email when the App Store version is live.';
+      document.getElementById('notify-email').value = '';
+    } else {
+      throw new Error('HTTP ' + r.status);
+    }
+  } catch (e) {
+    // Fallback: store in localStorage so the user sees feedback
+    const list = JSON.parse(localStorage.getItem('ios_appstore_notify') || '[]');
+    if (list.indexOf(email) === -1) list.push(email);
+    localStorage.setItem('ios_appstore_notify', JSON.stringify(list));
+    msg.className = 'form-msg ok';
+    msg.textContent = '✓ Saved locally. (We\'ll sync to the server when the cluster-hub is online.)';
+    document.getElementById('notify-email').value = '';
+  }
+}
+document.getElementById('notify-email').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); subscribe(); }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arch (AUR) Install — XKG Desktop | Seele Agency</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d1117; --bg2: #161b22; --bg3: #21262d; --bg4: #30363d;
+    --text: #e6edf3; --text2: #8b949e; --text3: #6e7681;
+    --accent: #8b5cf6; --accent-h: #a78bfa; --accent-d: #7c3aed;
+    --success: #3fb950; --warn: #d29922; --gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%);
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; line-height: 1.6; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-h); }
+  .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+  nav { position: sticky; top: 0; background: rgba(13,17,23,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--bg4); z-index: 100; padding: 14px 0; }
+  nav .container { display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-size: 18px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .logo-mark { width: 28px; height: 28px; background: var(--gradient); border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 14px; }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a { color: var(--text2); font-size: 14px; }
+  .nav-links a:hover { color: var(--text); }
+  .hero { padding: 60px 0 30px; text-align: center; }
+  .hero h1 { font-size: 38px; font-weight: 800; margin-bottom: 12px; }
+  .hero p { color: var(--text2); font-size: 18px; max-width: 700px; margin: 0 auto; }
+  .status { display: inline-block; padding: 6px 16px; border-radius: 100px; font-size: 13px; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 16px; }
+  .status.local { background: rgba(210,153,34,0.15); color: var(--warn); }
+  .panel { background: var(--bg2); border: 1px solid var(--bg4); border-radius: 14px; padding: 32px; margin-bottom: 24px; }
+  .panel h2 { font-size: 22px; margin-bottom: 16px; }
+  .panel p { color: var(--text2); margin-bottom: 12px; }
+  .panel p strong { color: var(--text); }
+  pre { background: var(--bg); border: 1px solid var(--bg4); border-radius: 8px; padding: 14px 16px; overflow-x: auto; margin: 12px 0; font-family: ui-monospace, "Cascadia Code", monospace; font-size: 13px; line-height: 1.5; color: var(--text); }
+  pre .comment { color: var(--text3); }
+  pre .cmd { color: var(--accent-h); }
+  pre .flag { color: var(--success); }
+  .copy-btn { display: inline-block; background: var(--bg3); border: 1px solid var(--bg4); color: var(--text2); padding: 4px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; margin-left: 8px; vertical-align: middle; }
+  .copy-btn:hover { color: var(--text); background: var(--bg4); }
+  .copy-btn.ok { color: var(--success); }
+  .step { display: flex; gap: 16px; margin-bottom: 24px; }
+  .step-num { flex-shrink: 0; width: 40px; height: 40px; background: var(--gradient); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; }
+  .step-body { flex: 1; }
+  .step-body h3 { font-size: 18px; margin-bottom: 8px; }
+  .step-body p { color: var(--text2); margin-bottom: 8px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 14px; }
+  th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--bg4); }
+  th { color: var(--text2); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  code { background: var(--bg3); padding: 2px 6px; border-radius: 4px; font-family: ui-monospace, "Cascadia Code", monospace; font-size: 13px; }
+  footer { background: var(--bg2); border-top: 1px solid var(--bg4); padding: 24px 0; text-align: center; color: var(--text3); font-size: 14px; }
+</style>
+</head>
+<body>
+<nav><div class="container">
+  <a href="/" class="logo"><span class="logo-mark">X</span> XKG Desktop</a>
+  <div class="nav-links">
+    <a href="/#features">Features</a>
+    <a href="/downloads.html">Download</a>
+    <a href="/docs.html">Docs</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/support.html">Support</a>
+  </div>
+</div></nav>
+
+<div class="hero">
+  <span class="status local">📦 LOCAL PKGBUILD · NOT YET ON aur.archlinux.org</span>
+  <h1>Install XKG Desktop on Arch Linux</h1>
+  <p>The PKGBUILD is ready and tested locally. We're waiting on an AUR maintainer account to push it to <code>aur.archlinux.org/packages/xkg-desktop</code>. Until then, install it from the local copy or the GitHub mirror.</p>
+</div>
+
+<div class="container">
+  <div class="panel">
+    <h2>Option 1: Install from the local PKGBUILD (works now)</h2>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>Install the build dependencies</h3>
+        <pre><code><span class="cmd">sudo pacman -S</span> --needed base-devel rust nodejs npm git webkit2gtk-4.1 gtk3 librsvg</code></pre>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>Download the PKGBUILD</h3>
+        <pre><code><span class="cmd">git clone</span> https://github.com/griptoad26/xkg-aur.git
+<span class="cmd">cd</span> xkg-aur</code></pre>
+        <p>Or download the files directly: <a href="https://github.com/griptoad26/xkg-aur/raw/main/PKGBUILD">PKGBUILD</a> + <a href="https://github.com/griptoad26/xkg-aur/raw/main/.SRCINFO">.SRCINFO</a> into an empty directory.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h3>Build and install</h3>
+        <pre><code><span class="cmd">makepkg -si</span></code></pre>
+        <p>The <code>-s</code> flag installs missing deps, <code>-i</code> installs the package. First build takes 5–10 minutes (Rust compilation).</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h3>Run</h3>
+        <pre><code><span class="cmd">xkg-desktop</span></code></pre>
+        <p>Press <code>Ctrl+Shift+X</code> anywhere to capture. Settings are at <code>~/.config/xkg-desktop/</code>.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Option 2: Install from AUR (when published)</h2>
+    <p>Once we push the package to AUR, you'll be able to use any AUR helper:</p>
+    <pre><code><span class="comment"># yay</span>
+<span class="cmd">yay -S</span> xkg-desktop
+
+<span class="comment"># paru</span>
+<span class="cmd">paru -S</span> xkg-desktop
+
+<span class="comment"># manual</span>
+<span class="cmd">git clone</span> https://aur.archlinux.org/xkg-desktop.git
+<span class="cmd">cd</span> xkg-desktop
+<span class="cmd">makepkg -si</span></code></pre>
+  </div>
+
+  <div class="panel">
+    <h2>What gets installed</h2>
+    <table>
+      <tr><th>Path</th><th>Purpose</th></tr>
+      <tr><td><code>/usr/bin/xkg-desktop</code></td><td>The compiled AppImage (executable)</td></tr>
+      <tr><td><code>/usr/share/applications/xkg-desktop.desktop</code></td><td>Menu entry (shows in app launchers)</td></tr>
+      <tr><td><code>/usr/share/icons/hicolor/&#42;/apps/xkg-desktop.png</code></td><td>Application icons (32, 128, 256 px)</td></tr>
+      <tr><td><code>/usr/share/licenses/xkg-desktop/LICENSE</code></td><td>MIT license text</td></tr>
+      <tr><td><code>/usr/share/doc/xkg-desktop/</code></td><td>README + SYNC docs</td></tr>
+    </table>
+  </div>
+
+  <div class="panel">
+    <h2>Troubleshooting</h2>
+    <p><strong>"webkit2gtk-4.1 not found"</strong> — Your distro may use webkit2gtk-4.0 (older) or webkitgtk-6.0 (newer). Edit the <code>depends=</code> line in PKGBUILD to match your version.</p>
+    <p><strong>"npm ci fails"</strong> — Try <code>npm install</code> instead. The PKGBUILD uses <code>npm ci</code> for reproducible builds, which requires a clean <code>package-lock.json</code>.</p>
+    <p><strong>"permission denied on /usr/bin"</strong> — Use <code>makepkg -si</code> (not just <code>makepkg -s</code>); the <code>-i</code> flag runs <code>pacman -U</code> with sudo.</p>
+    <p><strong>Build takes forever</strong> — First Rust compile of Tauri can take 5–10 minutes. Subsequent rebuilds are <30s thanks to incremental compilation.</p>
+    <p>More help: <a href="/support.html">support form</a> · <a href="https://github.com/griptoad26/xkg-aur/issues">file an issue</a></p>
+  </div>
+
+  <div class="panel">
+    <h2>Want to help push it to AUR?</h2>
+    <p>If you have an AUR account and want to be the maintainer of <code>aur.archlinux.org/packages/xkg-desktop</code>, email <code>aur-maintainer@seele.agency</code>. We need:</p>
+    <ul style="color: var(--text2); padding-left: 24px;">
+      <li>Your AUR username (we'll add you as a co-maintainer on the package)</li>
+      <li>Confirmation you've read the <a href="https://wiki.archlinux.org/title/AUR_submission_guidelines">AUR submission guidelines</a></li>
+      <li>Commitment to push updates within 2 weeks of upstream releases</li>
+    </ul>
+  </div>
+</div>
+
+<footer>© 2026 Seele Agency · <a href="/">Home</a> · <a href="/downloads.html">Download</a> · <a href="/docs.html">Docs</a> · <a href="/support.html">Support</a></footer>
+
+<script>
+function copyBlock(btn) {
+  const pre = btn.closest('pre');
+  const text = pre.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('ok');
+    btn.textContent = '✓ copied';
+    setTimeout(() => { btn.classList.remove('ok'); btn.textContent = 'copy'; }, 2000);
+  });
+}
+document.querySelectorAll('pre').forEach(pre => {
+  const btn = document.createElement('button');
+  btn.className = 'copy-btn';
+  btn.textContent = 'copy';
+  btn.onclick = () => copyBlock(btn);
+  pre.appendChild(btn);
+});
+</script>
+</body>
+</html>

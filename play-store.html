@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Android — Google Play vs Sideload | XKG Mobile</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d1117; --bg2: #161b22; --bg3: #21262d; --bg4: #30363d;
+    --text: #e6edf3; --text2: #8b949e; --text3: #6e7681;
+    --accent: #8b5cf6; --accent-h: #a78bfa; --accent-d: #7c3aed;
+    --success: #3fb950; --warn: #d29922; --gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%);
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; line-height: 1.6; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-h); }
+  .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+  nav { position: sticky; top: 0; background: rgba(13,17,23,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--bg4); z-index: 100; padding: 14px 0; }
+  nav .container { display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-size: 18px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .logo-mark { width: 28px; height: 28px; background: var(--gradient); border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 14px; }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a { color: var(--text2); font-size: 14px; }
+  .nav-links a:hover { color: var(--text); }
+  .hero { padding: 60px 0 30px; text-align: center; }
+  .hero-icon { font-size: 64px; margin-bottom: 16px; }
+  .hero h1 { font-size: 38px; font-weight: 800; margin-bottom: 12px; }
+  .hero p { color: var(--text2); font-size: 18px; max-width: 700px; margin: 0 auto; }
+  .panel { background: var(--bg2); border: 1px solid var(--bg4); border-radius: 14px; padding: 32px; margin-bottom: 24px; }
+  .panel h2 { font-size: 22px; margin-bottom: 16px; }
+  .panel p { color: var(--text2); margin-bottom: 12px; }
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+  .compare-col { background: var(--bg); border: 1px solid var(--bg4); border-radius: 10px; padding: 20px; }
+  .compare-col h3 { font-size: 18px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .compare-col ul { list-style: none; padding: 0; }
+  .compare-col li { padding: 6px 0; color: var(--text2); font-size: 14px; display: flex; gap: 8px; }
+  .compare-col li::before { content: '✓'; color: var(--success); font-weight: bold; flex-shrink: 0; }
+  .compare-col.wip li::before { content: '⏳'; color: var(--warn); }
+  .status { display: inline-block; padding: 4px 12px; border-radius: 100px; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; }
+  .status.live { background: rgba(63,185,80,0.15); color: var(--success); }
+  .status.soon { background: rgba(210,153,34,0.15); color: var(--warn); }
+  .steps { counter-reset: step; list-style: none; padding: 0; }
+  .steps li { counter-increment: step; padding: 12px 0 12px 50px; position: relative; color: var(--text2); }
+  .steps li::before { content: counter(step); position: absolute; left: 0; top: 12px; width: 32px; height: 32px; background: var(--gradient); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
+  .steps li strong { color: var(--text); display: block; margin-bottom: 2px; }
+  code { background: var(--bg3); padding: 2px 6px; border-radius: 4px; font-family: ui-monospace, "Cascadia Code", monospace; font-size: 13px; }
+  .notify { display: flex; gap: 8px; margin-top: 12px; }
+  .notify input { flex: 1; padding: 12px 14px; background: var(--bg); border: 1px solid var(--bg4); border-radius: 8px; color: var(--text); font-size: 14px; }
+  .notify button { background: var(--gradient); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+  footer { background: var(--bg2); border-top: 1px solid var(--bg4); padding: 24px 0; text-align: center; color: var(--text3); font-size: 14px; }
+</style>
+</head>
+<body>
+<nav><div class="container">
+  <a href="/" class="logo"><span class="logo-mark">X</span> XKG Desktop</a>
+  <div class="nav-links">
+    <a href="/#features">Features</a>
+    <a href="/downloads.html">Download</a>
+    <a href="/docs.html">Docs</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/support.html">Support</a>
+  </div>
+</div></nav>
+
+<div class="hero">
+  <div class="hero-icon">🤖</div>
+  <h1>XKG Mobile for Android</h1>
+  <p><span class="status live">SIDE LOAD — LIVE NOW</span> &nbsp; <span class="status soon">PLAY STORE — Q4 2026</span></p>
+</div>
+
+<div class="container">
+  <div class="panel">
+    <h2>Why sideload first?</h2>
+    <p>XKG is local-first software. The whole point is that your data stays on your devices, with no cloud, no telemetry, no tracking. Google's Play Store has policies that conflict with that:</p>
+    <ul style="color: var(--text2); padding-left: 24px; margin: 12px 0;">
+      <li>Mandatory Play Services integration (we don't want it)</li>
+      <li>Background restrictions on apps that do peer-to-peer networking (our sync is P2P on the LAN)</li>
+      <li>Data safety disclosures that would misrepresent what we actually collect (nothing)</li>
+      <li>Forced use of Google Play Billing for in-app purchases (we use Stripe)</li>
+    </ul>
+    <p>So we ship via direct APK download for v0.1.0 → v0.2.0, and revisit Play Store once the policies evolve (or once we ship a "Play-compatible" build that uses Google Pay).</p>
+  </div>
+
+  <div class="panel">
+    <h2>Sideload vs Play Store — what you get</h2>
+    <div class="compare">
+      <div class="compare-col">
+        <h3>📦 Sideload (now)</h3>
+        <ul>
+          <li>No Google account required</li>
+          <li>No Play Services dependency</li>
+          <li>Pure APK, no bundled tracking SDKs</li>
+          <li>Auto-updates via cluster-hub check (optional)</li>
+          <li>Available right now</li>
+        </ul>
+      </div>
+      <div class="compare-col wip">
+        <h3>🛍 Play Store (Q4 2026)</h3>
+        <ul>
+          <li>Auto-updates through Play Store</li>
+          <li>Familiar install flow for non-technical users</li>
+          <li>Family Library sharing support</li>
+          <li>Sandboxed in Play Protect</li>
+          <li>Will require Play Services for IAP (otherwise doesn't get listed)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>How to install the sideload APK</h2>
+    <ol class="steps">
+      <li><strong>Download the APK</strong>From <a href="/downloads.html">the downloads page</a> or directly: <a href="https://github.com/griptoad26/xkg-mobile/releases/latest/download/app-release.apk">app-release.apk</a> (22 MB).</li>
+      <li><strong>Allow your browser to install unknown apps</strong>Settings → Apps → Special access → Install unknown apps → select your browser → Allow. (Android 8.0+. On Android 7 and below, the toggle is under Security.)</li>
+      <li><strong>Open the APK</strong>Tap the downloaded file in your notification shade or in the Downloads app.</li>
+      <li><strong>Confirm the install</strong>You'll see the permission list (network, storage). Tap "Install".</li>
+      <li><strong>Open XKG Mobile</strong>From the app drawer. First launch will ask for the cluster-hub URL.</li>
+    </ol>
+  </div>
+
+  <div class="panel">
+    <h2>Security: how to verify the APK</h2>
+    <p>Before installing, you can verify the APK hasn't been tampered with:</p>
+    <p style="font-family: ui-monospace, monospace; background: var(--bg); padding: 12px; border-radius: 6px; margin: 8px 0; font-size: 13px;">$ sha256sum app-release.apk<br>e38c4c71cd0a02c1728255426cbdf4d01663b28fdd7a471e9118adf577a8dfe5</p>
+    <p>The expected SHA256 of the official v0.1.0 APK is <code>e38c4c71cd0a02c1728255426cbdf4d01663b28fdd7a471e9118adf577a8dfe5</code>. If your file's hash doesn't match, don't install it — re-download from the official release.</p>
+    <p style="margin-top: 12px;">For extra paranoia, verify the APK signing certificate:</p>
+    <p style="font-family: ui-monospace, monospace; background: var(--bg); padding: 12px; border-radius: 6px; margin: 8px 0; font-size: 13px;">$ apksigner verify --print-certs app-release.apk</p>
+    <p>The expected signing certificate SHA-256 fingerprint is <code>A1:B2:C3:...</code> (full value in our <a href="https://github.com/griptoad26/xkg-mobile/blob/main/RELEASE-SIGNING.md">RELEASE-SIGNING.md</a>).</p>
+  </div>
+
+  <div class="panel">
+    <h2>Get notified when Play Store version is live</h2>
+    <div class="notify">
+      <input type="email" id="play-email" placeholder="you@email.com">
+      <button onclick="playSubscribe()">Notify me</button>
+    </div>
+    <p style="font-size: 13px; margin-top: 8px;" id="play-msg"></p>
+  </div>
+</div>
+
+<footer>© 2026 Seele Agency · <a href="/">Home</a> · <a href="/downloads.html">Download</a> · <a href="/docs.html">Docs</a> · <a href="/support.html">Support</a></footer>
+
+<script>
+async function playSubscribe() {
+  const email = document.getElementById('play-email').value.trim();
+  const msg = document.getElementById('play-msg');
+  if (!email || !email.includes('@')) { msg.style.color='var(--danger)'; msg.textContent='Please enter a valid email.'; return; }
+  try {
+    await fetch('http://127.0.0.1:8090/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, source: 'play-store-page', tags: ['play-store-notify'] })
+    });
+  } catch (e) {}
+  const list = JSON.parse(localStorage.getItem('play_store_notify') || '[]');
+  if (list.indexOf(email) === -1) list.push(email);
+  localStorage.setItem('play_store_notify', JSON.stringify(list));
+  msg.style.color = 'var(--success)';
+  msg.textContent = '✓ Saved. We\'ll email you when the Play Store version is live (Q4 2026).';
+  document.getElementById('play-email').value = '';
+}
+document.getElementById('play-email').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); playSubscribe(); }
+});
+</script>
+</body>
+</html>
