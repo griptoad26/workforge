@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Changelog — XKG Desktop</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d1117; --bg2: #161b22; --bg3: #21262d; --bg4: #30363d;
+    --text: #e6edf3; --text2: #8b949e; --text3: #6e7681;
+    --accent: #8b5cf6; --accent-h: #a78bfa;
+    --success: #3fb950; --gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%);
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; line-height: 1.6; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-h); }
+  .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+  nav { position: sticky; top: 0; background: rgba(13,17,23,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--bg4); z-index: 100; padding: 14px 0; }
+  nav .container { display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-size: 18px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .logo-mark { width: 28px; height: 28px; background: var(--gradient); border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 14px; }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a { color: var(--text2); font-size: 14px; }
+  .nav-links a:hover { color: var(--text); }
+  .page-head { padding: 60px 0 40px; text-align: center; }
+  .page-head h1 { font-size: 44px; font-weight: 800; margin-bottom: 12px; }
+  .page-head p { color: var(--text2); font-size: 18px; }
+  .release { background: var(--bg2); border: 1px solid var(--bg4); border-radius: 14px; padding: 28px; margin-bottom: 24px; }
+  .release-tag { display: inline-block; background: var(--gradient); color: white; padding: 4px 12px; border-radius: 100px; font-size: 12px; font-weight: 700; margin-bottom: 8px; }
+  .release h2 { font-size: 24px; margin-bottom: 6px; }
+  .release-date { color: var(--text3); font-size: 14px; margin-bottom: 16px; }
+  .release h3 { font-size: 16px; margin-top: 20px; margin-bottom: 10px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; }
+  .release ul { padding-left: 24px; color: var(--text2); }
+  .release li { margin-bottom: 6px; }
+  .release li strong { color: var(--text); }
+  footer { background: var(--bg2); border-top: 1px solid var(--bg4); padding: 24px 0; text-align: center; color: var(--text3); font-size: 14px; }
+</style>
+</head>
+<body>
+<nav><div class="container">
+  <a href="/" class="logo"><span class="logo-mark">X</span> XKG Desktop</a>
+  <div class="nav-links">
+    <a href="/#features">Features</a>
+    <a href="/downloads.html">Download</a>
+    <a href="/docs.html">Docs</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/support.html">Support</a>
+  </div>
+</div></nav>
+
+<div class="page-head">
+  <h1>Changelog</h1>
+  <p>Every release of XKG Desktop, in order.</p>
+</div>
+
+<div class="container">
+  <div class="release">
+    <span class="release-tag">v0.1.0 · Initial release</span>
+    <h2>First public build</h2>
+    <div class="release-date">2026-06-21</div>
+    <h3>Desktop (Tauri 2 + Svelte 5 + Vite 5)</h3>
+    <ul>
+      <li><strong>Global keyboard shortcut</strong> — Ctrl+Shift+X (or Cmd+Shift+X on macOS), configurable via <code>XKG_GLOBAL_SHORTCUT</code> env var. Opens a 480×280 floating capture window at the cursor.</li>
+      <li><strong>Local SQLite with FTS5</strong> — full-text search across all conversations, messages, providers, and sync logs. Schema in <code>~/.local/share/xkg-desktop/xkg-desktop.db</code>.</li>
+      <li><strong>System tray</strong> with settings panel (720×520) for hub URL, hotkey, and autostart.</li>
+      <li><strong>Autostart on login</strong> via <code>tauri-plugin-autostart</code>.</li>
+      <li><strong>Cluster-hub sync</strong> — captures POST to <code>XKG_HUB_URL/api/import</code> (default <code>http://127.0.0.1:8090</code>) with <code>{text, title, source, tags}</code>.</li>
+      <li><strong>Eight build targets</strong> — Linux (.deb, .rpm, AppImage), Windows (NSIS .exe, MSI), macOS (Intel .dmg + Apple Silicon .dmg).</li>
+    </ul>
+    <h3>Mobile (Flutter)</h3>
+    <ul>
+      <li><strong>Android APK</strong> (22 MB) — sideload-ready, minSdk 21+.</li>
+      <li><strong>Linux bundle</strong> (9 MB) — single binary, runs from <code>tar xzf</code>.</li>
+      <li><strong>Windows bundle</strong> (44 MB) — ZIP with all required DLLs.</li>
+      <li><strong>JSONL bridge reader</strong> — picks up captures from <code>~/.local/share/xkg-mobile/from_desktop.jsonl</code> on launch.</li>
+    </ul>
+    <h3>Cluster-hub (Python)</h3>
+    <ul>
+      <li><code>POST /api/import</code> — accepts captures, returns <code>{ok, id, total_imports}</code>.</li>
+      <li>Appends to JSONL bridge file after every successful import.</li>
+      <li>Backed by <code>xkg-user-imports.json</code> for master storage.</li>
+    </ul>
+    <h3>Cross-device</h3>
+    <ul>
+      <li>Capture on any device → cluster-hub → JSONL → mobile Hive box → full-text searchable.</li>
+      <li>Verified end-to-end: <code>POST /api/import</code> from desktop, see it on mobile after restart.</li>
+    </ul>
+    <h3>Known limitations</h3>
+    <ul>
+      <li>Windows MSI built with manual WiX (not the Tauri-templated bundle). Installs correctly but lacks some Tauri metadata (no Start Menu shortcut).</li>
+      <li>No code signing yet (Windows + macOS will show "unverified publisher" warnings). Coming in v0.2.0.</li>
+      <li>Conflict resolution is last-write-wins. Vector clocks + CRDT planned for v0.3.0.</li>
+    </ul>
+  </div>
+
+  <div class="release">
+    <span class="release-tag">v0.2.0 · Next</span>
+    <h2>What's coming</h2>
+    <div class="release-date">Planned for late 2026</div>
+    <ul>
+      <li>Code signing (Windows Authenticode + macOS Developer ID).</li>
+      <li>Vector clocks + CRDT for true offline-first sync.</li>
+      <li>Browser extension (capture from any web page).</li>
+      <li>Voice capture (Whisper integration).</li>
+      <li>Obsidian plugin (one-way sync to your vault).</li>
+    </ul>
+  </div>
+</div>
+
+<footer>© 2026 Seele Agency · <a href="/">Home</a> · <a href="/docs.html">Docs</a> · <a href="/support.html">Support</a> · <a href="https://github.com/griptoad26/xkg-desktop">GitHub</a></footer>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gate Admin — XKG Downloads</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d1117; --bg2: #161b22; --bg3: #21262d; --bg4: #30363d;
+    --text: #e6edf3; --text2: #8b949e; --text3: #6e7681;
+    --accent: #8b5cf6; --accent-h: #a78bfa;
+    --success: #3fb950; --danger: #f85149; --warn: #d29922;
+    --gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%);
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-h); }
+  .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+  h1 { font-size: 28px; margin-bottom: 8px; }
+  h2 { font-size: 18px; margin: 24px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--bg4); }
+  .login { max-width: 380px; margin: 100px auto; background: var(--bg2); padding: 32px; border-radius: 14px; border: 1px solid var(--bg4); }
+  .login h1 { text-align: center; margin-bottom: 24px; }
+  .login input { width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--bg4); border-radius: 8px; color: var(--text); margin-bottom: 12px; font-size: 14px; }
+  .login button { width: 100%; background: var(--gradient); color: white; padding: 12px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 15px; }
+  .login .error { color: var(--danger); font-size: 13px; margin-top: 12px; text-align: center; display: none; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .stat { background: var(--bg2); border: 1px solid var(--bg4); border-radius: 12px; padding: 18px; }
+  .stat-label { color: var(--text3); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .stat-value { font-size: 24px; font-weight: 800; }
+  .stat.green .stat-value { color: var(--success); }
+  .stat.red .stat-value { color: var(--danger); }
+  .stat .sub { color: var(--text3); font-size: 11px; margin-top: 4px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 8px 12px; color: var(--text2); border-bottom: 1px solid var(--bg4); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--bg4); }
+  tr:hover { background: var(--bg3); }
+  code { font-family: ui-monospace, "Cascadia Code", monospace; font-size: 12px; color: var(--accent-h); }
+  .panel { background: var(--bg2); border: 1px solid var(--bg4); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 800px) { .grid-2 { grid-template-columns: 1fr; } }
+  .bar { display: flex; height: 24px; background: var(--bg3); border-radius: 4px; overflow: hidden; margin: 4px 0; }
+  .bar > div { background: var(--gradient); transition: width 0.3s; }
+  .bar-row { display: grid; grid-template-columns: 200px 1fr 60px; gap: 12px; align-items: center; font-size: 13px; margin: 4px 0; }
+  .bar-row .label { color: var(--text2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar-row .count { color: var(--text); text-align: right; font-weight: 600; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 100px; font-size: 11px; font-weight: 600; }
+  .pill.ok { background: rgba(63,185,80,0.15); color: var(--success); }
+  .pill.fail { background: rgba(248,81,73,0.15); color: var(--danger); }
+  .pill.warn { background: rgba(210,153,34,0.15); color: var(--warn); }
+  .refresh { float: right; background: var(--bg3); border: 1px solid var(--bg4); color: var(--text); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+  .refresh:hover { background: var(--bg4); }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<div id="loginBox" class="login">
+  <h1>🔒 Gate Admin</h1>
+  <input type="password" id="token" placeholder="Admin token" onkeypress="if(event.key==='Enter')login()">
+  <button onclick="login()">Sign in</button>
+  <div class="error" id="loginErr">Bad token.</div>
+</div>
+
+<div id="dash" class="container hidden">
+  <h1>Gate admin <button class="refresh" onclick="load()">↻ Refresh</button></h1>
+  <p style="color: var(--text2); margin-bottom: 24px;">Real-time download analytics for xkg-gate. All data is server-side; this page is just a viewer.</p>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="grid-2">
+    <div class="panel">
+      <h2>📦 Downloads per file</h2>
+      <div id="perFile"></div>
+    </div>
+    <div class="panel">
+      <h2>🌍 Top IPs (last 200 events)</h2>
+      <div id="perIp"></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="panel">
+      <h2>🎟 Coupon usage</h2>
+      <div id="perCoupon"></div>
+    </div>
+    <div class="panel">
+      <h2>🚨 Suspicious activity (rapid-fire downloads)</h2>
+      <div id="suspicious"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>📜 Recent activity (last 50)</h2>
+    <table>
+      <thead><tr><th>Time (UTC)</th><th>IP</th><th>File</th><th>Status</th><th>Coupon</th><th>User-Agent</th></tr></thead>
+      <tbody id="log"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const GATE = (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost')
+  ? 'http://127.0.0.1:9095'
+  : 'https://gate.seele.agency';
+let AUTH = '';
+
+async function login() {
+  const t = document.getElementById('token').value;
+  if (!t) return;
+  try {
+    const r = await fetch(GATE + '/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ admin_token: t }),
+    });
+    if (r.ok) {
+      AUTH = t;
+      sessionStorage.setItem('xkg_gate_admin', t);
+      document.getElementById('loginBox').classList.add('hidden');
+      document.getElementById('dash').classList.remove('hidden');
+      load();
+    } else {
+      document.getElementById('loginErr').style.display = 'block';
+    }
+  } catch (e) {
+    document.getElementById('loginErr').textContent = 'Network error: ' + e.message;
+    document.getElementById('loginErr').style.display = 'block';
+  }
+}
+
+async function api(path) {
+  const r = await fetch(GATE + path, { headers: { 'Authorization': 'Bearer ' + AUTH } });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return await r.json();
+}
+
+async function load() {
+  try {
+    const [log, coupons] = await Promise.all([
+      api('/api/log'),
+      fetch(GATE + '/api/admin/coupons', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + AUTH },
+        body: JSON.stringify({ action: 'list' })
+      }).then(r => r.json())
+    ]);
+    render(log.downloads, coupons.coupons || []);
+  } catch (e) {
+    alert('Failed to load: ' + e.message);
+  }
+}
+
+function esc(s) { return String(s).replace(/[<>]/g, c => ({'<':'&lt;','>':'&gt;'}[c])); }
+
+function render(events, coupons) {
+  // Stats
+  const ok = events.filter(e => e.ok).length;
+  const fail = events.filter(e => !e.ok).length;
+  const uniqueIps = new Set(events.map(e => e.ip)).size;
+  const uniqueFiles = new Set(events.map(e => e.file)).size;
+  document.getElementById('stats').innerHTML = `
+    <div class="stat green"><div class="stat-label">Successful downloads</div><div class="stat-value">${ok}</div></div>
+    <div class="stat red"><div class="stat-label">Failed (bad/expired token)</div><div class="stat-value">${fail}</div></div>
+    <div class="stat"><div class="stat-label">Unique IPs</div><div class="stat-value">${uniqueIps}</div></div>
+    <div class="stat"><div class="stat-label">Unique files</div><div class="stat-value">${uniqueFiles}</div></div>
+  `;
+
+  // Per file
+  const perFile = {};
+  events.filter(e => e.ok).forEach(e => { perFile[e.file] = (perFile[e.file] || 0) + 1; });
+  const maxFile = Math.max(1, ...Object.values(perFile));
+  document.getElementById('perFile').innerHTML = Object.entries(perFile)
+    .sort((a,b) => b[1] - a[1])
+    .map(([f, n]) => `<div class="bar-row">
+      <div class="label" title="${esc(f)}">${esc(f)}</div>
+      <div class="bar"><div style="width: ${(n/maxFile)*100}%"></div></div>
+      <div class="count">${n}</div>
+    </div>`).join('') || '<p style="color:var(--text3)">No successful downloads yet.</p>';
+
+  // Per IP
+  const perIp = {};
+  events.forEach(e => {
+    if (!perIp[e.ip]) perIp[e.ip] = { ok: 0, fail: 0, files: new Set() };
+    if (e.ok) perIp[e.ip].ok++;
+    else perIp[e.ip].fail++;
+    perIp[e.ip].files.add(e.file);
+  });
+  const maxIp = Math.max(1, ...Object.values(perIp).map(x => x.ok + x.fail));
+  document.getElementById('perIp').innerHTML = Object.entries(perIp)
+    .sort((a,b) => (b[1].ok + b[1].fail) - (a[1].ok + a[1].fail))
+    .slice(0, 10)
+    .map(([ip, s]) => `<div class="bar-row">
+      <div class="label"><code>${esc(ip)}</code></div>
+      <div class="bar"><div style="width: ${((s.ok+s.fail)/maxIp)*100}%; background: ${s.fail > s.ok ? 'var(--danger)' : 'var(--gradient)'}"></div></div>
+      <div class="count">${s.ok} ✓ / ${s.fail} ✗</div>
+    </div>`).join('') || '<p style="color:var(--text3)">No traffic yet.</p>';
+
+  // Coupons
+  document.getElementById('perCoupon').innerHTML = coupons.map(c => {
+    const pct = (c.uses_count / c.uses_max) * 100;
+    const exp = new Date(c.expires_at * 1000).toISOString().slice(0, 10);
+    return `<div style="margin-bottom: 12px;">
+      <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:4px;">
+        <strong><code>${esc(c.code)}</code></strong>
+        <span style="color:var(--text2)">${c.uses_count} / ${c.uses_max} uses · expires ${exp}</span>
+      </div>
+      <div class="bar"><div style="width: ${pct}%"></div></div>
+      <div style="color:var(--text3); font-size:11px; margin-top:2px;">${esc(c.note || '')}</div>
+    </div>`;
+  }).join('') || '<p style="color:var(--text3)">No coupons configured.</p>';
+
+  // Suspicious: any IP with > 5 events in any 60s window
+  const byIp = {};
+  events.filter(e => e.ok).forEach(e => {
+    if (!byIp[e.ip]) byIp[e.ip] = [];
+    byIp[e.ip].push(e);
+  });
+  const suspicious = [];
+  for (const [ip, evs] of Object.entries(byIp)) {
+    evs.sort((a, b) => a.ts - b.ts);
+    for (let i = 0; i < evs.length; i++) {
+      const window = evs.slice(i, i + 6);
+      if (window.length >= 6 && window[5].ts - window[0].ts < 60) {
+        suspicious.push({ ip, files: window.map(e => e.file), ts: window[0].ts });
+        break;
+      }
+    }
+  }
+  document.getElementById('suspicious').innerHTML = suspicious.length === 0
+    ? '<p style="color:var(--text3)">No rapid-fire activity detected. ✓</p>'
+    : suspicious.map(s => `<div style="padding:8px; border:1px solid var(--bg4); border-radius:6px; margin-bottom:6px; font-size:13px;">
+        <strong><code>${esc(s.ip)}</code></strong> · ${s.files.length} files in &lt; 60s
+        <div style="color:var(--text3); font-size:11px; margin-top:2px;">${new Date(s.ts*1000).toISOString()}</div>
+        <div style="color:var(--text2); font-size:11px;">${s.files.map(esc).join(', ')}</div>
+      </div>`).join('');
+
+  // Recent log
+  document.getElementById('log').innerHTML = events.slice(0, 50).map(e => {
+    const t = new Date(e.ts * 1000).toISOString().replace('T', ' ').slice(0, 19);
+    const status = e.ok ? '<span class="pill ok">✓ ok</span>' : '<span class="pill fail">✗ bad</span>';
+    return `<tr>
+      <td><code>${t}</code></td>
+      <td><code>${esc(e.ip)}</code></td>
+      <td><code>${esc(e.file)}</code></td>
+      <td>${status}</td>
+      <td>${e.coupon ? '<code>' + esc(e.coupon) + '</code>' : '—'}</td>
+      <td style="color:var(--text3); max-width:300px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${esc(e.ua || '')}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="6" style="text-align:center; color:var(--text3); padding:20px;">No activity yet.</td></tr>';
+}
+
+// Auto-restore session
+const saved = sessionStorage.getItem('xkg_gate_admin');
+if (saved) {
+  AUTH = saved;
+  document.getElementById('loginBox').classList.add('hidden');
+  document.getElementById('dash').classList.remove('hidden');
+  load();
+}
+// Auto-refresh every 30s
+setInterval(() => { if (AUTH) load(); }, 30000);
+</script>
+</body>
+</html>

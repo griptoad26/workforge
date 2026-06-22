@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Documentation — XKG Desktop</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d1117; --bg2: #161b22; --bg3: #21262d; --bg4: #30363d;
+    --text: #e6edf3; --text2: #8b949e; --text3: #6e7681;
+    --accent: #8b5cf6; --accent-h: #a78bfa; --accent-d: #7c3aed;
+    --success: #3fb950; --gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%);
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; line-height: 1.6; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-h); }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  nav { position: sticky; top: 0; background: rgba(13,17,23,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--bg4); z-index: 100; padding: 14px 0; }
+  nav .container { display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-size: 18px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .logo-mark { width: 28px; height: 28px; background: var(--gradient); border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 14px; }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a { color: var(--text2); font-size: 14px; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta { background: var(--accent); color: white !important; padding: 8px 16px; border-radius: 8px; font-weight: 600; }
+  .page-head { padding: 60px 0 40px; text-align: center; }
+  .page-head h1 { font-size: 44px; font-weight: 800; margin-bottom: 12px; }
+  .page-head p { color: var(--text2); font-size: 18px; max-width: 600px; margin: 0 auto; }
+  .docs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 40px 0 80px; }
+  .doc-card { background: var(--bg2); border: 1px solid var(--bg4); border-radius: 14px; padding: 28px; transition: all 0.2s; }
+  .doc-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .doc-icon { font-size: 32px; margin-bottom: 12px; }
+  .doc-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .doc-desc { color: var(--text2); font-size: 14px; margin-bottom: 16px; }
+  .doc-link { font-size: 14px; font-weight: 600; }
+  footer { background: var(--bg2); border-top: 1px solid var(--bg4); padding: 24px 0; text-align: center; color: var(--text3); font-size: 14px; }
+</style>
+</head>
+<body>
+<nav><div class="container">
+  <a href="/" class="logo"><span class="logo-mark">X</span> XKG Desktop</a>
+  <div class="nav-links">
+    <a href="/#features">Features</a>
+    <a href="/downloads.html">Download</a>
+    <a href="/docs.html">Docs</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/support.html">Support</a>
+  </div>
+</div></nav>
+
+<div class="page-head">
+  <h1>Documentation</h1>
+  <p>Everything you need to install, configure, and get the most out of XKG Desktop.</p>
+</div>
+
+<div class="container">
+  <div class="docs-grid">
+    <a class="doc-card" href="https://github.com/griptoad26/xkg-desktop#readme">
+      <div class="doc-icon">🚀</div>
+      <div class="doc-title">Quick start</div>
+      <div class="doc-desc">Install XKG Desktop on Linux, Windows, or macOS, set up the global shortcut, and capture your first note in under 5 minutes.</div>
+      <div class="doc-link">Read on GitHub →</div>
+    </a>
+    <a class="doc-card" href="https://github.com/griptoad26/xkg-desktop/blob/main/docs/SYNC.md">
+      <div class="doc-icon">🔄</div>
+      <div class="doc-title">Cross-device sync</div>
+      <div class="doc-desc">Set up cluster-hub, configure JSONL bridge, and see your captures on your phone, tablet, and other desktops.</div>
+      <div class="doc-link">Read the guide →</div>
+    </a>
+    <a class="doc-card" href="https://github.com/griptoad26/xkg-desktop/blob/main/docs/INSTALLATION.md">
+      <div class="doc-icon">💾</div>
+      <div class="doc-title">Installation</div>
+      <div class="doc-desc">Per-platform install steps: dpkg, rpm, AppImage, NSIS, MSI, DMG. Plus silent install for enterprise deployment.</div>
+      <div class="doc-link">Read the guide →</div>
+    </a>
+    <a class="doc-card" href="https://github.com/griptoad26/xkg-desktop#architecture">
+      <div class="doc-icon">🏗️</div>
+      <div class="doc-title">Architecture</div>
+      <div class="doc-desc">How the global shortcut, SQLite storage, FTS5 search, autostart, and the cluster-hub sync layer fit together.</div>
+      <div class="doc-link">Read on GitHub →</div>
+    </a>
+    <a class="doc-card" href="https://github.com/griptoad26/xkg-mobile#readme">
+      <div class="doc-icon">📱</div>
+      <div class="doc-title">Mobile (xkg-mobile)</div>
+      <div class="doc-desc">Flutter app docs: Android, Linux, and Windows bundles, how the JSONL bridge works, and how to read captures on the go.</div>
+      <div class="doc-link">Read on GitHub →</div>
+    </a>
+    <a class="doc-card" href="https://github.com/griptoad26/xkg-mobile/blob/main/docs/CROSS-DEVICE.md">
+      <div class="doc-icon">🌐</div>
+      <div class="doc-title">End-to-end workflow</div>
+      <div class="doc-desc">Walk through: capture on desktop → see on mobile → review on any device. The complete cross-device flow with diagrams.</div>
+      <div class="doc-link">Read the guide →</div>
+    </a>
+    <a class="doc-card" href="/changelog.html">
+      <div class="doc-icon">📋</div>
+      <div class="doc-title">Changelog</div>
+      <div class="doc-desc">Every release: new features, bug fixes, breaking changes. See what shipped in v0.1.0 and what's coming next.</div>
+      <div class="doc-link">View changelog →</div>
+    </a>
+    <a class="doc-card" href="/support.html">
+      <div class="doc-icon">💬</div>
+      <div class="doc-title">Support</div>
+      <div class="doc-desc">Common questions, troubleshooting, contact info, and how to file a useful bug report.</div>
+      <div class="doc-link">Get support →</div>
+    </a>
+  </div>
+</div>
+
+<footer>© 2026 Seele Agency · <a href="/">Home</a> · <a href="/support.html">Support</a> · <a href="/#pricing">Pricing</a> · <a href="https://github.com/griptoad26/xkg-desktop">GitHub</a></footer>
+</body>
+</html>
