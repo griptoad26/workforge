@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="auth-gate" content="off">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Help center — chat with the Seele Agency support team.">
+<meta property="og:title" content="Help — Seele Agency">
+<meta property="og:description" content="Chat with the Seele Agency support team. Replies within 1 business day.">
+<meta property="og:url" content="https://seele.agency/help.html">
+<title>Help — Seele Agency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d1117; --bg2: #161b22; --bg3: #21262d; --bg4: #30363d;
+    --text: #e6edf3; --text2: #8b949e; --text3: #6e7681;
+    --accent: #8b5cf6; --accent-h: #a78bfa; --accent-d: #7c3aed;
+    --success: #3fb950; --danger: #f85149; --warn: #d29922;
+    --gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%);
+  }
+  html, body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; line-height: 1.6; }
+  body { min-height: 100vh; }
+  a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
+  a:hover { color: var(--accent-h); }
+
+  /* ===== Layout ===== */
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  nav { position: sticky; top: 0; background: rgba(13,17,23,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--bg4); z-index: 100; }
+  nav .container { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; }
+  .logo { font-size: 18px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .logo-mark { width: 28px; height: 28px; background: var(--gradient); border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 14px; }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a { color: var(--text2); font-size: 14px; }
+  .nav-links a:hover { color: var(--text); }
+
+  /* ===== Help / Chat ===== */
+  .help-wrap { padding: 60px 24px 40px; position: relative; overflow: hidden; }
+  .help-wrap::before { content: ''; position: absolute; top: -20%; left: 50%; transform: translateX(-50%); width: 80%; height: 60%; background: radial-gradient(ellipse, rgba(139,92,246,0.15) 0%, transparent 70%); pointer-events: none; }
+  .help-header { text-align: center; max-width: 720px; margin: 0 auto 32px; position: relative; }
+  .help-header h1 { font-size: 36px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .help-header .sub { color: var(--text2); font-size: 16px; }
+  .help-header .pill { display: inline-flex; align-items: center; gap: 6px; background: rgba(139,92,246,0.12); color: var(--accent-h); padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; margin-bottom: 18px; border: 1px solid rgba(139,92,246,0.3); }
+  .help-header .pill .dot { width: 6px; height: 6px; background: var(--success); border-radius: 50%; box-shadow: 0 0 8px rgba(63,185,80,0.6); }
+
+  .chat-card {
+    max-width: 760px; margin: 0 auto; background: var(--bg2); border: 1px solid var(--bg4);
+    border-radius: 16px; box-shadow: 0 30px 80px rgba(0,0,0,0.4); position: relative;
+    display: flex; flex-direction: column; height: 70vh; min-height: 520px;
+  }
+
+  .chat-header {
+    padding: 18px 22px; border-bottom: 1px solid var(--bg4); display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .chat-title { display: flex; align-items: center; gap: 12px; }
+  .chat-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--gradient); display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 14px; }
+  .chat-title-text .name { font-weight: 700; font-size: 15px; }
+  .chat-title-text .meta { color: var(--text3); font-size: 12px; }
+  .chat-clear { background: transparent; border: 1px solid var(--bg4); color: var(--text2); padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+  .chat-clear:hover { color: var(--text); border-color: var(--bg4); background: var(--bg3); }
+
+  .chat-body {
+    flex: 1 1 auto; overflow-y: auto; padding: 22px; display: flex; flex-direction: column; gap: 14px; scroll-behavior: smooth;
+  }
+  .chat-body::-webkit-scrollbar { width: 8px; }
+  .chat-body::-webkit-scrollbar-track { background: transparent; }
+  .chat-body::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 4px; }
+
+  .msg { display: flex; max-width: 70%; }
+  .msg.user { align-self: flex-end; }
+  .msg.agent { align-self: flex-start; }
+  .bubble {
+    padding: 11px 15px; border-radius: 14px; font-size: 14.5px; line-height: 1.5; word-wrap: break-word; white-space: pre-wrap;
+  }
+  .msg.user .bubble {
+    background: var(--gradient); color: white;
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 6px 20px rgba(139,92,246,0.25);
+  }
+  .msg.agent .bubble {
+    background: var(--bg2); color: var(--text);
+    border: 1px solid var(--bg4);
+    border-bottom-left-radius: 4px;
+  }
+  .msg .ts { font-size: 11px; color: var(--text3); margin-top: 4px; padding: 0 4px; }
+  .msg.user .ts { text-align: right; }
+  .msg .meta-line { font-size: 12px; color: var(--accent-h); margin-top: 4px; padding: 0 4px; font-weight: 500; }
+
+  .msg.system { align-self: center; max-width: 90%; }
+  .msg.system .bubble {
+    background: transparent; color: var(--text3); border: 1px dashed var(--bg4);
+    font-size: 13px; text-align: center;
+  }
+
+  .chat-footer { padding: 16px; border-top: 1px solid var(--bg4); background: var(--bg2); border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; }
+  .composer { display: flex; gap: 10px; align-items: flex-end; }
+  .composer textarea {
+    flex: 1; resize: none; min-height: 44px; max-height: 140px; padding: 11px 14px;
+    background: var(--bg); border: 1px solid var(--bg4); border-radius: 10px;
+    color: var(--text); font-size: 14.5px; font-family: inherit; line-height: 1.5;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .composer textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(139,92,246,0.18); }
+  .composer textarea:disabled { opacity: 0.6; cursor: not-allowed; }
+  .composer .send-btn {
+    background: var(--gradient); color: white; border: none; padding: 0 18px;
+    height: 44px; border-radius: 10px; font-weight: 600; font-size: 14px; cursor: pointer;
+    font-family: inherit; transition: all 0.15s;
+    box-shadow: 0 6px 20px rgba(139,92,246,0.25);
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .composer .send-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(139,92,246,0.35); }
+  .composer .send-btn:active:not(:disabled) { transform: translateY(0); }
+  .composer .send-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+  .composer .send-btn .spinner {
+    display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .composer .hint { font-size: 11.5px; color: var(--text3); margin-top: 8px; padding: 0 2px; }
+  .composer .err { font-size: 12.5px; color: var(--danger); margin-top: 8px; padding: 0 2px; }
+
+  .chat-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 20px; color: var(--text3); flex: 1; gap: 12px; }
+  .chat-empty .icon { width: 56px; height: 56px; border-radius: 50%; background: var(--bg3); display: inline-flex; align-items: center; justify-content: center; font-size: 24px; }
+  .chat-empty .title { color: var(--text); font-weight: 600; font-size: 16px; }
+  .chat-empty .desc { font-size: 13px; max-width: 360px; }
+
+  @media (max-width: 640px) {
+    .chat-card { height: 78vh; border-radius: 12px; }
+    .help-header h1 { font-size: 28px; }
+    .msg { max-width: 85%; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="/" class="logo"><span class="logo-mark">X</span> XKG Desktop</a>
+    <div class="nav-links">
+      <a href="/#features">Features</a>
+      <a href="/downloads.html">Download</a>
+      <a href="/#pricing">Pricing</a>
+      <a href="/support.html">Support</a>
+      <span id="navUser" style="display:none; font-size:13px; color: var(--text2);"></span>
+      <a href="/register.html" class="nav-cta" id="navRegister" style="background: var(--accent); color: white !important; padding: 8px 16px; border-radius: 8px; font-weight: 600;">Register</a>
+      <a href="#" id="navLogout" style="display:none; font-size:13px; color: var(--text2);" onclick="logout(event)">Sign out</a>
+    </div>
+  </div>
+</nav>
+
+<div class="help-wrap">
+  <div class="help-header">
+    <span class="pill"><span class="dot"></span> Support online</span>
+    <h1>Help &amp; Support</h1>
+    <p class="sub">Send us a message and our team will reply within 1 business day. Your conversation is saved on this device.</p>
+  </div>
+
+  <div class="chat-card" id="chatCard">
+    <div class="chat-header">
+      <div class="chat-title">
+        <div class="chat-avatar">S</div>
+        <div class="chat-title-text">
+          <div class="name">Seele Support</div>
+          <div class="meta" id="chatMeta">Average reply time: &lt; 1 business day</div>
+        </div>
+      </div>
+      <button class="chat-clear" id="clearBtn" type="button" title="Clear conversation on this device">Clear</button>
+    </div>
+
+    <div class="chat-body" id="chatBody">
+      <div class="chat-empty" id="chatEmpty">
+        <div class="icon">💬</div>
+        <div class="title">Start a conversation</div>
+        <div class="desc">Describe what you need help with. We'll create a support ticket and get back to you shortly.</div>
+      </div>
+    </div>
+
+    <div class="chat-footer">
+      <form class="composer" id="composer" autocomplete="off">
+        <textarea id="msgInput" placeholder="Type your message..." rows="1" maxlength="2000" required></textarea>
+        <button type="submit" class="send-btn" id="sendBtn">
+          <span id="sendLabel">Send</span>
+        </button>
+      </form>
+      <div class="hint">Press <kbd style="background:var(--bg3);padding:1px 5px;border-radius:4px;font-size:10.5px;">Enter</kbd> to send · <kbd style="background:var(--bg3);padding:1px 5px;border-radius:4px;font-size:10.5px;">Shift+Enter</kbd> for newline</div>
+      <div class="err" id="errBox" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+
+<script src="/gate.js" defer></script>
+<script src="/help.js" defer></script>
+</body>
+</html>
