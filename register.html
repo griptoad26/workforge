@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="auth-gate" content="off">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Sign in to XKG Desktop — your local-first AI conversation knowledge graph.">
-<meta property="og:title" content="Sign in — XKG Desktop | Seele Agency">
-<meta property="og:description" content="Sign in to access your XKG Desktop downloads and account.">
-<meta property="og:url" content="https://seele.agency/login.html">
-<title>Sign in — XKG Desktop | Seele Agency</title>
+<meta name="description" content="Create your XKG Desktop account — local-first AI conversation knowledge graph.">
+<meta property="og:title" content="Register — XKG Desktop | Seele Agency">
+<meta property="og:description" content="Create a free account to access XKG Desktop downloads.">
+<meta property="og:url" content="https://seele.agency/register.html">
+<title>Register — XKG Desktop | Seele Agency</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
@@ -49,6 +49,7 @@
     transition: border-color 0.15s, box-shadow 0.15s;
   }
   .auth-card input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(139,92,246,0.18); }
+  .auth-card .hint { font-size: 12px; color: var(--text3); margin-top: 4px; }
   .auth-card .row { display: flex; align-items: center; justify-content: space-between; margin: 18px 0 8px; }
   .auth-card .row label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text2); margin: 0; cursor: pointer; }
   .auth-card .row input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
@@ -69,13 +70,17 @@
   }
   .auth-card .error.show { display: block; }
   .auth-card .footer-note { color: var(--text3); font-size: 12px; text-align: center; margin-top: 18px; }
+  .auth-card .perks { margin: 14px 0 4px; padding: 14px; background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.25); border-radius: 10px; font-size: 13px; color: var(--text2); }
+  .auth-card .perks ul { list-style: none; padding: 0; margin: 0; }
+  .auth-card .perks li { padding: 2px 0; }
+  .auth-card .perks li::before { content: '✓'; color: var(--success); margin-right: 8px; font-weight: bold; }
   .auth-card .spinner {
     display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3);
     border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 6px; vertical-align: -2px;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* Hide auth card until script decides (no flash of "login" if already signed in) */
+  /* Hide auth card until script decides (no flash if already signed in) */
   .auth-card.hidden-initially { visibility: hidden; }
 </style>
 </head>
@@ -90,7 +95,7 @@
       <a href="/#pricing">Pricing</a>
       <a href="/support.html">Support</a>
       <span id="navUser" style="display:none; font-size:13px; color: var(--text2);"></span>
-      <a href="/register.html" class="nav-cta" id="navRegister" style="background: var(--accent); color: white !important; padding: 8px 16px; border-radius: 8px; font-weight: 600;">Register</a>
+      <a href="/login.html" class="nav-cta" id="navLogin" style="background: var(--accent); color: white !important; padding: 8px 16px; border-radius: 8px; font-weight: 600;">Sign in</a>
       <a href="#" id="navLogout" style="display:none; font-size:13px; color: var(--text2);" onclick="logout(event)">Sign out</a>
     </div>
   </div>
@@ -98,50 +103,54 @@
 
 <div class="auth-wrap">
   <div class="auth-card hidden-initially" id="authCard">
-    <h1>Welcome back</h1>
-    <p class="sub">Sign in to access downloads, your license, and account.</p>
+    <h1>Create your account</h1>
+    <p class="sub">Free. No subscription. One-time purchase for the desktop app.</p>
 
-    <form id="loginForm" novalidate>
+    <div class="perks">
+      <ul>
+        <li>Access to XKG Desktop downloads on all platforms</li>
+        <li>License key &amp; order history</li>
+        <li>Priority support tickets</li>
+      </ul>
+    </div>
+
+    <form id="registerForm" novalidate>
+      <label for="name">Name (optional)</label>
+      <input type="text" id="name" name="name" autocomplete="name" placeholder="Your name">
+
       <label for="email">Email</label>
       <input type="email" id="email" name="email" autocomplete="email" required placeholder="you@example.com">
 
       <label for="password">Password</label>
-      <input type="password" id="password" name="password" autocomplete="current-password" required placeholder="••••••••">
+      <input type="password" id="password" name="password" autocomplete="new-password" required minlength="8" placeholder="At least 8 characters">
+      <div class="hint">8 characters minimum. Use a passphrase you don't use anywhere else.</div>
 
       <div class="row">
-        <label><input type="checkbox" id="remember" checked> Remember me for 30 days</label>
+        <label><input type="checkbox" id="remember" checked> Keep me signed in for 30 days</label>
       </div>
 
-      <button type="submit" class="btn-primary" id="submitBtn">Sign in</button>
+      <button type="submit" class="btn-primary" id="submitBtn">Create account</button>
 
       <div class="error" id="errorBox"></div>
     </form>
 
     <div class="alt">
-      Don't have an account? <a href="/register.html">Register here</a>
+      Already have an account? <a href="/login.html">Sign in</a>
     </div>
     <div class="footer-note">
-      Trouble signing in? Email <a href="mailto:support@seele.agency">support@seele.agency</a>.
+      By creating an account, you agree to our <a href="/terms.html">terms</a> and <a href="/privacy.html">privacy policy</a>.
     </div>
   </div>
 </div>
 
-<script src="/gate.js" data-mode="login"></script>
+<script src="/gate.js" data-mode="register"></script>
 <script>
 (function() {
   'use strict';
-  const form = document.getElementById('loginForm');
+  const form = document.getElementById('registerForm');
   const btn = document.getElementById('submitBtn');
   const errBox = document.getElementById('errorBox');
   const API = (window.SEELE_AUTH && window.SEELE_AUTH.apiBase) || '/api/pay';
-
-  function getNext() {
-    const params = new URLSearchParams(window.location.search);
-    let next = params.get('next') || '/downloads.html';
-    // Only allow relative paths (avoid open redirect)
-    if (!next.startsWith('/') || next.startsWith('//')) next = '/downloads.html';
-    return next;
-  }
 
   function showError(msg) {
     errBox.textContent = msg;
@@ -153,39 +162,49 @@
   }
   function setBusy(busy) {
     btn.disabled = busy;
-    btn.innerHTML = busy ? '<span class="spinner"></span>Signing in…' : 'Sign in';
+    btn.innerHTML = busy ? '<span class="spinner"></span>Creating account…' : 'Create account';
   }
 
   form.addEventListener('submit', async function(e) {
     e.preventDefault();
     clearError();
+    const name = document.getElementById('name').value.trim();
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     const remember = document.getElementById('remember').checked;
-    if (!email || !password) { showError('Please enter your email and password.'); return; }
+    if (!email || !password) { showError('Please enter your email and a password.'); return; }
+    if (password.length < 8) { showError('Password must be at least 8 characters.'); return; }
     setBusy(true);
     try {
-      const r = await fetch(API + '/v1/auth/login', {
+      const r = await fetch(API + '/v1/auth/register', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, password: password, remember_me: remember })
+        body: JSON.stringify({ email: email, password: password, name: name || null, remember_me: remember })
       });
-      if (r.ok) {
-        // Cookie is set by server. Redirect to originally-requested page.
-        window.location.href = getNext();
+      if (r.ok || r.status === 201) {
+        // Cookie set on success → redirect home
+        window.location.href = '/?welcome=1';
         return;
       }
-      let msg = 'Sign-in failed. Please try again.';
+      let msg = 'Could not create account. Please try again.';
       try {
         const data = await r.json();
         if (data && data.detail) {
           if (typeof data.detail === 'string') msg = data.detail;
-          else if (Array.isArray(data.detail) && data.detail[0] && data.detail[0].msg) msg = data.detail[0].msg;
+          else if (Array.isArray(data.detail)) {
+            // Pydantic-style: [{loc, msg}, ...]
+            const first = data.detail[0];
+            if (first && first.msg) {
+              const field = Array.isArray(first.loc) ? first.loc[first.loc.length - 1] : '';
+              msg = (field ? field + ': ' : '') + first.msg;
+            }
+          }
         }
       } catch (_) { /* non-JSON body */ }
-      if (r.status === 401) msg = 'Invalid email or password.';
-      if (r.status === 0 || r.status === 502 || r.status === 503) msg = 'Sign-in service unavailable. Please try again in a moment.';
+      if (r.status === 409) msg = 'An account with that email already exists. Try signing in instead.';
+      if (r.status === 422) msg = msg || 'Please check your email and password (min 8 characters).';
+      if (r.status === 0 || r.status === 502 || r.status === 503) msg = 'Sign-up service unavailable. Please try again in a moment.';
       showError(msg);
     } catch (err) {
       showError('Network error. Check your connection and try again.');
@@ -203,11 +222,9 @@
   }
   window.logout = logout;
 
-  // Show auth card once gate.js has decided we should see it
   function reveal() {
     document.getElementById('authCard').classList.remove('hidden-initially');
   }
-  // Show after a short delay — fallback reveal in case gate.js doesn't unhide
   setTimeout(reveal, 800);
   document.addEventListener('seele:gate:show', reveal);
 })();

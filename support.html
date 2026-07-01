@@ -92,7 +92,20 @@
       <a href="/#pricing">Pricing</a>
       <a href="/support.html">Support</a>
       <a href="/#downloads" class="nav-cta">Get XKG</a>
+      <span id="navUser" style="display:none; font-size:13px; color: var(--text2);"></span>
+      <a href="#" id="navLogout" style="display:none; font-size:13px; color: var(--text2);" onclick="seeleLogout(event)">Sign out</a>
+      <a href="/login.html" id="navLogin" style="background: var(--accent); color: white !important; padding: 8px 16px; border-radius: 8px; font-weight: 600;">Sign in</a>
     </div>
+  </div>
+</nav>
+
+<style>
+/* When gate.js hasn't yet decided auth state, hide gated interactive elements so the
+   page doesn't flash a "Download" button that immediately redirects on click. */
+html.seele-gate-pending [data-requires-auth] { opacity: 0.4; pointer-events: none; }
+</style>
+
+<script src="/gate.js"></script>    </div>
   </div>
 </nav>
 
