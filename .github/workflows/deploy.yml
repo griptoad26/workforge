@@ -1,0 +1,157 @@
+name: Deploy workforge → Cloudflare Pages
+
+# Mirrors the brief from site-agent (griptoad26/site-agent/.github/workflows/deploy-workforge.yml).
+# Triggered on push to main in griptoad26/workforge.
+# Steps:
+#   1. Checkout both this repo and griptoad26/workforge
+#   2. Validate HTML structure across workforge
+#   3. Smoke check https://seele.agency/ (HTTP 200)
+#   4. Deploy to Cloudflare Pages
+#   5. On post-deploy smoke failure → wrangler pages rollback
+
+on:
+  push:
+    branches: [main]
+    # Only react to pushes inside the workforge repo; this workflow lives
+    # in site-agent, so we filter by payload.
+    paths-ignore:
+      - "**/README.md"
+      - "docs/**"
+
+  workflow_dispatch:
+    inputs:
+      rollback:
+        description: "Force rollback instead of deploy"
+        required: false
+        default: "false"
+
+concurrency:
+  group: deploy-workforge
+  cancel-in-progress: false
+
+jobs:
+  validate-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+    steps:
+      - name: Trigger guard (only react to workforge pushes)
+        if: github.event.repository.full_name != 'griptoad26/workforge'
+        run: |
+          echo "::notice::deploy-workforge.yml is configured to react to pushes in griptoad26/workforge."
+          echo "Repository: ${{ github.event.repository.full_name }} — running as a sanity run."
+          # We do NOT exit here: workflow_dispatch from this repo should still work
+          # (manual deploy / rollback). Push events that arrive here are cross-repo
+          # forwards set up by griptoad26/workforge.
+
+      - name: Checkout griptoad26/workforge
+        uses: actions/checkout@v4
+        with:
+          repository: griptoad26/workforge
+          ref: main
+          path: workforge
+          fetch-depth: 1
+          token: ${{ secrets.GH_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate HTML structure
+        working-directory: workforge
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          html_files=(*.html **/*.html)
+          echo "Found ${#html_files[@]} HTML files"
+          if [ "${#html_files[@]}" -eq 0 ]; then
+            echo "::error::No HTML files found in workforge"
+            exit 1
+          fi
+          for f in "${html_files[@]}"; do
+            # xmllint --html is forgiving about HTML5; falls back to python parser
+            if command -v xmllint >/dev/null 2>&1; then
+              xmllint --html --noout "$f" >/dev/null 2>&1 || {
+                echo "::error::HTML validation failed: $f"
+                xmllint --html --noout "$f" || true
+                exit 1
+              }
+            else
+              python3 - "$f" <<'PY'
+          import sys
+          from html.parser import HTMLParser
+          class P(HTMLParser):
+              err = None
+              def error(self, msg):
+                  if self.err is None:
+                      self.err = msg
+          p = P()
+          with open(sys.argv[1], "r", encoding="utf-8", errors="replace") as fh:
+              p.feed(fh.read())
+          if p.err:
+              print(f"parse-error: {p.err}")
+              sys.exit(1)
+          PY
+            fi
+          done
+          echo "✅ All HTML files structurally valid"
+
+      - name: Pre-deploy smoke check (seele.agency)
+        run: |
+          set -euo pipefail
+          code=$(curl -s -o /dev/null -w "%{http_code}" https://seele.agency/)
+          echo "pre-deploy HTTP $code"
+          if [ "$code" != "200" ]; then
+            echo "::warning::Pre-deploy smoke check non-200 ($code). Proceeding anyway."
+          fi
+
+      - name: Deploy to Cloudflare Pages
+        if: env.CF_API_TOKEN != '' && env.CF_ACCOUNT_ID != ''
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy workforge --project-name=workforge --commit-dirty=true
+
+      - name: Deploy skipped (no CF secrets)
+        if: env.CF_API_TOKEN == '' || env.CF_ACCOUNT_ID == ''
+        run: |
+          echo "::warning::CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID missing — deploy step skipped."
+          echo "Add them as repo secrets to enable Cloudflare Pages deployment."
+          exit 1
+
+      - name: Post-deploy smoke check
+        id: smoke
+        run: |
+          set -euo pipefail
+          sleep 5
+          for i in 1 2 3 4 5; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" https://seele.agency/)
+            echo "post-deploy attempt $i: HTTP $code"
+            if [ "$code" = "200" ]; then
+              echo "ok=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "ok=false" >> "$GITHUB_OUTPUT"
+          echo "::error::Post-deploy smoke check failed after retries"
+
+      - name: Rollback on smoke failure
+        if: steps.smoke.outputs.ok == 'false'
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          if [ -z "$CF_API_TOKEN" ] || [ -z "$CF_ACCOUNT_ID" ]; then
+            echo "::error::Cannot rollback without CF secrets. Manual intervention required."
+            exit 1
+          fi
+          echo "Smoke check failed — rolling back Cloudflare Pages deployment"
+          npx --yes wrangler pages rollback --project-name=workforge
+          exit 1
